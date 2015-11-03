@@ -82,18 +82,20 @@ class Tasks:
     def __init__(self):
         self.cols = ["id", "id_user", "name", "description", "priority", "deadline", "breakTime", "isSolved", "elapsedTime"]
 
-    def GET(self, id_user=None):
+    def GET(self, name=None):
         db = pg_pool.getconn()
         result_str = ""
         try:
             cur = db.cursor()
-            if id_user is None:
+            if name is None:
                 cur.execute("SELECT * FROM Task")
                 result = []
                 for row in cur.fetchall():
                     result.append(dict(zip(self.cols, [str(i) for i in row])))
                 result_str = json.dumps(result)
             else:
+                cur.execute("SELECT id FROM User WHERE name='{0}'".format(name))
+                id_user = cur.fetchone()[0]
                 cur.execute("SELECT * FROM Task WHERE id_user='{0}'".format(id_user))
                 task = cur.fetchall()
                 for row in cur.fetchall():
@@ -154,7 +156,7 @@ class Tasks:
             db.commit()
         finally:
             pg_pool.putconn(db)
-        return id
+        return json.dumps({"id":id})
 
 
 if __name__ == '__main__':
