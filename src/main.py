@@ -7,6 +7,7 @@ import cherrypy
 import json
 
 MAX_THREADS = 10
+CREATED_OFFLINE = -1
 
 class Users:
 
@@ -112,7 +113,6 @@ class Tasks:
                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}') RETURNING id
                 '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
             id_task = cur.fetchone()[0]
-            db.commit()
             for tag in tags:
                 cur.execute("SELECT COUNT(*) FROM Tag WHERE name='{0}'".format(tag))
                 t = int(cur.fetchone()[0])
@@ -122,11 +122,40 @@ class Tasks:
                 cur.execute("SELECT id FROM Tag WHERE name='{0}'".format(tag))
                 id_tag = cur.fetchone()[0]
                 cur.execute("INSERT INTO TaskTag (id_task, id_tag) VALUES ('{0}', '{1}')".format(id_task, id_tag))
-                db.commit()
+            db.commit()
         finally:
             pg_pool.putconn(db)
 
-    def PUT(self, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[]):
+    def PUT(self, id, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[]):
+        db = pg_pool.getconn()
+        try:
+            cur = db.cursor()
+            if id == CREATED_OFFLINE:
+                cur.execute('''
+                INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime)
+                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}') RETURNING id
+                '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
+                id = cur.fetchone()[0]
+            else:
+                cur.execute('''
+                UPDATE Task 
+                SET 
+                id_user         '{0}', 
+                name            '{1}', 
+                description     '{2}', 
+                priority        '{3}', 
+                deadline        '{4}', 
+                breakTime       '{5}', 
+                isSolved        '{6}', 
+                elapsedTime     '{7}'
+                WHERE
+                id='{8}'
+                '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
+            db.commit()
+        finally:
+            pg_pool.putconn(db)
+        return id
+
 
 if __name__ == '__main__':
     pg_pool = pool.ThreadedConnectionPool(1, MAX_THREADS, user="tobedone", password="tobedone", host="localhost", dbname="tobedone")
