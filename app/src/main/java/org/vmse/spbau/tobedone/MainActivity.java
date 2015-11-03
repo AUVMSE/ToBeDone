@@ -3,6 +3,7 @@ package org.vmse.spbau.tobedone;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,9 +15,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
+import org.vmse.spbau.tobedone.fragment.TaskListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static String TASK_CHOICE_FRAGMENT_TAG = "TASK_CHOICE_FRAGMENT";
+    private static String TASK_LIST_FRAGMENT_TAG = "TASK_LIST_FRAGMENT_TAG";
+
+    private TaskChoiceFragment taskChoiceFragment;
+    private TaskListFragment taskListFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +54,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Starting with choose task fragment
-        TaskChoiceFragment taskChoiceFragment = new TaskChoiceFragment();
+//         Starting with choose task fragment
+        taskChoiceFragment = new TaskChoiceFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.contents_fragment_container,
                 taskChoiceFragment,
-                "TASK_CHOICE_FRAGMENT").commit();
+                TASK_CHOICE_FRAGMENT_TAG).commit();
+
+        taskListFragment = new TaskListFragment();
+//        getSupportFragmentManager().beginTransaction().add(R.id.contents_fragment_container,
+//                taskListFragment,
+//                TASK_LIST_FRAGMENT_TAG).commit();
     }
 
     @Override
@@ -91,6 +105,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_show_task_list) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.contents_fragment_container, taskListFragment, TASK_LIST_FRAGMENT_TAG);
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (id == R.id.nav_settings) {
         }
 
