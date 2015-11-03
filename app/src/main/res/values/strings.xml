@@ -6,4 +6,9 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_statistics">StatisticsActivity</string>
+
+    <string name="time_spent_per_different_tag">Time spending on different tags</string>
+    <string name="last_longest_tasks">Last longest tasks</string>
+    <string name="utility_per_day">Work load / week day</string>
+    <string name="some_other_stat">Some other stat</string>
 </resources>
