@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,14 @@ import android.view.MenuItem;
 
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
+import org.vmse.spbau.tobedone.task.Tag;
+import org.vmse.spbau.tobedone.task.Task;
+import org.vmse.spbau.tobedone.task.TaskList;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,6 +73,40 @@ public class MainActivity extends AppCompatActivity
 //        getSupportFragmentManager().beginTransaction().add(R.id.contents_fragment_container,
 //                taskListFragment,
 //                TASK_LIST_FRAGMENT_TAG).commit();
+
+
+         /*TEST*/
+        TaskList tl = new TaskList();
+
+        for (int i = 5; i < 15; ++i) {
+            tl.add(new Task(tl, "Task" + i, "", new GregorianCalendar(2015, 11 - 1, i)));
+        }
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Iterator<Task> it = tl.iterator();
+        Task t = it.next();
+        Tag tag = new Tag("2");
+
+        t.addTag(new Tag("1"));
+        t.addTag(tag);
+        t.addTag(new Tag("3"));
+        t.removeTag(tag);
+        t.start();
+        t.pause();
+        t = it.next();
+        t.start();
+        t.pause();
+        t.stop();
+
+
+        tl.refresh();
+
+        it = tl.iterator();
+
+        for(; it.hasNext();)
+            Log.d("MY_TAG", it.next().toJSONObject().toString());
+//            Log.d("MY_TAG", df.format(it.next().getDeadline().getTime()));
+        Log.d("MY_TAG", tl.toJSONArray().toString());
     }
 
     @Override
