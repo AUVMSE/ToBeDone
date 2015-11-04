@@ -117,33 +117,36 @@ public class TaskUtils {
 
                 String s = t1.getDeadline();
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                GregorianCalendar gc.
-//                long handicap1 = t1.getDeadline().getTimeInMillis() - currentDate.getTimeInMillis();
-//                if (handicap1 < 1 * 24 * 60 * 60 * 1000)
-//                    priority1 += 5;
-//                else if(handicap1 < 2 * 24 * 60 * 60 * 1000)
-//                    priority1 += 4;
-//                else if(handicap1 < 3 * 24 * 60 * 60 * 1000)
-//                    priority1 += 3;
-//                else if(handicap1 < 4 * 24 * 60 * 60 * 1000)
-//                    priority1 += 2;
-//                else if(handicap1 < 5 * 24 * 60 * 60 * 1000)
-//                    priority1 += 1;
-//
-//                long handicap2 = t2.getDeadline().getTimeInMillis() - currentDate.getTimeInMillis();
-//                if (handicap2 < 1 * 24 * 60 * 60 * 1000)
-//                    priority2 += 5;
-//                else if(handicap2 < 2 * 24 * 60 * 60 * 1000)
-//                    priority2 += 4;
-//                else if(handicap2 < 3 * 24 * 60 * 60 * 1000)
-//                    priority2 += 3;
-//                else if(handicap2 < 4 * 24 * 60 * 60 * 1000)
-//                    priority2 += 2;
-//                else if(handicap2 < 5 * 24 * 60 * 60 * 1000)
-//                    priority2 += 1;
-//
-//                if (priority1 == priority2)
-//                    return -1;
+                GregorianCalendar gc = new GregorianCalendar();
+                try {
+                    gc.setTime(df.parse(s));
+                } catch (Exception e) {e.printStackTrace();}
+
+                long handicap1 = gc.getTimeInMillis() - currentDate.getTimeInMillis();
+                if (handicap1 < 1 * 24 * 60 * 60 * 1000)
+                    priority1 += 3;
+                else if(handicap1 < 2 * 24 * 60 * 60 * 1000)
+                    priority1 += 2;
+                else if(handicap1 < 3 * 24 * 60 * 60 * 1000)
+                    priority1 += 1;
+
+                s = t2.getDeadline();
+                df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                gc = new GregorianCalendar();
+                try {
+                    gc.setTime(df.parse(s));
+                } catch (Exception e) {e.printStackTrace();}
+
+                long handicap2 = gc.getTimeInMillis() - currentDate.getTimeInMillis();
+                if (handicap2 < 1 * 24 * 60 * 60 * 1000)
+                    priority2 += 3;
+                else if(handicap2 < 2 * 24 * 60 * 60 * 1000)
+                    priority2 += 2;
+                else if(handicap2 < 3 * 24 * 60 * 60 * 1000)
+                    priority2 += 1;
+
+                if (priority1 == priority2)
+                    return -1;
                 return (int)(priority2 - priority1);
             }
         };

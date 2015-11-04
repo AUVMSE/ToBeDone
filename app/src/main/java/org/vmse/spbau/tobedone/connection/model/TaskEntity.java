@@ -8,7 +8,7 @@ public class TaskEntity {
 
     public static long CREATED_OFFLINE = -1;
 
-    private long id;
+    private long id = CREATED_OFFLINE;
     private long idUser;
     private String name;
     private String description;
