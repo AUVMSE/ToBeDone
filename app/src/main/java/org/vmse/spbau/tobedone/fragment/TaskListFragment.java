@@ -148,7 +148,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
         @Override
         public List<TaskEntity> loadInBackground() {
-//            MainApplication.getTaskDataWrapper().syncDataSync("Gregori");
+            MainApplication.getTaskDataWrapper().syncDataSync();
             return MainApplication.getTaskDataWrapper().getTaskEntityData();
         }
     }

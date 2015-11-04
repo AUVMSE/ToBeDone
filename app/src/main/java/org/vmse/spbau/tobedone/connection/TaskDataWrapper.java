@@ -123,14 +123,14 @@ public class TaskDataWrapper {
         }
     }
 
-    public void syncDataSync(String userName) {
+    public void syncDataSync() {
         if (Util.isConnected(context)) {
             isSyncing = true;
 
             List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
             Map<TaskEntity, List<String>> newTags = new HashMap<>();
 
-            Util.addUser(userName);
+            Util.addUser(username);
 
             for (TaskEntity taskEntity : newTaskEntityData) {
                 try {
@@ -141,7 +141,7 @@ public class TaskDataWrapper {
                 }
             }
             try {
-                newTaskEntityData = Util.getAllTasksForUser(userName);
+                newTaskEntityData = Util.getAllTasksForUser(username);
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -155,19 +155,18 @@ public class TaskDataWrapper {
         }
     }
 
-    public void syncDataAsync(String userName) {
-        syncDataAsync(userName, null);
+    public void syncDataAsync() {
+        syncDataAsync(null);
     }
 
-    public void syncDataAsync(String userName, @Nullable OnSyncFinishedListener listener) {
+    public void syncDataAsync(@Nullable OnSyncFinishedListener listener) {
         if (Util.isConnected(context)) {
-            new SyncDataTask(userName, listener).execute();
+            new SyncDataTask(username, listener).execute();
         }
     }
 
     public void saveState() throws JSONException {
-        // TODO
-        syncDataAsync(username);
+        syncDataAsync();
 
         final JSONArray jsonArray = new JSONArray();
         for (TaskEntity taskEntity : taskEntityData) {
@@ -228,8 +227,8 @@ public class TaskDataWrapper {
         } catch (FileNotFoundException e) {
             Log.e(TAG, e.getMessage());
         }
-        // TODO
-        syncDataAsync(username);
+
+        syncDataAsync();
     }
 
     public interface OnSyncFinishedListener {
