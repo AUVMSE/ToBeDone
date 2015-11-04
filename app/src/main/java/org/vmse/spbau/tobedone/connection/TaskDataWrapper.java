@@ -2,6 +2,7 @@ package org.vmse.spbau.tobedone.connection;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -151,8 +152,12 @@ public class TaskDataWrapper {
     }
 
     public void syncDataAsync(String userName) {
+        syncDataAsync(userName, null);
+    }
+
+    public void syncDataAsync(String userName, @Nullable OnSyncFinishedListener listener) {
         if (Util.isConnected(context)) {
-            new SyncDataTask(userName).execute();
+            new SyncDataTask(userName, listener).execute();
         }
     }
 
@@ -223,11 +228,15 @@ public class TaskDataWrapper {
         syncDataAsync("Gregori");
     }
 
+    public interface OnSyncFinishedListener {
+        void onSyncFinished();
+    }
+
     public interface TagsListReceiver {
         void onTagsListReceived(List<String> tags);
     }
 
-    private static class SyncException extends Exception {
+    public static class SyncException extends Exception {
         public SyncException(String detailMessage) {
             super(detailMessage);
         }
@@ -341,9 +350,11 @@ public class TaskDataWrapper {
     private class SyncDataTask extends VoidAsyncTask {
 
         private final String userName;
+        private final OnSyncFinishedListener listener;
 
-        private SyncDataTask(String userName) {
+        private SyncDataTask(String userName, OnSyncFinishedListener listener) {
             this.userName = userName;
+            this.listener = listener;
         }
 
         @Override
@@ -374,6 +385,14 @@ public class TaskDataWrapper {
 
             isSyncing = false;
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (listener != null) {
+                listener.onSyncFinished();
+            }
         }
     }
 }
