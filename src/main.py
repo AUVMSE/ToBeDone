@@ -80,7 +80,7 @@ class Tasks:
     exposed = True
 
     def __init__(self):
-        self.cols = ["id", "id_user", "name", "description", "priority", "deadline", "breakTime", "isSolved", "elapsedTime"]
+        self.cols = ["id", "id_user", "name", "description", "priority", "deadline", "breakTime", "isSolved", "elapsedTime", "lastStop"]
 
     def GET(self, name=None):
         db = pg_pool.getconn()
@@ -94,12 +94,12 @@ class Tasks:
                     result.append(dict(zip(self.cols, [str(i) for i in row])))
                 result_str = json.dumps(result)
             else:
-                cur.execute("SELECT id FROM User WHERE name='{0}'".format(name))
+                cur.execute("SELECT id FROM AndroidUser WHERE name='{0}'".format(name))
                 id_user = cur.fetchone()[0]
                 cur.execute("SELECT * FROM Task WHERE id_user='{0}'".format(id_user))
-                task = cur.fetchall()
+                result = []
                 for row in cur.fetchall():
-                    result.append(dict(zip(self.cols, row)))
+                    result.append(dict(zip(self.cols, [str(i) for i in row])))
                 result_str = json.dumps(result)
         finally:
             pg_pool.putconn(db)
@@ -110,10 +110,16 @@ class Tasks:
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
-            cur.execute('''
-                INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop)
-                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}') RETURNING id
-                '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
+            if lastStop != None:
+                cur.execute('''
+                    INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop)
+                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}') RETURNING id
+                    '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop))
+            else:
+                cur.execute('''
+                    INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime)
+                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}') RETURNING id
+                    '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop))
             id_task = cur.fetchone()[0]
             for tag in tags:
                 cur.execute("SELECT COUNT(*) FROM Tag WHERE name='{0}'".format(tag))
@@ -184,5 +190,6 @@ if __name__ == '__main__':
          }
     )
 
+    cherrypy.server.socket_host = '192.168.65.245'
     cherrypy.engine.start()
     cherrypy.engine.block()
