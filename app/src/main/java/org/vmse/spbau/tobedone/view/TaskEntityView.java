@@ -9,35 +9,35 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.vmse.spbau.tobedone.R;
-import org.vmse.spbau.tobedone.tmp.Task;
+import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 /**
  * Created by Egor Gorbunov on 11/3/15.
  * email: egor-mailbox@ya.ru
  */
-public class TaskView extends RelativeLayout {
+public class TaskEntityView extends RelativeLayout {
 
     /**
      * TaskView can be used in list view, in that case user probably want to
      * make TaskView smaller (don't show description and that kinds of stuff...)
      */
     private boolean isSmall;
-    private Task task;
+    private TaskEntity taskEntity;
     private TextView nameTextView;
     private TextView descriptionTextView;
     private TextView priorityTextView;
     private TextView deadlineTextView;
 
-    public TaskView(Context context, AttributeSet attrs) {
+    public TaskEntityView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.TaskView,
+                R.styleable.TaskEntityView,
                 0, 0);
 
         try {
-            isSmall = a.getBoolean(R.styleable.TaskView_isSmall, false);
+            isSmall = a.getBoolean(R.styleable.TaskEntityView_isSmall, false);
         } finally {
             a.recycle();
         }
@@ -53,21 +53,21 @@ public class TaskView extends RelativeLayout {
         deadlineTextView.setText("10.09.2017");
     }
 
-    public static TaskView inflate(ViewGroup parent) {
-        TaskView taskView = (TaskView)LayoutInflater.from(parent.getContext())
+    public static TaskEntityView inflate(ViewGroup parent) {
+        TaskEntityView taskEntityView = (TaskEntityView)LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_view, parent, false);
-        return taskView;
+        return taskEntityView;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
-        nameTextView.setText(task.getName());
-        descriptionTextView.setText(task.getDescription());
-        priorityTextView.setText(task.getPriority());
-        deadlineTextView.setText(task.getDeadline());
+    public void setTaskEntity(TaskEntity taskEntity) {
+        this.taskEntity = taskEntity;
+        nameTextView.setText(taskEntity.getName());
+        descriptionTextView.setText(taskEntity.getDescription());
+        priorityTextView.setText(Long.toString(taskEntity.getPriority()));
+        deadlineTextView.setText(taskEntity.getDeadline());
     }
 
-    public Task getTask() {
-        return task;
+    public TaskEntity getTaskEntity() {
+        return taskEntity;
     }
 }

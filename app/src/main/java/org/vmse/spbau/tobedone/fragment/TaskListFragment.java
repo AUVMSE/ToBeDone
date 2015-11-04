@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import org.vmse.spbau.tobedone.ToBeDoneActivity;
-import org.vmse.spbau.tobedone.tmp.Task;
-import org.vmse.spbau.tobedone.view.TaskAdapter;
-import org.vmse.spbau.tobedone.view.TaskView;
+import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
+import org.vmse.spbau.tobedone.connection.model.TaskEntity;
+import org.vmse.spbau.tobedone.view.TaskEntityAdapter;
+import org.vmse.spbau.tobedone.view.TaskEntityView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Egor Gorbunov on 11/3/15.
@@ -25,27 +27,40 @@ public class TaskListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
+//        List<TaskEntity> tasks = new ArrayList<>();
+        List<TaskEntity> tasks = TaskDataWrapper.getInstance(getActivity()).getTaskEntityData();
 
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        for (int i = 0; i < 100; i++) {
-            Task task = new Task("Task " + Integer.toString(i), "Description", Integer.toString(i % 10), "10.10.2015");
-            tasks.add(task);
+        if (tasks == null) {
+            tasks = new ArrayList<>();
+            for (int i = 0; i < 10; ++i) {
+                TaskEntity taskEntity = new TaskEntity();
+
+                taskEntity.setName("SHITTY TASK " + Long.toString(i));
+                taskEntity.setDescription("What a description!");
+                taskEntity.setDeadline("10.10.2015");
+                taskEntity.setPriority(10);
+
+                tasks.add(taskEntity);
+            }
         }
 
-        setListAdapter(new TaskAdapter(getActivity(), tasks));
+
+
+        setListAdapter(new TaskEntityAdapter(getActivity(), tasks));
 
         return view;
     }
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        TaskView taskView = (TaskView) v;
-        Task task = taskView.getTask();
+        TaskEntityView taskEntityView = (TaskEntityView) v;
+        TaskEntity taskEntity = taskEntityView.getTaskEntity();
 
         ToBeDoneActivity toBeDoneActivity = (ToBeDoneActivity) getActivity();
-        toBeDoneActivity.taskChooseForEdit(task);
+        toBeDoneActivity.taskChooseFromList(taskEntity);
     }
 }
 
