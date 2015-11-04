@@ -20,7 +20,7 @@ public class Task {
     private GregorianCalendar deadline;
     private int breakTime;
     private int elapsedTime;
-    private TreeSet<Tag> tagList;
+    private TreeSet<String> tagList;
     private boolean isSolved;
 
     private int tagPriority;
@@ -34,7 +34,7 @@ public class Task {
         this.priority    = DEFAULT_PRIORITY;
         this.breakTime   = DEFAULT_BREAK_TIME;
         this.elapsedTime = 0;
-        tagList          = new TreeSet<Tag>();
+        tagList          = new TreeSet<String>();
         isSolved         = false;
         taskList         = new WeakReference<TaskList>(tl);
         tagPriority      = 0;
@@ -66,14 +66,14 @@ public class Task {
         return isSolved;
     }
 
-    private void calcTagPriority() {
-        tagPriority = 0;
-        for(Tag t : tagList) 
-            tagPriority = tagPriority < t.getPriority() ? t.getPriority() : tagPriority;
-    }
+//    private void calcTagPriority() {
+//        tagPriority = 0;
+//        for(Tag t : tagList)
+//            tagPriority = tagPriority < t.getPriority() ? t.getPriority() : tagPriority;
+//    }
 
     public int getTagPriority() {
-        return tagPriority;
+        return 0;
     }
 
     public JSONObject toJSONObject() {
@@ -82,13 +82,13 @@ public class Task {
             json.put("name", name);
             json.put("description", description);
             json.put("priority", priority);
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             json.put("deadline", df.format(deadline.getTime()));
             json.put("breakTime", breakTime);
             json.put("elapsedTime", elapsedTime);
             JSONArray tagJson = new JSONArray();
-            for(Tag t : tagList)
-                tagJson.put(t.toJSONObject());
+            for(String tag : tagList)
+                tagJson.put(tag);
             json.put("tags", tagJson);
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,11 +97,11 @@ public class Task {
         return json;
     }
 
-    public void addTag(Tag tag) {
+    public void addTag(String tag) {
         tagList.add(tag);
     }
 
-    public void removeTag(Tag tag) {
+    public void removeTag(String tag) {
         tagList.remove(tag);
     }
 

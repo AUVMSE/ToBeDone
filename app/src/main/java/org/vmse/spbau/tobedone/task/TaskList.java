@@ -1,7 +1,10 @@
 package org.vmse.spbau.tobedone.task;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
@@ -140,6 +143,31 @@ public class TaskList {
         }
 
         return  json;
+    }
+
+    public void fromJSON(String json) {
+        try {
+            taskQueue= new TreeSet<Task>(getComparator());
+            JSONArray jsonArray = new JSONArray(json);
+            for(int i = 0; i < jsonArray.length(); ++i) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                Date date = df1.parse(jsonObject.getString("deadline"));
+
+                GregorianCalendar calendar = new GregorianCalendar();
+                calendar.setTime(date);
+                Task task = new Task(this, jsonObject.getString("name"),
+                        jsonObject.getString("name"), calendar);
+                task.setBreakTime(jsonObject.getInt("breakTime"));
+                task.setPriority(jsonObject.getInt("priority"));
+                task.setElapsedTime(jsonObject.getInt("elapsedTime"));
+                taskQueue.add(task);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            taskQueue= new TreeSet<Task>(getComparator());
+        }
     }
 
 
