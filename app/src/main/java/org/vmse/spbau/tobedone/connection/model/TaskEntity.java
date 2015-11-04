@@ -4,7 +4,7 @@ package org.vmse.spbau.tobedone.connection.model;
  * @author antonpp
  * @since 04/11/15
  */
-public class Task {
+public class TaskEntity {
 
     public static long CREATED_OFFLINE = -1;
 

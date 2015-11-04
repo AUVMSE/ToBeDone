@@ -7,7 +7,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.vmse.spbau.tobedone.connection.model.Task;
+import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -35,14 +35,14 @@ public class TaskDataWrapper {
     private final Context context;
 
     private boolean isSyncing = false;
-    private List<Task> taskData;
+    private List<TaskEntity> taskEntityData;
 
     private TaskDataWrapper(Context context) {
         this.context = context;
     }
 
-    public List<Task> getTaskData() {
-        return taskData;
+    public List<TaskEntity> getTaskEntityData() {
+        return taskEntityData;
     }
 
     public TaskDataWrapper newInstance(Context context) {
@@ -52,40 +52,40 @@ public class TaskDataWrapper {
         return instance;
     }
 
-    public void addTask(Task task) throws SyncException {
+    public void addTask(TaskEntity taskEntity) throws SyncException {
         if (isSyncing) {
             throw new SyncException("Cannot add task while syncing");
         }
         if (Util.isConnected(context)) {
-            new AddTaskTask(task).execute();
+            new AddTaskEntityTask(taskEntity).execute();
         }
-        taskData.add(task);
+        taskEntityData.add(taskEntity);
     }
 
-    public void getTagsForTask(Task task, TagsListReceiver receiver) {
-        new GetTagsTask(task, receiver).execute();
+    public void getTagsForTask(TaskEntity taskEntity, TagsListReceiver receiver) {
+        new GetTagsTask(taskEntity, receiver).execute();
     }
 
     /**
-     * @param task    updated version of task
-     * @param oldTask leave it as Null if task was created online and provide it otherwise
+     * @param taskEntity    updated version of task
+     * @param oldTaskEntity leave it as Null if task was created online and provide it otherwise
      */
-    public void updateTask(Task task, Task oldTask) throws SyncException {
+    public void updateTask(TaskEntity taskEntity, TaskEntity oldTaskEntity) throws SyncException {
         if (isSyncing) {
             throw new SyncException("Cannot update while syncing");
         }
-        if (oldTask == null) {
-            oldTask = findTaskById(task.getId());
+        if (oldTaskEntity == null) {
+            oldTaskEntity = findTaskById(taskEntity.getId());
         }
-        taskData.remove(oldTask);
-        taskData.add(task);
-        if (task.getId() != Task.CREATED_OFFLINE && Util.isConnected(context)) {
-            new UpdataTaskTask(task).execute();
+        taskEntityData.remove(oldTaskEntity);
+        taskEntityData.add(taskEntity);
+        if (taskEntity.getId() != TaskEntity.CREATED_OFFLINE && Util.isConnected(context)) {
+            new UpdataTaskEntityTask(taskEntity).execute();
         }
     }
 
-    private Task findTaskById(long id) {
-        for (Task t : taskData) {
+    private TaskEntity findTaskById(long id) {
+        for (TaskEntity t : taskEntityData) {
             if (t.getId() == id) {
                 return t;
             }
@@ -107,15 +107,15 @@ public class TaskDataWrapper {
 
     public void saveState() {
         final JSONArray jsonArray = new JSONArray();
-        for (Task task : taskData) {
+        for (TaskEntity taskEntity : taskEntityData) {
             final JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("name", task.getName());
-                jsonObject.put("description", task.getDescription());
-                jsonObject.put("priority", task.getPriority());
-                jsonObject.put("deadline", task.getDeadline());
-                jsonObject.put("breakTime", task.getBreakTime());
-                jsonObject.put("elapsedTime", task.getElapsedTime());
+                jsonObject.put("name", taskEntity.getName());
+                jsonObject.put("description", taskEntity.getDescription());
+                jsonObject.put("priority", taskEntity.getPriority());
+                jsonObject.put("deadline", taskEntity.getDeadline());
+                jsonObject.put("breakTime", taskEntity.getBreakTime());
+                jsonObject.put("elapsedTime", taskEntity.getElapsedTime());
                 jsonArray.put(jsonObject);
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
@@ -155,12 +155,12 @@ public class TaskDataWrapper {
         }
         final JSONArray jsonArray = new JSONArray(stringBuilder.toString());
         final int n = jsonArray.length();
-        final List<Task> result = new ArrayList<>(n);
+        final List<TaskEntity> result = new ArrayList<>(n);
         for (int i = 0; i < n; ++i) {
             final JSONObject jsonObject = jsonArray.getJSONObject(i);
             result.add(Util.taskFromJson(jsonObject));
         }
-        taskData = result;
+        taskEntityData = result;
     }
 
     public interface TagsListReceiver {
@@ -179,18 +179,18 @@ public class TaskDataWrapper {
     private abstract class VoidAsyncTask extends AsyncTask<Void, Void, Void> {
     }
 
-    private class UpdataTaskTask extends VoidAsyncTask {
+    private class UpdataTaskEntityTask extends VoidAsyncTask {
 
-        private final Task task;
+        private final TaskEntity taskEntity;
 
-        private UpdataTaskTask(Task task) {
-            this.task = task;
+        private UpdataTaskEntityTask(TaskEntity taskEntity) {
+            this.taskEntity = taskEntity;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                Util.updateTask(task);
+                Util.updateTask(taskEntity);
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -200,18 +200,18 @@ public class TaskDataWrapper {
 
     private class GetTagsTask extends AsyncTask<Void, Void, List<String>> {
 
-        private final Task task;
+        private final TaskEntity taskEntity;
         private final TagsListReceiver receiver;
 
-        private GetTagsTask(Task task, TagsListReceiver receiver) {
-            this.task = task;
+        private GetTagsTask(TaskEntity taskEntity, TagsListReceiver receiver) {
+            this.taskEntity = taskEntity;
             this.receiver = receiver;
         }
 
         @Override
         protected List<String> doInBackground(Void... voids) {
             try {
-                return Util.getAllTagsForTask(task.getId());
+                return Util.getAllTagsForTask(taskEntity.getId());
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -224,17 +224,17 @@ public class TaskDataWrapper {
         }
     }
 
-    private class AddTaskTask extends VoidAsyncTask {
+    private class AddTaskEntityTask extends VoidAsyncTask {
 
-        private final Task task;
+        private final TaskEntity taskEntity;
 
-        private AddTaskTask(Task task) {
-            this.task = task;
+        private AddTaskEntityTask(TaskEntity taskEntity) {
+            this.taskEntity = taskEntity;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Util.addTask(task);
+            Util.addTask(taskEntity);
             return null;
         }
     }
@@ -267,23 +267,23 @@ public class TaskDataWrapper {
             synchronized (syncMonitor) {
                 isSyncing = true;
 
-                List<Task> newTaskData = new ArrayList<>(taskData);
+                List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
 
-                for (Task task : newTaskData) {
+                for (TaskEntity taskEntity : newTaskEntityData) {
                     try {
-                        Util.updateTask(task);
+                        Util.updateTask(taskEntity);
                     } catch (JSONException e) {
                         Log.e(TAG, e.getMessage());
                     }
                 }
                 try {
-                    newTaskData = Util.getAllTasksForUser(userName);
+                    newTaskEntityData = Util.getAllTasksForUser(userName);
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage());
                 }
 
-                if (newTaskData != null) {
-                    taskData = newTaskData;
+                if (newTaskEntityData != null) {
+                    taskEntityData = newTaskEntityData;
                 }
 
                 isSyncing = false;
