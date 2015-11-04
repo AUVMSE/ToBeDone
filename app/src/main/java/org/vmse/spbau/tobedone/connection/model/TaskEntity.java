@@ -17,6 +17,15 @@ public class TaskEntity {
     private long breakTime;
     private boolean isSolved;
     private long elapsedTime;
+    private String lastStop;
+
+    public String getLastStop() {
+        return lastStop;
+    }
+
+    public void setLastStop(String lastStop) {
+        this.lastStop = lastStop;
+    }
 
     public long getId() {
         return id;

@@ -218,6 +218,7 @@ public class Util {
         params.add(new NameValuePair("breakTime", Long.toString(taskEntity.getBreakTime())));
         params.add(new NameValuePair("isSolved", Boolean.toString(taskEntity.isSolved())));
         params.add(new NameValuePair("elapsedTime", Long.toString(taskEntity.getElapsedTime())));
+        params.add(new NameValuePair("lastStop", taskEntity.getLastStop()));
         sendPOST(USERS_API_ADDRESS, params);
     }
 
@@ -232,6 +233,7 @@ public class Util {
         params.add(new NameValuePair("breakTime", Long.toString(taskEntity.getBreakTime())));
         params.add(new NameValuePair("isSolved", Boolean.toString(taskEntity.isSolved())));
         params.add(new NameValuePair("elapsedTime", Long.toString(taskEntity.getElapsedTime())));
+        params.add(new NameValuePair("lastStop", taskEntity.getLastStop()));
         final JSONObject jsonObject = new JSONObject(sendPUT(USERS_API_ADDRESS, params));
         taskEntity.setId(jsonObject.getLong("id"));
     }
@@ -254,6 +256,7 @@ public class Util {
         taskEntity.setBreakTime(jsonObject.getLong("breakTime"));
         taskEntity.setIsSolved(jsonObject.getBoolean("isSolved"));
         taskEntity.setElapsedTime(jsonObject.getLong("elapsedTime"));
+        taskEntity.setLastStop(jsonObject.getString("lastStop"));
         return taskEntity;
     }
 
