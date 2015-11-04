@@ -33,14 +33,10 @@ public class TaskDataWrapper {
     private final Context context;
 
     private boolean isSyncing = false;
-    private List<TaskEntity> taskEntityData;
+    private List<TaskEntity> taskEntityData = new ArrayList<>();
 
     private TaskDataWrapper(Context context) {
         this.context = context;
-    }
-
-    public List<TaskEntity> getTaskEntityData() {
-        return taskEntityData;
     }
 
     public static TaskDataWrapper getInstance(Context context) {
@@ -48,6 +44,10 @@ public class TaskDataWrapper {
             instance = new TaskDataWrapper(context);
         }
         return instance;
+    }
+
+    public List<TaskEntity> getTaskEntityData() {
+        return taskEntityData;
     }
 
     public void addTask(TaskEntity taskEntity) throws SyncException {
@@ -103,7 +103,10 @@ public class TaskDataWrapper {
         }
     }
 
-    public void saveState() {
+    public void saveState() throws JSONException {
+        // TODO
+        syncData("Gregori");
+
         final JSONArray jsonArray = new JSONArray();
         for (TaskEntity taskEntity : taskEntityData) {
             final JSONObject jsonObject = new JSONObject();
@@ -159,6 +162,8 @@ public class TaskDataWrapper {
             result.add(Util.taskFromJson(jsonObject));
         }
         taskEntityData = result;
+        // TODO
+        syncData("Gregori");
     }
 
     public interface TagsListReceiver {

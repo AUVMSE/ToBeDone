@@ -2,6 +2,9 @@ package org.vmse.spbau.tobedone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+
+import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -15,13 +18,14 @@ import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 
+import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.fragment.EditTaskFragment;
 import org.vmse.spbau.tobedone.fragment.SettingsFragment;
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
+import org.vmse.spbau.tobedone.fragment.TaskFragment;
 import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
 import org.vmse.spbau.tobedone.statistics.StatisticsActivity;
-import org.vmse.spbau.tobedone.tmp.Task;
 
 
 public class MainActivity extends AppCompatActivity
@@ -125,13 +129,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     @Override
@@ -240,21 +237,42 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void taskChooseForEdit(Task task) {
-        final String EDIT_TASK_FRAGMENT_TAG = "EDIT_TASK_FRAGMENT";
+    public void taskChooseFromList(TaskEntity taskEntity) {
+        final String TASK_FRAGMENT = "TASK_FRAGMENT";
+
+        TaskFragment taskFragment = new TaskFragment();
+        taskFragment.setTaskEntity(taskEntity);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.contents_fragment_container, taskFragment,
+                TASK_FRAGMENT);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void taskChooseForEdit(TaskEntity taskEntity) {
+        final String TASK_EDIT_FRAGMENT = "TASK_EDIT_FRAGMENT";
 
         EditTaskFragment editTaskFragment = new EditTaskFragment();
-        editTaskFragment.setTask(task);
+        editTaskFragment.setTaskEntity(taskEntity);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.contents_fragment_container, editTaskFragment,
-                EDIT_TASK_FRAGMENT_TAG);
+                TASK_EDIT_FRAGMENT);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void finishTask(TaskEntity taskEntity) {
 
     }
 
+    @Override
+    public void removeTask(TaskEntity taskEntity) {
 
-    // Processing button clicks
+    }
+
 
 }

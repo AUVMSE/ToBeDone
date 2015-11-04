@@ -4,36 +4,49 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.vmse.spbau.tobedone.R;
-import org.vmse.spbau.tobedone.tmp.Task;
-import org.vmse.spbau.tobedone.view.TaskView;
+import org.vmse.spbau.tobedone.connection.model.TaskEntity;
+import org.vmse.spbau.tobedone.view.TaskEntityView;
 
 /**
  * Created by Egor Gorbunov on 11/4/15.
  * email: egor-mailbox@ya.ru
  */
 public class EditTaskFragment extends Fragment {
-    private Task task;
+    private TaskEntity taskEntity;
     private View view;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.settings_fragment, container, false);
+        view = inflater.inflate(R.layout.task_edit_fragment, container, false);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.task_edit_menu, menu);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        TaskView taskView = (TaskView) view.findViewById(R.id.taskEditFragment_taskView);
-        taskView.setTask(task);
+        TaskEntityView taskEntityView = (TaskEntityView) view.findViewById(R.id.taskEditFragment_taskView);
+        taskEntityView.setTaskEntity(taskEntity);
     }
 
-    public void setTask(Task task) {
-        this.task = task;
+    public void setTaskEntity(TaskEntity taskEntity) {
+        this.taskEntity = taskEntity;
     }
 }

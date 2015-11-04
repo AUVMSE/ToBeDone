@@ -5,7 +5,7 @@
     still checked evean after swapping fragments and pushing back button and stuff -->
     <group android:checkableBehavior="single">
 
-        <item android:id="@+id/nav_show_task_list"
+        <item android:id="@+id/nav_show_task_list" android:icon="@android:drawable/ic_menu_agenda"
             android:title="Task list"
             android:checkable="false"/>
         <item android:id="@+id/nav_statistics" android:icon="@drawable/ic_chart"
