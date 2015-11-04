@@ -39,28 +39,53 @@ public class TaskListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = super.onCreateView(inflater, container, savedInstanceState);
 
-//        List<TaskEntity> tasks = new ArrayList<>();
         List<TaskEntity> tasks = TaskDataWrapper.getInstance(getActivity()).getTaskEntityData();
-//        List<TaskEntity> tasks = null;
 
-        if (tasks == null) {
-            tasks = new ArrayList<>();
-            for (int i = 0; i < 10; ++i) {
-                TaskEntity taskEntity = new TaskEntity();
+//        if (tasks == null) {
+//            tasks = new ArrayList<>();
+//            for (int i = 0; i < 10; ++i) {
+//                TaskEntity taskEntity = new TaskEntity();
+//
+//                taskEntity.setName("TASK " + Long.toString(i));
+//                taskEntity.setDescription("What a description!");
+//                taskEntity.setDeadline("10.10.2015");
+//                taskEntity.setPriority(10);
+//
+//                tasks.add(taskEntity);
+//            }
+//        }
 
-                taskEntity.setName("SHITTY TASK " + Long.toString(i));
-                taskEntity.setDescription("What a description!");
-                taskEntity.setDeadline("10.10.2015");
-                taskEntity.setPriority(10);
-
-                tasks.add(taskEntity);
-            }
-        }
         setListAdapter(new TaskEntityAdapter(getActivity(), tasks));
 
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.addNewTaskButton);
         fab.setVisibility(View.VISIBLE);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                TaskEntity taskEntity = new TaskEntity();
+                taskEntity.setPriority(5);
+                taskEntity.setName("Dummy task");
+                taskEntity.setDeadline("2015-07-07");
+                taskEntity.setDescription("Task description");
+
+                List<String> tags = new ArrayList<String>() {{
+                    add("#university");
+                    add("#study");
+                    add("#ha");
+                }};
+
+
+                try {
+                    TaskDataWrapper.getInstance(getActivity()).addTask(taskEntity, tags);
+                } catch (Exception e) {
+                }
+
+
+            }
+        });
 
         return view;
     }
