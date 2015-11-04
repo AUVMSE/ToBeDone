@@ -13,12 +13,18 @@ import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 public class MainApplication extends Application {
 
     private static final String TAG = MainApplication.class.getName();
+    private static TaskDataWrapper taskDataWrapper;
+
+    public static TaskDataWrapper getTaskDataWrapper() {
+        return taskDataWrapper;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        taskDataWrapper = TaskDataWrapper.getInstance(this);
         try {
-            TaskDataWrapper.getInstance(this).loadState();
+            taskDataWrapper.loadState();
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -27,7 +33,7 @@ public class MainApplication extends Application {
     @Override
     public void onTerminate() {
         try {
-            TaskDataWrapper.getInstance(this).saveState();
+            taskDataWrapper.saveState();
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage());
         }
