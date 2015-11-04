@@ -11,12 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
-import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
+import org.vmse.spbau.tobedone.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

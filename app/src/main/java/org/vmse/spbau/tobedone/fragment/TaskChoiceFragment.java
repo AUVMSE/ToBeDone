@@ -79,7 +79,7 @@ public class TaskChoiceFragment extends Fragment {
         taskEntity = it.hasNext() ? it.next() : null;
         if (taskEntity != null) {
             taskEntityView.setTaskEntity(taskEntity);
-            btnStart.setActivated(true);
+            btnStart.setEnabled(true);
             btnStart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -105,8 +105,8 @@ public class TaskChoiceFragment extends Fragment {
             });
         } else {
             taskEntityView.setVisibility(View.INVISIBLE);
+            btnStart.setEnabled(false);
             btnStart.setOnClickListener(null);
-            btnStart.setActivated(false);
 //            taskEntityView.setTaskEntity(new TaskEntity());
         }
 
