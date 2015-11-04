@@ -11,12 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
-import org.vmse.spbau.tobedone.ToBeDoneActivity;
+import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -179,6 +179,7 @@ public class EditableTaskFragment extends Fragment {
                 List<String> newTags = constructNewTags();
 
                 try {
+                    // TODO check if I changed while merging...
                     MainApplication.getTaskDataWrapper().addTask(newEntity, newTags);
                 } catch (TaskDataWrapper.SyncException e) {
                     e.printStackTrace();
