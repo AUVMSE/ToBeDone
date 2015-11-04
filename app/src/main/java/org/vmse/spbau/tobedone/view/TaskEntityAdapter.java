@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
-import org.vmse.spbau.tobedone.task.Task;
 
 import java.util.List;
 
@@ -16,8 +15,15 @@ import java.util.List;
  */
 public class TaskEntityAdapter extends ArrayAdapter<TaskEntity> {
 
-    public TaskEntityAdapter(Context c, List<TaskEntity> tasks) {
-        super(c, 0, tasks);
+    public TaskEntityAdapter(Context ctx) {
+        super(ctx, 0);
+    }
+
+    public void setData(List<TaskEntity> data) {
+        clear();
+        if (data != null) {
+            addAll(data);
+        }
     }
 
     @Override

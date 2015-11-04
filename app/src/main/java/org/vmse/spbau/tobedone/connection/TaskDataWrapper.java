@@ -2,6 +2,7 @@ package org.vmse.spbau.tobedone.connection;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -94,6 +95,17 @@ public class TaskDataWrapper {
         }
     }
 
+    public void updateTaskTags(TaskEntity taskEntity, List<String> tags) throws SyncException {
+        if (isSyncing) {
+            throw new SyncException("Cannot update while syncing");
+        }
+        this.tags.remove(taskEntity);
+        this.tags.put(taskEntity, tags);
+        if (taskEntity.getId() != TaskEntity.CREATED_OFFLINE && Util.isConnected(context)) {
+            new UpdateTagsTask(taskEntity, tags).execute();
+        }
+    }
+
     private TaskEntity findTaskById(long id) {
         for (TaskEntity t : taskEntityData) {
             if (t.getId() == id) {
@@ -109,15 +121,49 @@ public class TaskDataWrapper {
         }
     }
 
-    public void syncData(String userName) throws JSONException {
+    public void syncDataSync(String userName) {
         if (Util.isConnected(context)) {
-            new SyncDataTask(userName).execute();
+            isSyncing = true;
+
+            List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
+            Map<TaskEntity, List<String>> newTags = new HashMap<>();
+
+            for (TaskEntity taskEntity : newTaskEntityData) {
+                try {
+                    Util.updateTask(taskEntity);
+                    newTags.put(taskEntity, Util.getAllTagsForTask(taskEntity.getId()));
+                } catch (JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+            try {
+                newTaskEntityData = Util.getAllTasksForUser(userName);
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+            }
+
+            if (newTaskEntityData != null) {
+                taskEntityData = newTaskEntityData;
+                tags = newTags;
+            }
+
+            isSyncing = false;
+        }
+    }
+
+    public void syncDataAsync(String userName) {
+        syncDataAsync(userName, null);
+    }
+
+    public void syncDataAsync(String userName, @Nullable OnSyncFinishedListener listener) {
+        if (Util.isConnected(context)) {
+            new SyncDataTask(userName, listener).execute();
         }
     }
 
     public void saveState() throws JSONException {
         // TODO
-        syncData("Gregori");
+        syncDataAsync("Gregori");
 
         final JSONArray jsonArray = new JSONArray();
         for (TaskEntity taskEntity : taskEntityData) {
@@ -179,14 +225,18 @@ public class TaskDataWrapper {
             Log.e(TAG, e.getMessage());
         }
         // TODO
-        syncData("Gregori");
+        syncDataAsync("Gregori");
+    }
+
+    public interface OnSyncFinishedListener {
+        void onSyncFinished();
     }
 
     public interface TagsListReceiver {
         void onTagsListReceived(List<String> tags);
     }
 
-    private static class SyncException extends Exception {
+    public static class SyncException extends Exception {
         public SyncException(String detailMessage) {
             super(detailMessage);
         }
@@ -210,6 +260,23 @@ public class TaskDataWrapper {
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
             }
+            return null;
+        }
+    }
+
+    private class UpdateTagsTask extends VoidAsyncTask {
+
+        private final TaskEntity taskEntity;
+        private final List<String> tags;
+
+        private UpdateTagsTask(TaskEntity taskEntity, List<String> tags) {
+            this.taskEntity = taskEntity;
+            this.tags = tags;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Util.updateTags(taskEntity.getId(), tags);
             return null;
         }
     }
@@ -253,8 +320,9 @@ public class TaskDataWrapper {
         @Override
         protected Void doInBackground(Void... voids) {
             isSyncing = true;
-            Util.addTask(taskEntity, tags);
             try {
+                JSONObject jsonObject = new JSONObject(Util.addTask(taskEntity, tags));
+                taskEntity.setId(jsonObject.getLong("id"));
                 TaskDataWrapper.this.tags.put(taskEntity, Util.getAllTagsForTask(taskEntity.getId()));
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
@@ -282,9 +350,11 @@ public class TaskDataWrapper {
     private class SyncDataTask extends VoidAsyncTask {
 
         private final String userName;
+        private final OnSyncFinishedListener listener;
 
-        private SyncDataTask(String userName) {
+        private SyncDataTask(String userName, OnSyncFinishedListener listener) {
             this.userName = userName;
+            this.listener = listener;
         }
 
         @Override
@@ -315,6 +385,14 @@ public class TaskDataWrapper {
 
             isSyncing = false;
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (listener != null) {
+                listener.onSyncFinished();
+            }
         }
     }
 }
