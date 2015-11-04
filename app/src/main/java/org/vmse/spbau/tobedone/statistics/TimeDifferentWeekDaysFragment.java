@@ -14,7 +14,6 @@ import org.vmse.spbau.tobedone.R;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Andy on 04.11.2015.
@@ -42,10 +41,14 @@ public class TimeDifferentWeekDaysFragment extends ChartFragment {
         if (null == chart)
             return;
 
-        ArrayList<String> xVals = new ArrayList<String>(Arrays.asList(dayNames));
+        ArrayList<String> xVals = new ArrayList<String>(7);
+        for (int i = 2; i < 8; i++)
+            xVals.add(dayNames[i]);
+        xVals.add(dayNames[1]);
+
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < dayNames.length; i++) {
+        for (int i = 1; i < dayNames.length; i++) {
             float val = (float) (Math.random());
             yVals1.add(new BarEntry(val, i));
         }

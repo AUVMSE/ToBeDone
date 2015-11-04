@@ -16,6 +16,7 @@ import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -41,25 +42,38 @@ public class TimeDifferentTagsFragment extends ChartFragment {
         if (null == chart)
             return;
 
+        HashMap<String, Float> timePerTag = new HashMap<>();
+
         List<TaskEntity> l = MainApplication.getTaskDataWrapper().getTaskEntityData();
-        ArrayList<Entry> valsComp1 = new ArrayList<>();
+        for (TaskEntity ent : l) {
+            List<String> tags = MainApplication.getTaskDataWrapper().getTagsForTaskCached(ent);
+            for (String s : tags) {
+                if (timePerTag.containsKey(s))
+                    timePerTag.put(s, timePerTag.get(s) + ent.getElapsedTime());
+                else
+                    timePerTag.put(s, (float) ent.getElapsedTime());
+            }
+        }
+        ArrayList<Entry> tagVals = new ArrayList<>();
+        ArrayList<String> tagNames = new ArrayList<>();
 
-        // Here we actually will iterate over our tasks
-        // this is a dummy stub
-        Entry c1e1 = new Entry(70.000f, 0); // 0 == quarter 1
-        valsComp1.add(c1e1);
-        Entry c1e2 = new Entry(30.000f, 1); // 1 == quarter 2 ...
-        valsComp1.add(c1e2);
+        int idx = 0;
+        for (String k : timePerTag.keySet()) {
+            tagNames.add(k);
+            Entry c1e = new Entry(timePerTag.get(k), idx++); // 1 == quarter 2 ...
+            tagVals.add(c1e);
+        }
 
-        PieDataSet setComp1 = new PieDataSet(valsComp1, "Your tags in %");
-        setComp1.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        ArrayList<String> xVals = new ArrayList<>();
-        xVals.add("tag1");
-        xVals.add("tag2");
+        if (tagNames.size() > 0) {
+            PieDataSet setComp1 = new PieDataSet(tagVals, "Your tags in %");
+            setComp1.setColors(ColorTemplate.VORDIPLOM_COLORS);
 
-        PieData data = new PieData(xVals, setComp1);
+            PieData data = new PieData(tagNames, setComp1);
 
-        chart.setData(data);
-        chart.invalidate();
+            chart.setData(data);
+            chart.invalidate();
+        } else {
+            chart.setNoDataTextDescription("There are no tasks with tags :(");
+        }
     }
 }
