@@ -1,5 +1,8 @@
 package org.vmse.spbau.tobedone.connection;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -200,17 +203,7 @@ public class Util {
         final List<Task> result = new ArrayList<>(n);
         for (int i = 0; i < n; ++i) {
             final JSONObject jsonObject = jsonArray.getJSONObject(i);
-            final Task task = new Task();
-            task.setId(jsonObject.getLong("id"));
-            task.setIdUser(jsonObject.getLong("id_user"));
-            task.setName(jsonObject.getString("name"));
-            task.setDescription(jsonObject.getString("description"));
-            task.setPriority(jsonObject.getLong("priority"));
-            task.setDeadline(jsonObject.getString("deadline"));
-            task.setBreakTime(jsonObject.getLong("breakTime"));
-            task.setIsSolved(jsonObject.getBoolean("isSolved"));
-            task.setElapsedTime(jsonObject.getLong("elapsedTime"));
-            result.add(task);
+            result.add(taskFromJson(jsonObject));
         }
         return result;
     }
@@ -241,6 +234,27 @@ public class Util {
         params.add(new NameValuePair("elapsedTime", Long.toString(task.getElapsedTime())));
         final JSONObject jsonObject = new JSONObject(sendPUT(USERS_API_ADDRESS, params));
         task.setId(jsonObject.getLong("id"));
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    public static Task taskFromJson(JSONObject jsonObject) throws JSONException {
+        final Task task = new Task();
+        task.setId(jsonObject.getLong("id"));
+        task.setIdUser(jsonObject.getLong("id_user"));
+        task.setName(jsonObject.getString("name"));
+        task.setDescription(jsonObject.getString("description"));
+        task.setPriority(jsonObject.getLong("priority"));
+        task.setDeadline(jsonObject.getString("deadline"));
+        task.setBreakTime(jsonObject.getLong("breakTime"));
+        task.setIsSolved(jsonObject.getBoolean("isSolved"));
+        task.setElapsedTime(jsonObject.getLong("elapsedTime"));
+        return task;
     }
 
     private static class NameValuePair {
