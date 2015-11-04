@@ -133,35 +133,39 @@ public class TaskDataWrapper {
         }
     }
 
-    public void loadState() throws FileNotFoundException, JSONException {
-        FileInputStream inputStream = context.openFileInput(DUMP_FILE);
-        BufferedReader bufferedReader = null;
-        StringBuilder stringBuilder = new StringBuilder();
+    public void loadState() throws JSONException {
         try {
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line).append('\n');
-            }
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        } finally {
+            FileInputStream inputStream = context.openFileInput(DUMP_FILE);
+            BufferedReader bufferedReader = null;
+            StringBuilder stringBuilder = new StringBuilder();
             try {
-                if (bufferedReader != null) {
-                    bufferedReader.close();
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line).append('\n');
                 }
-            } catch (IOException ex) {
-                Log.e(TAG, ex.getMessage());
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage());
+            } finally {
+                try {
+                    if (bufferedReader != null) {
+                        bufferedReader.close();
+                    }
+                } catch (IOException ex) {
+                    Log.e(TAG, ex.getMessage());
+                }
             }
+            final JSONArray jsonArray = new JSONArray(stringBuilder.toString());
+            final int n = jsonArray.length();
+            final List<TaskEntity> result = new ArrayList<>(n);
+            for (int i = 0; i < n; ++i) {
+                final JSONObject jsonObject = jsonArray.getJSONObject(i);
+                result.add(Util.taskFromJson(jsonObject));
+            }
+            taskEntityData = result;
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, e.getMessage());
         }
-        final JSONArray jsonArray = new JSONArray(stringBuilder.toString());
-        final int n = jsonArray.length();
-        final List<TaskEntity> result = new ArrayList<>(n);
-        for (int i = 0; i < n; ++i) {
-            final JSONObject jsonObject = jsonArray.getJSONObject(i);
-            result.add(Util.taskFromJson(jsonObject));
-        }
-        taskEntityData = result;
         // TODO
         syncData("Gregori");
     }

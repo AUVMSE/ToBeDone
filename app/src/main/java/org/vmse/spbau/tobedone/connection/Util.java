@@ -31,7 +31,7 @@ public class Util {
 
     public static final String TAG = Util.class.getName();
 
-    private static final String SERVER_ADDRESS = "localhost:8080/";
+    private static final String SERVER_ADDRESS = "http://192.168.65.245:8080/";
     private static final String TAGS_API_ADDRESS = SERVER_ADDRESS + "api/tags";
     private static final String USERS_API_ADDRESS = SERVER_ADDRESS + "api/users";
     private static final String TASKS_API_ADDRESS = SERVER_ADDRESS + "api/tasks";
@@ -79,7 +79,6 @@ public class Util {
                 httpURLConnection.disconnect();
             }
         }
-
         return jsonString;
     }
 
