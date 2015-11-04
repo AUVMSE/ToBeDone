@@ -28,7 +28,8 @@ public class TaskListFragment extends ListFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
 //        List<TaskEntity> tasks = new ArrayList<>();
-        List<TaskEntity> tasks = TaskDataWrapper.getInstance(getActivity()).getTaskEntityData();
+//        List<TaskEntity> tasks = TaskDataWrapper.getInstance(getActivity()).getTaskEntityData();
+        List<TaskEntity> tasks = null;
 
         if (tasks == null) {
             tasks = new ArrayList<>();

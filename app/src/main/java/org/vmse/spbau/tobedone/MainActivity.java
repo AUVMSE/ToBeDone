@@ -228,13 +228,6 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    /**
-     * Processing click on DISCARD button in EditTaskProgress
-     * @param view
-     */
-    public void onClick_btnDiscardChanges(View view) {
-    }
-
     @Override
     public void taskChooseFromList(TaskEntity taskEntity) {
         final String TASK_FRAGMENT = "TASK_FRAGMENT";
@@ -247,6 +240,30 @@ public class MainActivity extends AppCompatActivity
                 TASK_FRAGMENT);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void taskChooseForEdit(TaskEntity taskEntity) {
+        final String TASK_EDIT_FRAGMENT = "TASK_EDIT_FRAGMENT";
+
+        EditTaskFragment editTaskFragment = new EditTaskFragment();
+        editTaskFragment.setTaskEntity(taskEntity);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.contents_fragment_container, editTaskFragment,
+                TASK_EDIT_FRAGMENT);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void finishTask(TaskEntity taskEntity) {
+
+    }
+
+    @Override
+    public void removeTask(TaskEntity taskEntity) {
+
     }
 
 

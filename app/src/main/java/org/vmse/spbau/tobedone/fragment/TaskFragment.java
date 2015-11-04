@@ -6,10 +6,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.vmse.spbau.tobedone.R;
+import org.vmse.spbau.tobedone.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
 
@@ -45,6 +47,23 @@ public class TaskFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                ((ToBeDoneActivity) getActivity()).taskChooseForEdit(taskEntity);
+                return true;
+            case R.id.action_remove:
+                ((ToBeDoneActivity) getActivity()).removeTask(taskEntity);
+                return true;
+            case R.id.action_done:
+                ((ToBeDoneActivity) getActivity()).finishTask(taskEntity);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void setTaskEntity(TaskEntity taskEntity) {

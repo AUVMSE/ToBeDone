@@ -9,4 +9,10 @@ import org.vmse.spbau.tobedone.task.Task;
  */
 public interface ToBeDoneActivity {
     void taskChooseFromList(TaskEntity task);
+
+    void taskChooseForEdit(TaskEntity taskEntity);
+
+    void finishTask(TaskEntity taskEntity);
+
+    void removeTask(TaskEntity taskEntity);
 }
