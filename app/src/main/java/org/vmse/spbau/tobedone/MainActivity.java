@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.contents_fragment_container, taskInProgressFragment,
                 TASK_IN_PROGRESS_FRAGMENT_TAG);
-        transaction.addToBackStack(null);
+//        transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.contents_fragment_container, taskChoiceFragment,
                 TASK_CHOICE_FRAGMENT_TAG);
-        transaction.addToBackStack(null);
+//        transaction.addToBackStack(null);
         transaction.commit();
     }
 
