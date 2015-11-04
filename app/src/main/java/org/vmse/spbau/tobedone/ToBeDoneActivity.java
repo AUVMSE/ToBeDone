@@ -15,4 +15,6 @@ public interface ToBeDoneActivity {
     void finishTask(TaskEntity taskEntity);
 
     void removeTask(TaskEntity taskEntity);
+
+    void updateTask(TaskEntity taskEntity);
 }
