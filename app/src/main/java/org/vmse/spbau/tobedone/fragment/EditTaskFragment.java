@@ -22,7 +22,10 @@ public class EditTaskFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.settings_fragment, container, false);
+        view = inflater.inflate(R.layout.task_edit_fragment, container, false);
+
+
+
         return view;
     }
 

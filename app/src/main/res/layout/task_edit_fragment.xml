@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:text="Discard"
         android:id="@+id/taskEditFragment_discardButton"
-        android:onClick="onClick_btnStartTask"
+        android:onClick="onClick_btnDiscardChanges"
         android:layout_gravity="center_horizontal" />
 
     <Button

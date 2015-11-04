@@ -196,6 +196,13 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
     }
 
+    /**
+     * Processing click on DISCARD button in EditTaskProgress
+     * @param view
+     */
+    public void onClick_btnDiscardChanges(View view) {
+    }
+
     @Override
     public void taskChooseForEdit(Task task) {
         final String EDIT_TASK_FRAGMENT_TAG = "EDIT_TASK_FRAGMENT";
@@ -211,7 +218,5 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    // Processing button clicks
 
 }
