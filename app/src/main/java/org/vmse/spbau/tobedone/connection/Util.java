@@ -30,7 +30,7 @@ import java.util.List;
 public class Util {
 
     public static final String TAG = Util.class.getName();
-    private static final String IP = "192.168.1.19";
+    private static final String IP = "192.168.1.35";
     private static final String SERVER_ADDRESS = "http://" + IP + ":8080/";
     private static final String TAGS_API_ADDRESS = SERVER_ADDRESS + "api/tags";
     private static final String USERS_API_ADDRESS = SERVER_ADDRESS + "api/users";

@@ -1,5 +1,7 @@
 package org.vmse.spbau.tobedone.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -68,6 +70,20 @@ public class EditableTaskFragment extends Fragment {
         editTags.setClickable(true);
     }
 
+    private void fillForm() {
+        editName.setText(taskEntity.getName());
+        editDeadline.setText(taskEntity.getDeadline());
+        editDescription.setText(taskEntity.getDescription());
+
+        String tagString = "";
+        if (tags != null) {
+            for (String tag : tags) {
+                tagString += "#" + tag + " ";
+            }
+        }
+        editTags.setText(tagString);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +101,9 @@ public class EditableTaskFragment extends Fragment {
         editTags = (EditText) view.findViewById(R.id.editTags);
 
         setAllUneditable();
+
+        // before it entity and tags must be set
+        fillForm();
 
         return view;
     }
@@ -164,7 +183,26 @@ public class EditableTaskFragment extends Fragment {
                 return true;
 
             case R.id.action_done:
-                ((ToBeDoneActivity) getActivity()).finishTask(taskEntity);
+                TaskEntity newTaskEntity = constructNewTaskEntity();
+                newTaskEntity.setIsSolved(true);
+                try {
+                    MainApplication.getTaskDataWrapper().updateTask(taskEntity, newTaskEntity);
+                    taskEntity = newTaskEntity;
+                } catch (TaskDataWrapper.SyncException e) {
+                    e.printStackTrace();
+                }
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Task solved!")
+                        .setMessage("Congratulations with one more solved task!")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getActivity().onBackPressed();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .show();
+
                 return true;
 
             case R.id.action_discard:
@@ -179,8 +217,10 @@ public class EditableTaskFragment extends Fragment {
                 List<String> newTags = constructNewTags();
 
                 try {
-                    // TODO check if I changed while merging...
-                    MainApplication.getTaskDataWrapper().addTask(newEntity, newTags);
+                    MainApplication.getTaskDataWrapper().updateTask(taskEntity, newEntity);
+                    MainApplication.getTaskDataWrapper().updateTaskTags(taskEntity, newTags);
+                    taskEntity = newEntity;
+                    tags = newTags;
                 } catch (TaskDataWrapper.SyncException e) {
                     e.printStackTrace();
                 }
@@ -191,7 +231,4 @@ public class EditableTaskFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
-
 }

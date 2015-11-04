@@ -13,6 +13,7 @@ public class StatisticsActivity extends AppCompatActivity implements View.OnClic
 
     ImageView statsTimePerTag;
     ImageView statsTimePerWeekDay;
+    ImageView statsLastLongestTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +21,11 @@ public class StatisticsActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_statistics);
         statsTimePerTag =  (ImageView)findViewById(R.id.stats_spent_per_tag);
         statsTimePerWeekDay = (ImageView)findViewById(R.id.stats_utility_per_week_day);
+        statsLastLongestTasks = (ImageView)findViewById(R.id.stats_last_longest_tasks);
 
         statsTimePerTag.setOnClickListener(this);
         statsTimePerWeekDay.setOnClickListener(this);
+        statsLastLongestTasks.setOnClickListener(this);
     }
 
     @Override
@@ -34,6 +37,9 @@ public class StatisticsActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.stats_utility_per_week_day:
                 intent.putExtra(FragmentNameExtra, TimeDifferentWeekDaysFragment.class.getName());
+                break;
+            case R.id.stats_last_longest_tasks:
+                intent.putExtra(FragmentNameExtra, LastLongestTasksFragment.class.getName());
                 break;
         }
         startActivity(intent);

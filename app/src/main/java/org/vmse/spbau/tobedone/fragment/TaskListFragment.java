@@ -18,12 +18,16 @@ import android.widget.ListView;
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
+import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
+import org.vmse.spbau.tobedone.task.Task;
 import org.vmse.spbau.tobedone.view.TaskEntityAdapter;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -33,6 +37,8 @@ import java.util.Random;
 public class TaskListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<TaskEntity>> {
 
     private TaskEntityAdapter adapter;
+    private Map<TaskEntity, List<String>> taskTagsMap = new HashMap<>();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +84,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
                 taskEntity.setName("Dummy task" + new Random().nextInt());
                 taskEntity.setDeadline("2015-07-07");
                 taskEntity.setDescription("Task description");
+                taskEntity.setIsSolved(false);
 
                 List<String> tags = new ArrayList<String>() {{
                     add("university");
@@ -108,7 +115,8 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
         TaskEntity taskEntity = taskEntityView.getTaskEntity();
 
         ToBeDoneActivity toBeDoneActivity = (ToBeDoneActivity) getActivity();
-        toBeDoneActivity.taskChooseFromList(taskEntity);
+
+        toBeDoneActivity.taskChooseFromList(taskEntity, taskTagsMap.get(taskEntity));
     }
 
     @Override
@@ -124,6 +132,16 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
             setListShownNoAnimation(true);
         }
         if (data != null && !data.isEmpty()) {
+
+            for (final TaskEntity taskEntity : data) {
+                MainApplication.getTaskDataWrapper().getTagsForTask(taskEntity, new TaskDataWrapper.TagsListReceiver() {
+                    @Override
+                    public void onTagsListReceived(List<String> tags) {
+                        taskTagsMap.put(taskEntity, tags);
+                    }
+                });
+            }
+
             adapter.setData(data);
         } else {
             setDefaultEmptyText();
@@ -148,9 +166,8 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
         @Override
         public List<TaskEntity> loadInBackground() {
-            MainApplication.getTaskDataWrapper().syncDataSync();
+            MainApplication.getTaskDataWrapper().syncDataSync("Gregori");
             return MainApplication.getTaskDataWrapper().getTaskEntityData();
         }
     }
 }
-

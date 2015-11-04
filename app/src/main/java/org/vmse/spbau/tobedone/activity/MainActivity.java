@@ -14,8 +14,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.github.mikephil.charting.charts.LineChart;
-
 import org.json.JSONException;
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
@@ -26,6 +24,8 @@ import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
 import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
 import org.vmse.spbau.tobedone.statistics.StatisticsActivity;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity
 
     private AccountManager accountManager;
 
-    private LineChart lineChart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,11 +189,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void taskChooseFromList(TaskEntity taskEntity) {
+    public void taskChooseFromList(TaskEntity taskEntity, List<String> tags) {
         final String TASK_FRAGMENT = "TASK_FRAGMENT";
 
         EditableTaskFragment taskFragment = new EditableTaskFragment();
         taskFragment.setTaskEntity(taskEntity);
+        taskFragment.setTags(tags);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.contents_fragment_container, taskFragment,

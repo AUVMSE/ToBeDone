@@ -5,9 +5,9 @@
 
     <org.vmse.spbau.tobedone.view.TaskEntityView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/task_tile_margin_top"
+        android:layout_marginTop="@dimen/task_tile_margin_top"
         android:id="@+id/taskChooseFragment_view"
         android:layout_gravity="center_horizontal"
         />
