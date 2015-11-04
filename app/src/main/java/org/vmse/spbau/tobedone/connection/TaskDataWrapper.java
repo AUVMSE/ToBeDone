@@ -120,7 +120,37 @@ public class TaskDataWrapper {
         }
     }
 
-    public void syncData(String userName) throws JSONException {
+    public void syncDataSync(String userName) {
+        if (Util.isConnected(context)) {
+            isSyncing = true;
+
+            List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
+            Map<TaskEntity, List<String>> newTags = new HashMap<>();
+
+            for (TaskEntity taskEntity : newTaskEntityData) {
+                try {
+                    Util.updateTask(taskEntity);
+                    newTags.put(taskEntity, Util.getAllTagsForTask(taskEntity.getId()));
+                } catch (JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+            try {
+                newTaskEntityData = Util.getAllTasksForUser(userName);
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+            }
+
+            if (newTaskEntityData != null) {
+                taskEntityData = newTaskEntityData;
+                tags = newTags;
+            }
+
+            isSyncing = false;
+        }
+    }
+
+    public void syncDataAsync(String userName) {
         if (Util.isConnected(context)) {
             new SyncDataTask(userName).execute();
         }
@@ -128,7 +158,7 @@ public class TaskDataWrapper {
 
     public void saveState() throws JSONException {
         // TODO
-        syncData("Gregori");
+        syncDataAsync("Gregori");
 
         final JSONArray jsonArray = new JSONArray();
         for (TaskEntity taskEntity : taskEntityData) {
@@ -190,7 +220,7 @@ public class TaskDataWrapper {
             Log.e(TAG, e.getMessage());
         }
         // TODO
-        syncData("Gregori");
+        syncDataAsync("Gregori");
     }
 
     public interface TagsListReceiver {

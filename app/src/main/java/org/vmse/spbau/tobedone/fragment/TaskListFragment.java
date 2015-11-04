@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,23 +28,34 @@ import java.util.Random;
  * Created by Egor Gorbunov on 11/3/15.
  * email: egor-mailbox@ya.ru
  */
-public class TaskListFragment extends ListFragment {
-    private View view;
+public class TaskListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<TaskEntity>> {
+
+    private TaskEntityAdapter adapter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        setDefaultEmptyText();
+        adapter = new TaskEntityAdapter(getActivity());
+        setListAdapter(adapter);
+        setListShown(false);
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    private void setDefaultEmptyText() {
+        setEmptyText("No tasks found");
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = super.onCreateView(inflater, container, savedInstanceState);
-
-        List<TaskEntity> tasks = MainApplication.getTaskDataWrapper().getTaskEntityData();
-
-        setListAdapter(new TaskEntityAdapter(getActivity(), tasks));
-
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.addNewTaskButton);
         fab.setVisibility(View.VISIBLE);
@@ -69,6 +83,7 @@ public class TaskListFragment extends ListFragment {
                 } catch (Exception ignored) {
                 }
 
+                TaskListFragment.this.getLoaderManager().restartLoader(0, null, TaskListFragment.this);
 
             }
         });
@@ -93,6 +108,48 @@ public class TaskListFragment extends ListFragment {
 
         ToBeDoneActivity toBeDoneActivity = (ToBeDoneActivity) getActivity();
         toBeDoneActivity.taskChooseFromList(taskEntity);
+    }
+
+    @Override
+    public Loader<List<TaskEntity>> onCreateLoader(int id, Bundle args) {
+        return new TaskEntityLoader(getActivity());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<TaskEntity>> loader, List<TaskEntity> data) {
+        if (isResumed()) {
+            setListShown(true);
+        } else {
+            setListShownNoAnimation(true);
+        }
+        if (data != null && !data.isEmpty()) {
+            adapter.setData(data);
+        } else {
+            setDefaultEmptyText();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<TaskEntity>> loader) {
+        adapter.setData(null);
+    }
+
+    private static class TaskEntityLoader extends AsyncTaskLoader<List<TaskEntity>> {
+
+        public TaskEntityLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onStartLoading() {
+            forceLoad();
+        }
+
+        @Override
+        public List<TaskEntity> loadInBackground() {
+//            MainApplication.getTaskDataWrapper().syncDataSync("Gregori");
+            return MainApplication.getTaskDataWrapper().getTaskEntityData();
+        }
     }
 }
 
