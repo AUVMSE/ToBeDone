@@ -11,4 +11,6 @@
     <string name="last_longest_tasks">Last longest tasks</string>
     <string name="utility_per_day">Work load / week day</string>
     <string name="some_other_stat">Some other stat</string>
+    <string name="start_stat_date_str">Start date: </string>
+    <string name="end_stat_date_str">End date: </string>
 </resources>

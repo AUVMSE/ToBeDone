@@ -13,11 +13,13 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Andy on 04.11.2015.
  */
-public class TimeDifferentTagsFragment extends Fragment {
+public class TimeDifferentTagsFragment extends Fragment implements ChartFragment {
 
     PieChart chart;
     @Override
@@ -28,12 +30,14 @@ public class TimeDifferentTagsFragment extends Fragment {
 
         chart = (PieChart) v.findViewById(R.id.time_per_tag_chart);
         chart.setDescription("");
-        updateChart();
+
+
 
         return v;
     }
 
-    public void updateChart() {
+    @Override
+    public void updateChart(Date startDate, Date endDate) {
         ArrayList<Entry> valsComp1 = new ArrayList<Entry>();
 
         // Here we actually will iterate over our tasks

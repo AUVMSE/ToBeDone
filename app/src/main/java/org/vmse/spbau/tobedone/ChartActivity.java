@@ -14,6 +14,11 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class ChartActivity extends AppCompatActivity implements View.OnClickListener {
 
     final String[] periods = {"week", "month", "year", "custom"};
@@ -22,8 +27,15 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
     Spinner periodSpinner;
     Dialog startDateDialog;
     Dialog endDateDialog;
-    private final int START_DATE_DIALOG_ID = 1;
-    private final int END_DATE_DIALOG_ID = 2;
+    Fragment fragment;
+    Date startDateDate;
+    Date endDateDate;
+
+    private void updateDatesTexts() {
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+        startDate.setText(getString(R.string.start_stat_date_str) + df.format(startDateDate));
+        endDate.setText(getString(R.string.end_stat_date_str) + df.format(endDateDate));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,29 +56,46 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         startDate.setEnabled(false);
         endDate.setEnabled(false);
 
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, -1);
+        startDateDate = cal.getTime();
+        cal.add(Calendar.MONTH, 1);
+        endDateDate = cal.getTime();
+
+        updateDatesTexts();
+
         DatePickerDialog.OnDateSetListener startDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
-                // arg1 = year
-                // arg2 = month
-                // arg3 = day
-                Log.i("DATE", "Start Date set");
+                ChartFragment f = (ChartFragment) fragment;
+                Calendar cal = Calendar.getInstance();
+                cal.set(arg1, arg2, arg3);
+                startDateDate = cal.getTime();
+                updateDatesTexts();
+
+                Log.i("CHECK", endDate.getText().toString());
+                f.updateChart(startDateDate, endDateDate);
             }
         };
 
         DatePickerDialog.OnDateSetListener endDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
-                // arg1 = year
-                // arg2 = month
-                // arg3 = day
+                ChartFragment f = (ChartFragment) fragment;
+                Calendar cal = Calendar.getInstance();
+                cal.set(arg1, arg2, arg3);
+                startDateDate = cal.getTime();
+                updateDatesTexts();
+
+                Log.i("CHECK", endDate.getText().toString());
+                f.updateChart(startDateDate, endDateDate);
             }
         };
 
         startDateDialog = new DatePickerDialog(this, startDateListener, 1, 1, 1900);
         endDateDialog = new DatePickerDialog(this, endDateListener, 1, 1, 1900);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, periods);
+        Log.i("LOG", "Here is ok");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, periods);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         periodSpinner = (Spinner) findViewById(R.id.chart_time_limit_spinner);
@@ -107,9 +136,10 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
             }
 
             try {
-                Fragment fragment = (Fragment)fragmentClass.newInstance();
+                fragment = (Fragment)fragmentClass.newInstance();
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_container, fragment).commit();
+                ((ChartFragment) fragment).updateChart(startDateDate, endDateDate);
             } catch (Exception e) {
                 Log.e("ChartError", e.toString());
             }
