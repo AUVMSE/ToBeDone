@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         setupDrawer();
 
-//         Starting with choose task fragment
+//      FRAGMENTS
+
         taskChoiceFragment = new TaskChoiceFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.contents_fragment_container,
                 taskChoiceFragment,
