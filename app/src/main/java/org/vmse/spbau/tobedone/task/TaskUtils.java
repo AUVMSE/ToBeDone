@@ -5,30 +5,26 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import java.util.List;
-import java.util.SortedSet;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
+import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.TreeSet;
-import java.util.LinkedList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 public class TaskUtils {
 
 
     private final static int PREV_TASKS_MAX_SIZE = 2;
-
-
+    private static SortedSet<TaskEntity> prevList = null;
 
     private static boolean startTime(Activity act) {
         SharedPreferences sPref = act.getPreferences(Activity.MODE_PRIVATE);
@@ -73,7 +69,7 @@ public class TaskUtils {
         taskEntity.setIsSolved(task.isSolved());
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
         try {
-            TaskDataWrapper.getInstance(activity).updateTask(taskEntity, task);
+            MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
         } catch (Exception e) {e.printStackTrace();}
     }
 
@@ -89,16 +85,15 @@ public class TaskUtils {
         taskEntity.setIsSolved(true);
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
         try {
-            TaskDataWrapper.getInstance(activity).updateTask(taskEntity, task);
+            MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
         } catch (Exception e) {e.printStackTrace();}
 
     }
 
-    private static SortedSet<TaskEntity> prevList = null;
     public static SortedSet<TaskEntity> getSortedTaskList(Context context) {
 
 
-        List<TaskEntity> list = TaskDataWrapper.getInstance(context).getTaskEntityData();
+        List<TaskEntity> list = MainApplication.getTaskDataWrapper().getTaskEntityData();
 
         list = new LinkedList<TaskEntity>();
         if (prevList == null) {

@@ -1,5 +1,6 @@
-package org.vmse.spbau.tobedone;
+package org.vmse.spbau.tobedone.activity;
 
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,8 @@ import android.view.View;
 import com.github.mikephil.charting.charts.LineChart;
 
 import org.json.JSONException;
+import org.vmse.spbau.tobedone.MainApplication;
+import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.fragment.EditableTaskFragment;
 import org.vmse.spbau.tobedone.fragment.SettingsFragment;
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private TaskInProgressFragment taskInProgressFragment;
+
+    private AccountManager accountManager;
 
     private LineChart lineChart;
     @Override

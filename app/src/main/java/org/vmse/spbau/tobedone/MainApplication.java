@@ -1,5 +1,7 @@
 package org.vmse.spbau.tobedone;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Application;
 import android.util.Log;
 
@@ -22,7 +24,9 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        taskDataWrapper = TaskDataWrapper.getInstance(this);
+        final Account[] accounts = AccountManager.get(getApplicationContext()).
+                getAccountsByType("com.google");
+        taskDataWrapper = TaskDataWrapper.getInstance(this, accounts[0].name);
         try {
             taskDataWrapper.loadState();
         } catch (JSONException e) {

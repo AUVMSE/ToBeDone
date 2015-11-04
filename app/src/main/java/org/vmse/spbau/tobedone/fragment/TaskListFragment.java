@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
-import org.vmse.spbau.tobedone.ToBeDoneActivity;
+import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.view.TaskEntityAdapter;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
