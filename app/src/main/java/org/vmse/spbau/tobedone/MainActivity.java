@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,17 +15,27 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.vmse.spbau.tobedone.fragment.SettingsFragment;
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
+import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static String TASK_CHOICE_FRAGMENT_TAG = "TASK_CHOICE_FRAGMENT";
-    private static String TASK_LIST_FRAGMENT_TAG = "TASK_LIST_FRAGMENT_TAG";
+    private static final String TASK_IN_PROGRESS_FRAGMENT_TAG = "TASK_IN_PROGRESS_FRAGMENT";
+    private static final String TASK_CHOICE_FRAGMENT_TAG = "TASK_CHOICE_FRAGMENT";
+    private static final String TASK_LIST_FRAGMENT_TAG = "TASK_LIST_FRAGMENT";
+    private static final String SETTINGS_FRAGMENT_TAG = "SETTINGS_FRAGMENT";
+
 
     private TaskChoiceFragment taskChoiceFragment;
     private TaskListFragment taskListFragment;
+    private SettingsFragment settingsFragment;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
+    private TaskInProgressFragment taskInProgressFragment;
 
 
     @Override
@@ -32,8 +43,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 //      TODO: delete this
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -45,25 +57,20 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        setupDrawer();
 
-//         Starting with choose task fragment
+//      FRAGMENTS
+
         taskChoiceFragment = new TaskChoiceFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.contents_fragment_container,
                 taskChoiceFragment,
                 TASK_CHOICE_FRAGMENT_TAG).commit();
 
         taskListFragment = new TaskListFragment();
-//        getSupportFragmentManager().beginTransaction().add(R.id.contents_fragment_container,
-//                taskListFragment,
-//                TASK_LIST_FRAGMENT_TAG).commit();
+        settingsFragment = new SettingsFragment();
+        taskInProgressFragment = new TaskInProgressFragment();
     }
 
     @Override
@@ -103,17 +110,89 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        item.setChecked(false);
 
         if (id == R.id.nav_show_task_list) {
+
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.contents_fragment_container, taskListFragment, TASK_LIST_FRAGMENT_TAG);
+            transaction.replace(R.id.contents_fragment_container, taskListFragment,
+                    TASK_LIST_FRAGMENT_TAG);
             transaction.addToBackStack(null);
             transaction.commit();
+
+            setupBackButton();
+
         } else if (id == R.id.nav_settings) {
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.contents_fragment_container, settingsFragment,
+                    SETTINGS_FRAGMENT_TAG);
+            transaction.addToBackStack(null);
+            transaction.commit();
+
+            setupBackButton();
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
+
+    /**
+     * Use it to setup that navigation bar, which slides from left side
+     */
+    private void setupDrawer() {
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    /**
+     * Use it to change nav. bar with back button
+     */
+    private void setupBackButton() {
+        drawer.setDrawerListener(null);
+        toggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+                setupDrawer();
+            }
+        });
+    }
+
+    /**
+     * Process click on START button in TaskChoiceFragment
+     * @param view
+     */
+    public void onClick_btnStartTask(View view) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.contents_fragment_container, taskInProgressFragment,
+                TASK_IN_PROGRESS_FRAGMENT_TAG);
+//        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    /**
+     * Process click on STOP button in TaskInProgressFragment
+     * @param view
+     */
+    public void onClick_btnStopTask(View view) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.contents_fragment_container, taskChoiceFragment,
+                TASK_CHOICE_FRAGMENT_TAG);
+//        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+
+    // Processing button clicks
+
 }
