@@ -160,7 +160,7 @@ class Tasks:
                 elapsedTime     '{7}',
                 lastStop        '{8}'
                 WHERE
-                id='{9}'
+                id={9}
                 '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, id))
             db.commit()
         finally:
@@ -184,7 +184,7 @@ class TaskTags:
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
-            cur.execute("DELETE FROM TaskTag WHERE id_task='{0}'".format(id_task))
+            cur.execute("DELETE FROM TaskTag WHERE id_task={0}".format(id_task))
             db.commit()
         finally:
             pg_pool.putconn(db)
