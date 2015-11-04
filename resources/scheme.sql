@@ -17,12 +17,18 @@ CREATE TABLE Task (
 	name TEXT,
 	description TEXT,
 	priority INT,
-	deadline DATE,
+	deadline TIMESTAMP,
 	breakTime INT,
 	isSolved BOOLEAN,
 	elapsedTime INT,
-	lastStop DATE);
+	lastStop TIMESTAMP);
 
 CREATE TABLE TaskTag(
   id_task INT REFERENCES Task,
+  id_tag INT REFERENCES Tag);
+
+CREATE TABLE RandomTasks(
+  id SERIAL PRIMARY KEY,
+  name TEXT,
+  priority INT,
   id_tag INT REFERENCES Tag);
