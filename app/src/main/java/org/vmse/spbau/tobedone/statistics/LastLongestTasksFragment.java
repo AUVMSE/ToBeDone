@@ -5,11 +5,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
@@ -18,12 +22,15 @@ import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
-public class LastLongestTasksFragment extends ChartFragment {
+public class LastLongestTasksFragment extends ChartFragment implements OnChartValueSelectedListener {
 
     private BarChart chart;
     public static final int LONGEST_TASKS_NUMBER = 10;
+    private HashMap<Integer, String> entryNames;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,6 +40,8 @@ public class LastLongestTasksFragment extends ChartFragment {
         chart.setDescription("");
 
         updateChart();
+
+        chart.setOnChartValueSelectedListener(this);
         return v;
     }
 
@@ -47,7 +56,7 @@ public class LastLongestTasksFragment extends ChartFragment {
         Comparator<TaskEntity> cmp = new Comparator<TaskEntity>() {
             @Override
             public int compare(TaskEntity lhs, TaskEntity rhs) {
-                return (int)(lhs.getElapsedTime() - rhs.getElapsedTime());
+                return (int)(rhs.getElapsedTime() - lhs.getElapsedTime());
             }
         };
 
@@ -56,10 +65,13 @@ public class LastLongestTasksFragment extends ChartFragment {
         ArrayList<String> xVals = new ArrayList<String>();
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
 
+        entryNames = new HashMap<>();
         for (int i = 0; i < l.size() && i < LONGEST_TASKS_NUMBER; i++) {
             TaskEntity ent = l.get(i);
-            yVals1.add(new BarEntry(ent.getElapsedTime(), i));
-            xVals.add(ent.getName());
+            BarEntry entry = new BarEntry(ent.getElapsedTime(), i);
+            yVals1.add(entry);
+            entryNames.put(i, ent.getName());
+            xVals.add(ent.getName().substring(0, 4));
         }
 
         BarDataSet set1 = new BarDataSet(yVals1, "Longest tasks");
@@ -73,5 +85,16 @@ public class LastLongestTasksFragment extends ChartFragment {
 
         chart.setData(data);
         chart.invalidate();
+    }
+
+    @Override
+    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+        String fullName = entryNames.get(e.getXIndex());
+        Toast.makeText(getContext(), fullName, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onNothingSelected() {
+
     }
 }

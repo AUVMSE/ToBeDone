@@ -47,6 +47,8 @@ public class TimeDifferentTagsFragment extends ChartFragment {
         List<TaskEntity> l = MainApplication.getTaskDataWrapper().getTaskEntityData();
         for (TaskEntity ent : l) {
             List<String> tags = MainApplication.getTaskDataWrapper().getTagsForTaskCached(ent);
+            if (null == tags)
+                continue;
             for (String s : tags) {
                 if (timePerTag.containsKey(s))
                     timePerTag.put(s, timePerTag.get(s) + ent.getElapsedTime());
