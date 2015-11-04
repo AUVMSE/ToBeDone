@@ -179,7 +179,8 @@ public class EditableTaskFragment extends Fragment {
                 List<String> newTags = constructNewTags();
 
                 try {
-                    TaskDataWrapper.getInstance(getActivity()).addTask(newEntity, newTags);
+                    TaskDataWrapper.getInstance(getActivity()).updateTask(newEntity, taskEntity);
+                    TaskDataWrapper.getInstance(getActivity()).updateTaskTags(newEntity, newTags);
                 } catch (TaskDataWrapper.SyncException e) {
                     e.printStackTrace();
                 }
