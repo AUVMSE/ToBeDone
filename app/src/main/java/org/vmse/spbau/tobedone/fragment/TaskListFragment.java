@@ -1,13 +1,18 @@
 package org.vmse.spbau.tobedone.fragment;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
@@ -22,14 +27,21 @@ import java.util.List;
  * email: egor-mailbox@ya.ru
  */
 public class TaskListFragment extends ListFragment {
+    private View view;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+        view = super.onCreateView(inflater, container, savedInstanceState);
 
 //        List<TaskEntity> tasks = new ArrayList<>();
-//        List<TaskEntity> tasks = TaskDataWrapper.getInstance(getActivity()).getTaskEntityData();
-        List<TaskEntity> tasks = null;
+        List<TaskEntity> tasks = TaskDataWrapper.getInstance(getActivity()).getTaskEntityData();
+//        List<TaskEntity> tasks = null;
 
         if (tasks == null) {
             tasks = new ArrayList<>();
@@ -44,14 +56,22 @@ public class TaskListFragment extends ListFragment {
                 tasks.add(taskEntity);
             }
         }
-
-
-
         setListAdapter(new TaskEntityAdapter(getActivity(), tasks));
+
+
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.addNewTaskButton);
+        fab.setVisibility(View.VISIBLE);
 
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.addNewTaskButton);
+        fab.setVisibility(View.INVISIBLE);
+
+        super.onDestroyView();
+    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {

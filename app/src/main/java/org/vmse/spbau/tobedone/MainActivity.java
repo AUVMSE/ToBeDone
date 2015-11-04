@@ -278,6 +278,4 @@ public class MainActivity extends AppCompatActivity
     public void updateTask(TaskEntity taskEntity) {
 
     }
-
-
 }
