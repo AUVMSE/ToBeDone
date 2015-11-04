@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- without android:checkable="false" it items are
+    still checked evean after swapping fragments and pushing back button and stuff -->
     <group android:checkableBehavior="single">
+
         <item android:id="@+id/nav_show_task_list"
-            android:title="Task list"/>
+            android:title="Task list"
+            android:checkable="false"/>
         <item android:id="@+id/nav_statistics" android:icon="@drawable/ic_chart"
             android:title="Statistics"/>
+
         <item android:id="@+id/nav_settings" android:icon="@android:drawable/ic_menu_manage"
-            android:title="Settings"/>
+            android:title="Settings"
+            android:checkable="false"/>
     </group>
 
     <!--<item android:title="Communicate">-->

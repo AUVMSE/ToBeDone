@@ -13,4 +13,10 @@
     <string name="some_other_stat">Some other stat</string>
     <string name="start_stat_date_str">Start date: </string>
     <string name="end_stat_date_str">End date: </string>
+
+    <string name="action_edit">Edit</string>
+    <string name="action_save">Save</string>
+    <string name="action_remove">Remove</string>
+
+
 </resources>
