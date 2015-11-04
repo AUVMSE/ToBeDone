@@ -1,16 +1,17 @@
 package org.vmse.spbau.tobedone.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
@@ -38,25 +39,53 @@ public class TaskListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = super.onCreateView(inflater, container, savedInstanceState);
 
-//        List<TaskEntity> tasks = new ArrayList<>();
-        List<TaskEntity> tasks = MainApplication.getTaskDataWrapper().getTaskEntityData();
-       // List<TaskEntity> tasks = null;
+        List<TaskEntity> tasks = TaskDataWrapper.getInstance(getActivity()).getTaskEntityData();
 
-        if (tasks == null) {
-            tasks = new ArrayList<>();
-            for (int i = 0; i < 10; ++i) {
-                TaskEntity taskEntity = new TaskEntity();
-
-                taskEntity.setName("SHITTY TASK " + Long.toString(i));
-                taskEntity.setDescription("What a description!");
-                taskEntity.setDeadline("10.10.2015");
-                taskEntity.setPriority(10);
-
-                tasks.add(taskEntity);
-            }
-        }
+//        if (tasks == null) {
+//            tasks = new ArrayList<>();
+//            for (int i = 0; i < 10; ++i) {
+//                TaskEntity taskEntity = new TaskEntity();
+//
+//                taskEntity.setName("TASK " + Long.toString(i));
+//                taskEntity.setDescription("What a description!");
+//                taskEntity.setDeadline("10.10.2015");
+//                taskEntity.setPriority(10);
+//
+//                tasks.add(taskEntity);
+//            }
+//        }
 
         setListAdapter(new TaskEntityAdapter(getActivity(), tasks));
+
+
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.addNewTaskButton);
+        fab.setVisibility(View.VISIBLE);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                TaskEntity taskEntity = new TaskEntity();
+                taskEntity.setPriority(5);
+                taskEntity.setName("Dummy task");
+                taskEntity.setDeadline("2015-07-07");
+                taskEntity.setDescription("Task description");
+
+                List<String> tags = new ArrayList<String>() {{
+                    add("#university");
+                    add("#study");
+                    add("#ha");
+                }};
+
+
+                try {
+                    TaskDataWrapper.getInstance(getActivity()).addTask(taskEntity, tags);
+                } catch (Exception e) {
+                }
+
+
+            }
+        });
 
         return view;
     }
@@ -80,4 +109,3 @@ public class TaskListFragment extends ListFragment {
         toBeDoneActivity.taskChooseFromList(taskEntity);
     }
 }
-
