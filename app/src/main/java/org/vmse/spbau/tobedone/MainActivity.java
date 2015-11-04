@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+
+import android.util.Log;
+
 import android.support.v7.app.ActionBar;
+
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,13 +19,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.vmse.spbau.tobedone.fragment.EditTaskFragment;
 import org.vmse.spbau.tobedone.fragment.SettingsFragment;
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
 import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
 
+import org.vmse.spbau.tobedone.tmp.Task;
+
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ToBeDoneActivity {
 
     private static final String TASK_IN_PROGRESS_FRAGMENT_TAG = "TASK_IN_PROGRESS_FRAGMENT";
     private static final String TASK_CHOICE_FRAGMENT_TAG = "TASK_CHOICE_FRAGMENT";
@@ -69,6 +77,45 @@ public class MainActivity extends AppCompatActivity
                 TASK_CHOICE_FRAGMENT_TAG).commit();
 
         taskListFragment = new TaskListFragment();
+
+////        getSupportFragmentManager().beginTransaction().add(R.id.contents_fragment_container,
+////                taskListFragment,
+////                TASK_LIST_FRAGMENT_TAG).commit();
+//
+//
+//         /*TEST*/
+//        TaskList tl = new TaskList();
+//
+//        for (int i = 5; i < 15; ++i) {
+//            tl.add(new Task(tl, "Task" + i, "", new GregorianCalendar(2015, 11 - 1, i)));
+//        }
+//
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//        Iterator<Task> it = tl.iterator();
+//        Task t = it.next();
+//        Tag tag = new Tag("2");
+//
+//        t.addTag(new Tag("1"));
+//        t.addTag(tag);
+//        t.addTag(new Tag("3"));
+//        t.removeTag(tag);
+//        t.start();
+//        t.pause();
+//        t = it.next();
+//        t.start();
+//        t.pause();
+//        t.stop();
+//
+//
+//        tl.refresh();
+//
+//        it = tl.iterator();
+//
+//        for(; it.hasNext();)
+//            Log.d("MY_TAG", it.next().toJSONObject().toString());
+////            Log.d("MY_TAG", df.format(it.next().getDeadline().getTime()));
+//        Log.d("MY_TAG", tl.toJSONArray().toString());
+
         settingsFragment = new SettingsFragment();
         taskInProgressFragment = new TaskInProgressFragment();
     }
@@ -163,7 +210,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 onBackPressed();
-                setupDrawer();
+                if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                    setupDrawer();
+                }
             }
         });
     }
@@ -190,6 +239,21 @@ public class MainActivity extends AppCompatActivity
                 TASK_CHOICE_FRAGMENT_TAG);
 //        transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void taskChooseForEdit(Task task) {
+        final String EDIT_TASK_FRAGMENT_TAG = "EDIT_TASK_FRAGMENT";
+
+        EditTaskFragment editTaskFragment = new EditTaskFragment();
+        editTaskFragment.setTask(task);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.contents_fragment_container, editTaskFragment,
+                EDIT_TASK_FRAGMENT_TAG);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
 
