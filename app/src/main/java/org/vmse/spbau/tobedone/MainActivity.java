@@ -15,13 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.vmse.spbau.tobedone.fragment.EditTaskFragment;
 import org.vmse.spbau.tobedone.fragment.SettingsFragment;
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
 import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
+import org.vmse.spbau.tobedone.tmp.Task;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ToBeDoneActivity {
 
     private static final String TASK_IN_PROGRESS_FRAGMENT_TAG = "TASK_IN_PROGRESS_FRAGMENT";
     private static final String TASK_CHOICE_FRAGMENT_TAG = "TASK_CHOICE_FRAGMENT";
@@ -163,7 +165,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 onBackPressed();
-                setupDrawer();
+                if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                    setupDrawer();
+                }
             }
         });
     }
@@ -190,6 +194,21 @@ public class MainActivity extends AppCompatActivity
                 TASK_CHOICE_FRAGMENT_TAG);
 //        transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void taskChooseForEdit(Task task) {
+        final String EDIT_TASK_FRAGMENT_TAG = "EDIT_TASK_FRAGMENT";
+
+        EditTaskFragment editTaskFragment = new EditTaskFragment();
+        editTaskFragment.setTask(task);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.contents_fragment_container, editTaskFragment,
+                EDIT_TASK_FRAGMENT_TAG);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
 

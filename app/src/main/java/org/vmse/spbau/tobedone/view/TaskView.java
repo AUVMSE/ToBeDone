@@ -22,6 +22,7 @@ public class TaskView extends RelativeLayout {
      * make TaskView smaller (don't show description and that kinds of stuff...)
      */
     private boolean isSmall;
+    private Task task;
     private TextView nameTextView;
     private TextView descriptionTextView;
     private TextView priorityTextView;
@@ -59,9 +60,14 @@ public class TaskView extends RelativeLayout {
     }
 
     public void setTask(Task task) {
+        this.task = task;
         nameTextView.setText(task.getName());
         descriptionTextView.setText(task.getDescription());
         priorityTextView.setText(task.getPriority());
         deadlineTextView.setText(task.getDeadline());
+    }
+
+    public Task getTask() {
+        return task;
     }
 }

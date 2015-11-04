@@ -2,17 +2,13 @@ package org.vmse.spbau.tobedone.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.vmse.spbau.tobedone.R;
+import org.vmse.spbau.tobedone.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.tmp.Task;
 import org.vmse.spbau.tobedone.view.TaskAdapter;
 import org.vmse.spbau.tobedone.view.TaskView;
@@ -40,4 +36,16 @@ public class TaskListFragment extends ListFragment {
 
         return view;
     }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        TaskView taskView = (TaskView) v;
+        Task task = taskView.getTask();
+
+        ToBeDoneActivity toBeDoneActivity = (ToBeDoneActivity) getActivity();
+        toBeDoneActivity.taskChooseForEdit(task);
+    }
 }
+
