@@ -34,18 +34,20 @@ public class TaskDataWrapper {
     private static TaskDataWrapper instance;
 
     private final Context context;
+    private final String username;
 
     private boolean isSyncing = false;
     private List<TaskEntity> taskEntityData = new ArrayList<>();
     private Map<TaskEntity, List<String>> tags = new HashMap<>();
 
-    private TaskDataWrapper(Context context) {
+    private TaskDataWrapper(Context context, String username) {
         this.context = context;
+        this.username = username;
     }
 
-    public static TaskDataWrapper getInstance(Context context) {
+    public static TaskDataWrapper getInstance(Context context, String username) {
         if (instance == null) {
-            instance = new TaskDataWrapper(context);
+            instance = new TaskDataWrapper(context, username);
         }
         return instance;
     }
@@ -128,6 +130,8 @@ public class TaskDataWrapper {
             List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
             Map<TaskEntity, List<String>> newTags = new HashMap<>();
 
+            Util.addUser(userName);
+
             for (TaskEntity taskEntity : newTaskEntityData) {
                 try {
                     Util.updateTask(taskEntity);
@@ -163,7 +167,7 @@ public class TaskDataWrapper {
 
     public void saveState() throws JSONException {
         // TODO
-        syncDataAsync("Gregori");
+        syncDataAsync(username);
 
         final JSONArray jsonArray = new JSONArray();
         for (TaskEntity taskEntity : taskEntityData) {
@@ -225,7 +229,7 @@ public class TaskDataWrapper {
             Log.e(TAG, e.getMessage());
         }
         // TODO
-        syncDataAsync("Gregori");
+        syncDataAsync(username);
     }
 
     public interface OnSyncFinishedListener {
@@ -361,8 +365,11 @@ public class TaskDataWrapper {
         protected Void doInBackground(Void... voids) {
             isSyncing = true;
 
+
             List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
             Map<TaskEntity, List<String>> newTags = new HashMap<>();
+
+            Util.addUser(userName);
 
             for (TaskEntity taskEntity : newTaskEntityData) {
                 try {

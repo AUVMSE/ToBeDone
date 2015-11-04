@@ -1,7 +1,6 @@
-package org.vmse.spbau.tobedone;
+package org.vmse.spbau.tobedone.activity;
 
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
-import org.vmse.spbau.tobedone.task.Task;
 
 /**
  * Created by Egor Gorbunov on 04.11.15.
