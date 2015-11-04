@@ -24,10 +24,10 @@ public class Task {
     private boolean isSolved;
 
     private int tagPriority;
-    private WeakReference<TaskList> taskList;
+    private WeakReference<TaskUtils> taskList;
     private GregorianCalendar startTime;
 
-    public Task(TaskList tl, String name, String description, GregorianCalendar deadline) {
+    public Task(TaskUtils tl, String name, String description, GregorianCalendar deadline) {
         this.name        = name;
         this.description = description;
         this.deadline    = deadline;
@@ -36,27 +36,27 @@ public class Task {
         this.elapsedTime = 0;
         tagList          = new TreeSet<String>();
         isSolved         = false;
-        taskList         = new WeakReference<TaskList>(tl);
+        taskList         = new WeakReference<TaskUtils>(tl);
         tagPriority      = 0;
     }
 
-    public void start() {
-        TaskList tl = taskList.get();
-        if(tl.isTaskRunning())
-            return;
-        tl.touchTask(this);
-        tl.setIsTaskRunning(true);
-        startTime = new GregorianCalendar();
-    }
-
-    public void pause() {
-        TaskList tl = taskList.get();
-        tl.setIsTaskRunning(false);
-        long time = (new GregorianCalendar()).getTimeInMillis() - startTime.getTimeInMillis();
-        time /= 60 * 1000;
-        startTime = null;
-        elapsedTime += time;
-    }
+//    public void start() {
+//        TaskUtils tl = taskList.get();
+//        if(tl.isTaskRunning())
+//            return;
+//        tl.touchTask(this);
+//        tl.setIsTaskRunning(true);
+//        startTime = new GregorianCalendar();
+//    }
+//
+//    public void pause() {
+//        TaskUtils tl = taskList.get();
+//        tl.setIsTaskRunning(false);
+//        long time = (new GregorianCalendar()).getTimeInMillis() - startTime.getTimeInMillis();
+//        time /= 60 * 1000;
+//        startTime = null;
+//        elapsedTime += time;
+//    }
 
     public void stop() {
         isSolved = true;
