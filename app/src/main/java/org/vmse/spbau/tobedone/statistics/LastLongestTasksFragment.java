@@ -1,110 +1,77 @@
 package org.vmse.spbau.tobedone.statistics;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
+import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
+import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link LastLongestTasksFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link LastLongestTasksFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class LastLongestTasksFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class LastLongestTasksFragment extends ChartFragment {
 
-    private OnFragmentInteractionListener mListener;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LastLongestTasksFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LastLongestTasksFragment newInstance(String param1, String param2) {
-        LastLongestTasksFragment fragment = new LastLongestTasksFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public LastLongestTasksFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
+    private BarChart chart;
+    public static final int LONGEST_TASKS_NUMBER = 10;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_last_longest_tasks, container, false);
-    }
+        View v = inflater.inflate(R.layout.fragment_last_longest_tasks, container, false);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+        chart = (BarChart) v.findViewById(R.id.longest_recent_tasks_chart);
+        chart.setDescription("");
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        updateChart();
+        return v;
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+    protected void updateChart() {
+        if (null == chart)
+            return;
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }
+        List<TaskEntity> l = new ArrayList<>(MainApplication.getTaskDataWrapper().getTaskEntityData());
 
+        Log.i("SIZE", "Array size is " + Integer.toString(l.size()));
+        Comparator<TaskEntity> cmp = new Comparator<TaskEntity>() {
+            @Override
+            public int compare(TaskEntity lhs, TaskEntity rhs) {
+                return (int)(lhs.getElapsedTime() - rhs.getElapsedTime());
+            }
+        };
+
+        Collections.sort(l, cmp);
+
+        ArrayList<String> xVals = new ArrayList<String>();
+        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+
+        for (int i = 0; i < l.size() && i < LONGEST_TASKS_NUMBER; i++) {
+            TaskEntity ent = l.get(i);
+            yVals1.add(new BarEntry(ent.getElapsedTime(), i));
+            xVals.add(ent.getName());
+        }
+
+        BarDataSet set1 = new BarDataSet(yVals1, "Longest tasks");
+        set1.setBarSpacePercent(35f);
+
+        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+        dataSets.add(set1);
+
+        BarData data = new BarData(xVals, dataSets);
+        data.setValueTextSize(10f);
+
+        chart.setData(data);
+        chart.invalidate();
+    }
 }

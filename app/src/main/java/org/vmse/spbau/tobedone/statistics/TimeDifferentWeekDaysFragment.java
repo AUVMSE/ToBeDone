@@ -26,7 +26,6 @@ public class TimeDifferentWeekDaysFragment extends ChartFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.time_per_week_day, container, false);
 
         chart = (BarChart) v.findViewById(R.id.time_per_week_day_chart);

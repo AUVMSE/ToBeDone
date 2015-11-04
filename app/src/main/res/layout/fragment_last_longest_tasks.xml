@@ -4,7 +4,10 @@
     tools:context="org.vmse.spbau.tobedone.statistics.LastLongestTasksFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/longest_recent_tasks_chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white" />
 
 </FrameLayout>

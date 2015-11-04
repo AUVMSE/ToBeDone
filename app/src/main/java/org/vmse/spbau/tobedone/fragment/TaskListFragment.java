@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.ToBeDoneActivity;
-import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.view.TaskEntityAdapter;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
@@ -28,8 +28,8 @@ public class TaskListFragment extends ListFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
 //        List<TaskEntity> tasks = new ArrayList<>();
-//        List<TaskEntity> tasks = TaskDataWrapper.getInstance(getActivity()).getTaskEntityData();
-        List<TaskEntity> tasks = null;
+        List<TaskEntity> tasks = MainApplication.getTaskDataWrapper().getTaskEntityData();
+       // List<TaskEntity> tasks = null;
 
         if (tasks == null) {
             tasks = new ArrayList<>();
@@ -44,9 +44,7 @@ public class TaskListFragment extends ListFragment {
                 tasks.add(taskEntity);
             }
         }
-
-
-
+        
         setListAdapter(new TaskEntityAdapter(getActivity(), tasks));
 
         return view;
