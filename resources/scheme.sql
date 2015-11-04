@@ -20,7 +20,8 @@ CREATE TABLE Task (
 	deadline DATE,
 	breakTime INT,
 	isSolved BOOLEAN,
-	elapsedTime INT);
+	elapsedTime INT,
+	lastStop DATE);
 
 CREATE TABLE TaskTag(
   id_task INT REFERENCES Task,

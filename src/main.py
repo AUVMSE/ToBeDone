@@ -106,13 +106,13 @@ class Tasks:
 
         return result_str
 
-    def POST(self, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[]):
+    def POST(self, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[], lastStop=None):
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
             cur.execute('''
-                INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime)
-                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}') RETURNING id
+                INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop)
+                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}') RETURNING id
                 '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
             id_task = cur.fetchone()[0]
             for tag in tags:
@@ -128,14 +128,14 @@ class Tasks:
         finally:
             pg_pool.putconn(db)
 
-    def PUT(self, id, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[]):
+    def PUT(self, id, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[], lastStop=None):
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
             if id == CREATED_OFFLINE:
                 cur.execute('''
-                INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime)
-                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}') RETURNING id
+                INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop)
+                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}') RETURNING id
                 '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
                 id = cur.fetchone()[0]
             else:
@@ -149,10 +149,11 @@ class Tasks:
                 deadline        '{4}', 
                 breakTime       '{5}', 
                 isSolved        '{6}', 
-                elapsedTime     '{7}'
+                elapsedTime     '{7}',
+                lastStop        '{8}'
                 WHERE
-                id='{8}'
-                '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
+                id='{9}'
+                '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, id))
             db.commit()
         finally:
             pg_pool.putconn(db)
