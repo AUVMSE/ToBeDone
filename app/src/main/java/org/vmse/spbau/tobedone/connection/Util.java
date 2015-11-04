@@ -30,11 +30,12 @@ import java.util.List;
 public class Util {
 
     public static final String TAG = Util.class.getName();
-
-    private static final String SERVER_ADDRESS = "http://192.168.65.245:8080/";
+    private static final String IP = "192.168.1.19";
+    private static final String SERVER_ADDRESS = "http://" + IP + ":8080/";
     private static final String TAGS_API_ADDRESS = SERVER_ADDRESS + "api/tags";
     private static final String USERS_API_ADDRESS = SERVER_ADDRESS + "api/users";
     private static final String TASKS_API_ADDRESS = SERVER_ADDRESS + "api/tasks";
+    private static final String TASKTAGS_API_ADDRESS = SERVER_ADDRESS + "api/tasktags";
 
     private Util() {
         throw new UnsupportedOperationException();
@@ -93,7 +94,7 @@ public class Util {
     }
 
     public static List<String> getAllTagsForTask(long taskId) throws JSONException {
-        final JSONArray jsonArray = new JSONArray(getJSONStringFromUrl(TAGS_API_ADDRESS + "?id=" + taskId));
+        final JSONArray jsonArray = new JSONArray(getJSONStringFromUrl(TAGS_API_ADDRESS + "?id_task=" + taskId));
         final int n = jsonArray.length();
         final List<String> result = new ArrayList<>(n);
         for (int i = 0; i < n; ++i) {
@@ -102,11 +103,12 @@ public class Util {
         return result;
     }
 
-    private static void sendPOST(String url, List<NameValuePair> params) {
+    private static String sendPOST(String url, List<NameValuePair> params) {
         HttpURLConnection httpURLConnection = null;
+        String result = null;
 
         try {
-            final URL u = new URL(USERS_API_ADDRESS);
+            final URL u = new URL(url);
             httpURLConnection = (HttpURLConnection) u.openConnection();
             httpURLConnection.setReadTimeout(10000);
             httpURLConnection.setConnectTimeout(15000);
@@ -122,7 +124,7 @@ public class Util {
             writer.close();
             os.close();
 
-            httpURLConnection.connect();
+            result = getResponse(httpURLConnection);
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         } finally {
@@ -130,6 +132,41 @@ public class Util {
                 httpURLConnection.disconnect();
             }
         }
+
+        return result;
+    }
+
+    private static String sendDELETE(String url, List<NameValuePair> params) {
+        HttpURLConnection httpURLConnection = null;
+        String result = null;
+
+        try {
+            final URL u = new URL(url);
+            httpURLConnection = (HttpURLConnection) u.openConnection();
+            httpURLConnection.setReadTimeout(10000);
+            httpURLConnection.setConnectTimeout(15000);
+            httpURLConnection.setRequestMethod("DELETE");
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.setDoOutput(true);
+
+            final OutputStream os = httpURLConnection.getOutputStream();
+            final BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(getQuery(params));
+            writer.flush();
+            writer.close();
+            os.close();
+
+            result = getResponse(httpURLConnection);
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        } finally {
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
+        }
+
+        return result;
     }
 
     private static String sendPUT(String url, List<NameValuePair> params) {
@@ -137,7 +174,7 @@ public class Util {
         String jsonString = null;
 
         try {
-            final URL u = new URL(USERS_API_ADDRESS);
+            final URL u = new URL(url);
             httpURLConnection = (HttpURLConnection) u.openConnection();
             httpURLConnection.setRequestMethod("PUT");
             httpURLConnection.setDoOutput(true);
@@ -169,14 +206,15 @@ public class Util {
     }
 
     private static String getQuery(List<NameValuePair> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         boolean first = true;
 
         for (NameValuePair pair : params) {
-            if (first)
+            if (first) {
                 first = false;
-            else
+            } else {
                 result.append("&");
+            }
 
             result.append(URLEncoder.encode(pair.getName(), "UTF-8"));
             result.append("=");
@@ -207,36 +245,40 @@ public class Util {
         return result;
     }
 
-    public static void addTask(TaskEntity taskEntity, List<String> tags) {
+    public static String addTask(TaskEntity taskEntity, List<String> tags) {
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new NameValuePair("id_user", Long.toString(taskEntity.getIdUser())));
-        params.add(new NameValuePair("name", taskEntity.getName()));
-        params.add(new NameValuePair("description", taskEntity.getDescription()));
-        params.add(new NameValuePair("priority", Long.toString(taskEntity.getPriority())));
-        params.add(new NameValuePair("deadline", taskEntity.getDeadline()));
-        params.add(new NameValuePair("breakTime", Long.toString(taskEntity.getBreakTime())));
-        params.add(new NameValuePair("isSolved", Boolean.toString(taskEntity.isSolved())));
-        params.add(new NameValuePair("elapsedTime", Long.toString(taskEntity.getElapsedTime())));
-        params.add(new NameValuePair("lastStop", taskEntity.getLastStop()));
+        addParam(params, "id_user", taskEntity.getIdUser());
+        addParam(params, "name", taskEntity.getName());
+        addParam(params, "description", taskEntity.getDescription());
+        addParam(params, "priority", taskEntity.getPriority());
+        addParam(params, "deadline", taskEntity.getDeadline());
+        addParam(params, "isSolved", taskEntity.isSolved());
+        addParam(params, "elapsedTime", taskEntity.getElapsedTime());
+        addParam(params, "lastStop", taskEntity.getLastStop());
         for (String tag : tags) {
-            params.add(new NameValuePair("tags", tag));
+            addParam(params, "tags", tag);
         }
-        sendPOST(USERS_API_ADDRESS, params);
+        return sendPOST(TASKS_API_ADDRESS, params);
+    }
+
+    private static void addParam(List<NameValuePair> params, String key, Object value) {
+        if (value != null) {
+            params.add(new NameValuePair(key, value.toString()));
+        }
     }
 
     public static void updateTask(TaskEntity taskEntity) throws JSONException {
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new NameValuePair("id", Long.toString(taskEntity.getId())));
-        params.add(new NameValuePair("id_user", Long.toString(taskEntity.getIdUser())));
-        params.add(new NameValuePair("name", taskEntity.getName()));
-        params.add(new NameValuePair("description", taskEntity.getDescription()));
-        params.add(new NameValuePair("priority", Long.toString(taskEntity.getPriority())));
-        params.add(new NameValuePair("deadline", taskEntity.getDeadline()));
-        params.add(new NameValuePair("breakTime", Long.toString(taskEntity.getBreakTime())));
-        params.add(new NameValuePair("isSolved", Boolean.toString(taskEntity.isSolved())));
-        params.add(new NameValuePair("elapsedTime", Long.toString(taskEntity.getElapsedTime())));
-        params.add(new NameValuePair("lastStop", taskEntity.getLastStop()));
-        final JSONObject jsonObject = new JSONObject(sendPUT(USERS_API_ADDRESS, params));
+        addParam(params, "id", taskEntity.getId());
+        addParam(params, "id_user", taskEntity.getIdUser());
+        addParam(params, "name", taskEntity.getName());
+        addParam(params, "description", taskEntity.getDescription());
+        addParam(params, "priority", taskEntity.getPriority());
+        addParam(params, "deadline", taskEntity.getDeadline());
+        addParam(params, "isSolved", taskEntity.isSolved());
+        addParam(params, "elapsedTime", taskEntity.getElapsedTime());
+        addParam(params, "lastStop", taskEntity.getLastStop());
+        final JSONObject jsonObject = new JSONObject(sendPUT(TASKS_API_ADDRESS, params));
         taskEntity.setId(jsonObject.getLong("id"));
     }
 
@@ -260,6 +302,22 @@ public class Util {
         taskEntity.setElapsedTime(jsonObject.getLong("elapsedTime"));
         taskEntity.setLastStop(jsonObject.getString("lastStop"));
         return taskEntity;
+    }
+
+    public static void removeTags(long taskId) {
+        List<NameValuePair> params = new ArrayList<>();
+        addParam(params, "id_task", taskId);
+        sendDELETE(TASKTAGS_API_ADDRESS, params);
+    }
+
+    public static void updateTags(long taskId, List<String> tags) {
+        removeTags(taskId);
+        for (String tag : tags) {
+            List<NameValuePair> params = new ArrayList<>();
+            addParam(params, "id_task", taskId);
+            addParam(params, "tag", tag);
+            sendPOST(TASKTAGS_API_ADDRESS, params);
+        }
     }
 
     private static class NameValuePair {

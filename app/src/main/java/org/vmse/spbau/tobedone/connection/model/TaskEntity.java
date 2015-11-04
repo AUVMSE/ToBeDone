@@ -6,40 +6,40 @@ package org.vmse.spbau.tobedone.connection.model;
  */
 public class TaskEntity {
 
-    public static long CREATED_OFFLINE = -1;
+    public static final long CREATED_OFFLINE = -1;
 
-    private long id = CREATED_OFFLINE;
-    private long idUser;
+    private Long id = CREATED_OFFLINE;
+    private Long idUser;
     private String name;
     private String description;
-    private long priority;
+    private Long priority;
     private String deadline;
-    private long breakTime;
-    private boolean isSolved;
-    private long elapsedTime;
+    private Long breakTime;
+    private Boolean isSolved;
+    private Long elapsedTime;
     private String lastStop;
 
-    public String getLastStop() {
-        return lastStop;
+    public static long getCreatedOffline() {
+        return CREATED_OFFLINE;
     }
 
-    public void setLastStop(String lastStop) {
-        this.lastStop = lastStop;
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getIdUser() {
+    public Long getIdUser() {
         return idUser;
     }
 
     public void setIdUser(long idUser) {
+        this.idUser = idUser;
+    }
+
+    public void setIdUser(Long idUser) {
         this.idUser = idUser;
     }
 
@@ -59,11 +59,15 @@ public class TaskEntity {
         this.description = description;
     }
 
-    public long getPriority() {
+    public Long getPriority() {
         return priority;
     }
 
     public void setPriority(long priority) {
+        this.priority = priority;
+    }
+
+    public void setPriority(Long priority) {
         this.priority = priority;
     }
 
@@ -75,7 +79,7 @@ public class TaskEntity {
         this.deadline = deadline;
     }
 
-    public long getBreakTime() {
+    public Long getBreakTime() {
         return breakTime;
     }
 
@@ -83,19 +87,39 @@ public class TaskEntity {
         this.breakTime = breakTime;
     }
 
-    public boolean isSolved() {
+    public void setBreakTime(Long breakTime) {
+        this.breakTime = breakTime;
+    }
+
+    public Boolean isSolved() {
         return isSolved;
+    }
+
+    public void setIsSolved(Boolean isSolved) {
+        this.isSolved = isSolved;
     }
 
     public void setIsSolved(boolean isSolved) {
         this.isSolved = isSolved;
     }
 
-    public long getElapsedTime() {
+    public Long getElapsedTime() {
         return elapsedTime;
     }
 
     public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
+    }
+
+    public void setElapsedTime(Long elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
+
+    public String getLastStop() {
+        return lastStop;
+    }
+
+    public void setLastStop(String lastStop) {
+        this.lastStop = lastStop;
     }
 }

@@ -94,6 +94,17 @@ public class TaskDataWrapper {
         }
     }
 
+    public void updateTaskTags(TaskEntity taskEntity, List<String> tags) throws SyncException {
+        if (isSyncing) {
+            throw new SyncException("Cannot update while syncing");
+        }
+        this.tags.remove(taskEntity);
+        this.tags.put(taskEntity, tags);
+        if (taskEntity.getId() != TaskEntity.CREATED_OFFLINE && Util.isConnected(context)) {
+            new UpdateTagsTask(taskEntity, tags).execute();
+        }
+    }
+
     private TaskEntity findTaskById(long id) {
         for (TaskEntity t : taskEntityData) {
             if (t.getId() == id) {
@@ -214,6 +225,23 @@ public class TaskDataWrapper {
         }
     }
 
+    private class UpdateTagsTask extends VoidAsyncTask {
+
+        private final TaskEntity taskEntity;
+        private final List<String> tags;
+
+        private UpdateTagsTask(TaskEntity taskEntity, List<String> tags) {
+            this.taskEntity = taskEntity;
+            this.tags = tags;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Util.updateTags(taskEntity.getId(), tags);
+            return null;
+        }
+    }
+
     private class GetTagsTask extends AsyncTask<Void, Void, List<String>> {
 
         private final TaskEntity taskEntity;
@@ -253,8 +281,9 @@ public class TaskDataWrapper {
         @Override
         protected Void doInBackground(Void... voids) {
             isSyncing = true;
-            Util.addTask(taskEntity, tags);
             try {
+                JSONObject jsonObject = new JSONObject(Util.addTask(taskEntity, tags));
+                taskEntity.setId(jsonObject.getLong("id"));
                 TaskDataWrapper.this.tags.put(taskEntity, Util.getAllTagsForTask(taskEntity.getId()));
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
