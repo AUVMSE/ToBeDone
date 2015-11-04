@@ -20,6 +20,7 @@ public class TaskChoiceFragment extends Fragment {
         View view = inflater.inflate(R.layout.task_choose_fragment, container, false);
 
 
+
         return view;
     }
 }
