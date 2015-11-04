@@ -97,29 +97,32 @@ public class TaskUtils {
     private static SortedSet<TaskEntity> prevList = null;
     public static SortedSet<TaskEntity> getSortedTaskList(Context context) {
 
-        SortedSet<TaskEntity> sortedTasks = new TreeSet<TaskEntity>(getComparator());
 
         List<TaskEntity> list = TaskDataWrapper.getInstance(context).getTaskEntityData();
 
         list = new LinkedList<TaskEntity>();
-//        if (prevList == null) {
-//            for(int i = 0; i < 10; ++i) {
-//                TaskEntity te = new TaskEntity();
-//                te.setName("" + i + " task");
-//                te.setPriority(2);
-//                te.setDeadline("1995-10-01 11:11:11");
-////                Log.e("MY_TAG", te.getName());
-//                list.add(te);
-//            }
-//        } else {
-//            for (TaskEntity it : prevList) {
-//                Log.e("MY_TAG", it.getName() + " " + it.isSolved());
-//                list.add(it);
-//            }
-//        }
+        if (prevList == null) {
+            for(int i = 0; i < 10; ++i) {
+                TaskEntity te = new TaskEntity();
+                te.setName("" + i + " task");
+                te.setPriority(2);
+                te.setDeadline("1995-10-01 11:11:11");
+                te.setIsSolved(false);
+                te.setElapsedTime(0);
+//                Log.e("MY_TAG", te.getName());
+                list.add(te);
+            }
+        } else {
+            for (TaskEntity it : prevList) {
+                Log.e("MY_TAG", it.getName() + " " + it.isSolved());
+                list.add(it);
+            }
+        }
+
+        SortedSet<TaskEntity> sortedTasks = new TreeSet<TaskEntity>(getComparator());
         for(Iterator<TaskEntity> it = list.iterator(); it.hasNext();) {
             TaskEntity te = it.next();
-            if(!te.isSolved()) {
+            if(te != null && !te.isSolved()) {
                 sortedTasks.add(te);
             }
         }

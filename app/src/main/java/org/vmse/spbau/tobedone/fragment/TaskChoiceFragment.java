@@ -1,5 +1,6 @@
 package org.vmse.spbau.tobedone.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import org.vmse.spbau.tobedone.R;
+import org.vmse.spbau.tobedone.TimerService;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.task.TaskUtils;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
@@ -62,13 +64,12 @@ public class TaskChoiceFragment extends Fragment {
             }
         });
         refresh();
+
         return view;
     }
 
     public void refresh() {
-        try {
-            sortedSet = TaskUtils.getSortedTaskList(getActivity());
-        } catch (Exception e) {e.printStackTrace(); }
+        sortedSet = TaskUtils.getSortedTaskList(getActivity());
         taskEntityView.setVisibility(View.VISIBLE);
         it = sortedSet.iterator();
         next();
@@ -78,21 +79,34 @@ public class TaskChoiceFragment extends Fragment {
         taskEntity = it.hasNext() ? it.next() : null;
         if (taskEntity != null) {
             taskEntityView.setTaskEntity(taskEntity);
+            btnStart.setActivated(true);
             btnStart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (isStart) {
                         btnStart.setText("Start");
+                        btnStop.setEnabled(true);
+                        btnSkip.setEnabled(true);
+
                         TaskUtils.pause(taskEntity, getActivity());
+                        getActivity().startService(new Intent(getActivity(), TimerService.class)
+                                .putExtra("interval", 0));
                     } else {
                         btnStart.setText("Pause");
+                        btnStop.setEnabled(false);
+                        btnSkip.setEnabled(false);
+
                         TaskUtils.start(getActivity());
+                        getActivity().startService(new Intent(getActivity(), TimerService.class)
+                                .putExtra("interval", 10));
                     }
                     isStart = !isStart;
                 }
             });
         } else {
             taskEntityView.setVisibility(View.INVISIBLE);
+            btnStart.setOnClickListener(null);
+            btnStart.setActivated(false);
 //            taskEntityView.setTaskEntity(new TaskEntity());
         }
 
