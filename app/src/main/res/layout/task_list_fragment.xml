@@ -3,5 +3,6 @@
     tools:context=".MainActivity"
     android:id="@+id/taskListFragment"
     android:name="org.vmse.spbau.tobedone.fragment.TaskListFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="0dp"/>

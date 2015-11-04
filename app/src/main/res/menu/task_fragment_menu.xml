@@ -20,7 +20,7 @@
         android:menuCategory="secondary"/>
 
     <item android:id="@+id/action_done"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/tick"
         android:title=""
         app:showAsAction="ifRoom"
         android:orderInCategory="1"
