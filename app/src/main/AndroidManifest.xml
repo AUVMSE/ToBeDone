@@ -31,6 +31,7 @@
         </activity>
         <activity android:name=".statistics.ChartActivity" >
         </activity>
+        <service android:name=".TimerService"/>
     </application>
 
 </manifest>
