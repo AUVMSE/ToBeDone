@@ -2,23 +2,24 @@ package org.vmse.spbau.tobedone;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 
+import org.json.JSONException;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
+import org.vmse.spbau.tobedone.fragment.EditableTaskFragment;
 import org.vmse.spbau.tobedone.fragment.SettingsFragment;
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
-import org.vmse.spbau.tobedone.fragment.EditableTaskFragment;
 import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
 import org.vmse.spbau.tobedone.statistics.StatisticsActivity;
@@ -26,6 +27,8 @@ import org.vmse.spbau.tobedone.statistics.StatisticsActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToBeDoneActivity {
+
+    private static final String TAG = MainActivity.class.getName();
 
     private static final String TASK_IN_PROGRESS_FRAGMENT_TAG = "TASK_IN_PROGRESS_FRAGMENT";
     private static final String TASK_CHOICE_FRAGMENT_TAG = "TASK_CHOICE_FRAGMENT";
@@ -66,6 +69,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            MainApplication.getTaskDataWrapper().saveState();
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -78,10 +91,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -152,7 +162,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Process click on START button in TaskChoiceFragment
-     * @param view
+     * @param view the view
      */
     public void onClick_btnStartTask(View view) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -164,7 +174,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Process click on STOP button in TaskInProgressFragment
-     * @param view
+     * @param view the view
      */
     public void onClick_btnStopTask(View view) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

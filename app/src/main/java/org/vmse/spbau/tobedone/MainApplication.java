@@ -29,14 +29,4 @@ public class MainApplication extends Application {
             Log.e(TAG, e.getMessage());
         }
     }
-
-    @Override
-    public void onTerminate() {
-        try {
-            taskDataWrapper.saveState();
-        } catch (JSONException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        super.onTerminate();
-    }
 }
