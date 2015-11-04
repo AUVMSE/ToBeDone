@@ -134,6 +134,8 @@ class Tasks:
         finally:
             pg_pool.putconn(db)
 
+        return json.dumps({"id":id_task})
+
     def PUT(self, id, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[], lastStop=None):
         db = pg_pool.getconn()
         try:
@@ -158,13 +160,34 @@ class Tasks:
                 elapsedTime     '{7}',
                 lastStop        '{8}'
                 WHERE
-                id='{9}'
+                id={9}
                 '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, id))
             db.commit()
         finally:
             pg_pool.putconn(db)
         return json.dumps({"id":id})
 
+class TaskTags:
+
+    exposed = True
+
+    def POST(self, id_task, id_tag):
+        db = pg_pool.getconn()
+        try:
+            cur = db.cursor()
+            cur.execute("INSERT INTO TaskTag (id_task, id_tag) VALUES ('{0}', '{1}')".format(id_task, id_tag))
+            db.commit()
+        finally:
+            pg_pool.putconn(db)
+
+    def DELETE(self, id_task):
+        db = pg_pool.getconn()
+        try:
+            cur = db.cursor()
+            cur.execute("DELETE FROM TaskTag WHERE id_task={0}".format(id_task))
+            db.commit()
+        finally:
+            pg_pool.putconn(db)
 
 if __name__ == '__main__':
     pg_pool = pool.ThreadedConnectionPool(1, MAX_THREADS, user="tobedone", password="tobedone", host="localhost", dbname="tobedone")
@@ -178,6 +201,13 @@ if __name__ == '__main__':
 
     cherrypy.tree.mount(
         Tags(), '/api/tags',
+        {'/':
+            {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    cherrypy.tree.mount(
+        TaskTags(), '/api/tasktags',
         {'/':
             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
          }

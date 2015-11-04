@@ -113,17 +113,31 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 startDate.setEnabled(false);
                 endDate.setEnabled(false);
+
+                Calendar cal = Calendar.getInstance();
+                endDateDate = cal.getTime();
                 switch (position) {
                     case 0:
+                        cal.add(Calendar.WEEK_OF_YEAR, -1);
+                        startDateDate = cal.getTime();
                         break;
                     case 1:
+                        cal.add(Calendar.MONTH, -1);
+                        startDateDate = cal.getTime();
                         break;
                     case 2:
+                        cal.add(Calendar.YEAR, -1);
+                        startDateDate = cal.getTime();
                         break;
                     case 3:
                         startDate.setEnabled(true);
                         endDate.setEnabled(true);
                         break;
+                }
+
+                if (3 != position) {
+                    updateDatesTexts();
+                    ((ChartFragment)fragment).updatePeriod(startDateDate, endDateDate);
                 }
             }
 

@@ -73,7 +73,7 @@ public class LastLongestTasksFragment extends ChartFragment implements OnChartVa
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         for (int i = 0; i < l.size() && yVals1.size() < LONGEST_TASKS_NUMBER; i++) {
             TaskEntity ent = l.get(i);
-            
+
             try {
                 Date d = df.parse(ent.getLastStop());
                 if (d.before(startPeriod) || d.after(endPeriod))
