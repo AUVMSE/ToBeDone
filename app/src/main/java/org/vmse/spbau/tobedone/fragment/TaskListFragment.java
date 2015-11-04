@@ -171,4 +171,3 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
         }
     }
 }
-

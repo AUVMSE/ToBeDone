@@ -14,8 +14,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.github.mikephil.charting.charts.LineChart;
-
 import org.json.JSONException;
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
@@ -50,7 +48,6 @@ public class MainActivity extends AppCompatActivity
 
     private AccountManager accountManager;
 
-    private LineChart lineChart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
