@@ -139,22 +139,11 @@ class Tasks:
                 cur.execute(insertQuery, (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
                 id = cur.fetchone()[0]
             else:
-                
-                cur.execute('''
-                UPDATE Task 
-                SET 
-                id_user         =%s, 
-                name            =%s, 
-                description     =%s, 
-                priority        =%s, 
-                deadline        =%s, 
-                breakTime       =%s, 
-                isSolved        =%s, 
-                elapsedTime     =%s,
-                lastStop        =%s
-                WHERE
-                id=%s
-                ''', (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, id))
+                sql = "UPDATE Task SET name='{0}', description='{1}', priority='{2}', deadline='{3}', breakTime='{4}', isSolved='{5}', elapsedTime='{6}'".format(name, description, priority, deadline, breakTime, isSolved, elapsedTime)
+                if lastStop != None and lastStop != "" and lastStop != 'None':
+                    sql += ", lastStop='{0}'".format(lastStop)
+                sql += " WHERE id='{0}'".format(id)
+                cur.execute(sql)
             db.commit()
         finally:
             pg_pool.putconn(db)
