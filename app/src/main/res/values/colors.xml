@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#8bc34a</color>
-    <color name="colorPrimaryDark">#558b2f</color>
-    <color name="colorAccent">#ff9800</color>
+    <color name="colorPrimary">#607d8b</color>
+    <color name="colorPrimaryDark">#37474F</color>
+    <color name="colorAccent">#424242</color>
+    <color name="mainBackgroundColor">#4d5560</color>
+    <color name="mainTaskTileColor">#D7A552</color>
+    <color name="posActionColor">#28b354</color>
+    <color name="negActionColor">#b33428</color>
+    <color name="labelColor">#111111</color>
+
 </resources>

@@ -3,12 +3,14 @@ package org.vmse.spbau.tobedone.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -33,8 +35,9 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
     private TaskEntityAdapter adapter;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -56,14 +59,19 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        return view;
+    }
 
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.addNewTaskButton);
-        fab.setVisibility(View.VISIBLE);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.task_list_menu, menu);
+    }
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_create_new_task:
                 TaskEntity taskEntity = new TaskEntity();
                 taskEntity.setPriority(5);
                 taskEntity.setIdUser(1);
@@ -85,19 +93,12 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
                 TaskListFragment.this.getLoaderManager().restartLoader(0, null, TaskListFragment.this);
 
-            }
-        });
-
-        return view;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
-    @Override
-    public void onDestroyView() {
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.addNewTaskButton);
-        fab.setVisibility(View.INVISIBLE);
-
-        super.onDestroyView();
-    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
