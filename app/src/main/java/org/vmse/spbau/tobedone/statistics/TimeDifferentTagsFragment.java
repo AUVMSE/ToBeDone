@@ -45,10 +45,15 @@ public class TimeDifferentTagsFragment extends ChartFragment {
         HashMap<String, Float> timePerTag = new HashMap<>();
 
         List<TaskEntity> l = MainApplication.getTaskDataWrapper().getTaskEntityData();
+
         for (TaskEntity ent : l) {
             List<String> tags = MainApplication.getTaskDataWrapper().getTagsForTaskCached(ent);
             if (null == tags)
                 continue;
+
+            if (!isDateInPeriod(ent.getLastStop()))
+                continue;
+
             for (String s : tags) {
                 if (timePerTag.containsKey(s))
                     timePerTag.put(s, timePerTag.get(s) + ent.getElapsedTime());

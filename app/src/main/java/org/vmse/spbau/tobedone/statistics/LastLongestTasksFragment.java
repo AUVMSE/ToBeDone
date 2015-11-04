@@ -20,12 +20,10 @@ import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -74,14 +72,8 @@ public class LastLongestTasksFragment extends ChartFragment implements OnChartVa
         for (int i = 0; i < l.size() && yVals1.size() < LONGEST_TASKS_NUMBER; i++) {
             TaskEntity ent = l.get(i);
 
-            try {
-                Date d = df.parse(ent.getLastStop());
-                if (d.before(startPeriod) || d.after(endPeriod))
-                    continue;
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if (!isDateInPeriod(ent.getLastStop()))
                 continue;
-            }
 
             BarEntry entry = new BarEntry(ent.getElapsedTime(), i);
             yVals1.add(entry);

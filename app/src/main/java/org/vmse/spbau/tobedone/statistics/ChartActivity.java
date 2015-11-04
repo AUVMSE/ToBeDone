@@ -23,7 +23,7 @@ import java.util.Date;
 
 public class ChartActivity extends AppCompatActivity implements View.OnClickListener {
 
-    final String[] periods = {"week", "month", "year", "custom"};
+    final String[] periods = {"last week", "last month", "last year", "custom period"};
     final int DEFAULT_PERIOD_SPINNER_CHOICE = 1;
 
     TextView startDate;
