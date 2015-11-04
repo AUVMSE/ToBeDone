@@ -274,5 +274,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void updateTask(TaskEntity taskEntity) {
+
+    }
+
 
 }
