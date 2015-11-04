@@ -16,7 +16,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author antonpp
@@ -34,6 +36,7 @@ public class TaskDataWrapper {
 
     private boolean isSyncing = false;
     private List<TaskEntity> taskEntityData = new ArrayList<>();
+    private Map<TaskEntity, List<String>> tags = new HashMap<>();
 
     private TaskDataWrapper(Context context) {
         this.context = context;
@@ -50,14 +53,23 @@ public class TaskDataWrapper {
         return taskEntityData;
     }
 
-    public void addTask(TaskEntity taskEntity) throws SyncException {
+    public void addTask(TaskEntity taskEntity, List<String> tags) throws SyncException {
         if (isSyncing) {
             throw new SyncException("Cannot add task while syncing");
         }
         if (Util.isConnected(context)) {
-            new AddTaskEntityTask(taskEntity).execute();
+            new AddTaskEntityTask(taskEntity, tags).execute();
+        } else {
+            this.tags.put(taskEntity, tags);
         }
         taskEntityData.add(taskEntity);
+    }
+
+    public List<String> getTagsForTaskCached(TaskEntity taskEntity) {
+        if (tags.containsKey(taskEntity)) {
+            return tags.get(taskEntity);
+        }
+        return null;
     }
 
     public void getTagsForTask(TaskEntity taskEntity, TagsListReceiver receiver) {
@@ -78,7 +90,7 @@ public class TaskDataWrapper {
         taskEntityData.remove(oldTaskEntity);
         taskEntityData.add(taskEntity);
         if (taskEntity.getId() != TaskEntity.CREATED_OFFLINE && Util.isConnected(context)) {
-            new UpdataTaskEntityTask(taskEntity).execute();
+            new UpdateTaskEntityTask(taskEntity).execute();
         }
     }
 
@@ -175,9 +187,6 @@ public class TaskDataWrapper {
     }
 
     private static class SyncException extends Exception {
-        public SyncException() {
-        }
-
         public SyncException(String detailMessage) {
             super(detailMessage);
         }
@@ -186,11 +195,11 @@ public class TaskDataWrapper {
     private abstract class VoidAsyncTask extends AsyncTask<Void, Void, Void> {
     }
 
-    private class UpdataTaskEntityTask extends VoidAsyncTask {
+    private class UpdateTaskEntityTask extends VoidAsyncTask {
 
         private final TaskEntity taskEntity;
 
-        private UpdataTaskEntityTask(TaskEntity taskEntity) {
+        private UpdateTaskEntityTask(TaskEntity taskEntity) {
             this.taskEntity = taskEntity;
         }
 
@@ -234,14 +243,23 @@ public class TaskDataWrapper {
     private class AddTaskEntityTask extends VoidAsyncTask {
 
         private final TaskEntity taskEntity;
+        private final List<String> tags;
 
-        private AddTaskEntityTask(TaskEntity taskEntity) {
+        private AddTaskEntityTask(TaskEntity taskEntity, List<String> tags) {
             this.taskEntity = taskEntity;
+            this.tags = tags;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Util.addTask(taskEntity);
+            isSyncing = true;
+            Util.addTask(taskEntity, tags);
+            try {
+                TaskDataWrapper.this.tags.put(taskEntity, Util.getAllTagsForTask(taskEntity.getId()));
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+            }
+            isSyncing = false;
             return null;
         }
     }
@@ -274,10 +292,12 @@ public class TaskDataWrapper {
             isSyncing = true;
 
             List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
+            Map<TaskEntity, List<String>> newTags = new HashMap<>();
 
             for (TaskEntity taskEntity : newTaskEntityData) {
                 try {
                     Util.updateTask(taskEntity);
+                    newTags.put(taskEntity, Util.getAllTagsForTask(taskEntity.getId()));
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage());
                 }
@@ -290,6 +310,7 @@ public class TaskDataWrapper {
 
             if (newTaskEntityData != null) {
                 taskEntityData = newTaskEntityData;
+                tags = newTags;
             }
 
             isSyncing = false;

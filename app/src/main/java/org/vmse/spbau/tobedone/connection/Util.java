@@ -207,7 +207,7 @@ public class Util {
         return result;
     }
 
-    public static void addTask(TaskEntity taskEntity) {
+    public static void addTask(TaskEntity taskEntity, List<String> tags) {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new NameValuePair("id_user", Long.toString(taskEntity.getIdUser())));
         params.add(new NameValuePair("name", taskEntity.getName()));
@@ -218,6 +218,9 @@ public class Util {
         params.add(new NameValuePair("isSolved", Boolean.toString(taskEntity.isSolved())));
         params.add(new NameValuePair("elapsedTime", Long.toString(taskEntity.getElapsedTime())));
         params.add(new NameValuePair("lastStop", taskEntity.getLastStop()));
+        for (String tag : tags) {
+            params.add(new NameValuePair("tags", tag));
+        }
         sendPOST(USERS_API_ADDRESS, params);
     }
 
