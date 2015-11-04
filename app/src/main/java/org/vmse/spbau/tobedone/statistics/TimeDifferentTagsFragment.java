@@ -11,9 +11,12 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
+import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Andy on 04.11.2015.
@@ -38,7 +41,8 @@ public class TimeDifferentTagsFragment extends ChartFragment {
         if (null == chart)
             return;
 
-        ArrayList<Entry> valsComp1 = new ArrayList<Entry>();
+        List<TaskEntity> l = MainApplication.getTaskDataWrapper().getTaskEntityData();
+        ArrayList<Entry> valsComp1 = new ArrayList<>();
 
         // Here we actually will iterate over our tasks
         // this is a dummy stub

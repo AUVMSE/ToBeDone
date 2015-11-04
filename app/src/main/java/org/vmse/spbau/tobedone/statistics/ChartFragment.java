@@ -8,13 +8,14 @@ import java.util.Date;
  * Created by Andy on 04.11.2015.
  */
 public abstract class ChartFragment extends Fragment {
-    private Date startPeriod;
-    private Date endPeriod;
+    protected Date startPeriod;
+    protected Date endPeriod;
 
     public void updatePeriod(Date startPeriod, Date endPeriod) {
         this.endPeriod = endPeriod;
         this.startPeriod = startPeriod;
         updateChart();
     }
+
     protected abstract void updateChart();
 }
