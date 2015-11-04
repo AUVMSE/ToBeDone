@@ -1,4 +1,4 @@
-package org.vmse.spbau.tobedone;
+package org.vmse.spbau.tobedone.statistics;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -14,6 +14,8 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.vmse.spbau.tobedone.R;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,6 +24,8 @@ import java.util.Date;
 public class ChartActivity extends AppCompatActivity implements View.OnClickListener {
 
     final String[] periods = {"week", "month", "year", "custom"};
+    final int DEFAULT_PERIOD_SPINNER_CHOICE = 1;
+
     TextView startDate;
     TextView endDate;
     Spinner periodSpinner;
@@ -74,7 +78,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 updateDatesTexts();
 
                 Log.i("CHECK", endDate.getText().toString());
-                f.updateChart(startDateDate, endDateDate);
+                f.updatePeriod(startDateDate, endDateDate);
             }
         };
 
@@ -88,7 +92,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 updateDatesTexts();
 
                 Log.i("CHECK", endDate.getText().toString());
-                f.updateChart(startDateDate, endDateDate);
+                f.updatePeriod(startDateDate, endDateDate);
             }
         };
 
@@ -102,7 +106,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         periodSpinner.setAdapter(adapter);
 
         periodSpinner.setPrompt("Period of interest");
-        periodSpinner.setSelection(2);
+        periodSpinner.setSelection(DEFAULT_PERIOD_SPINNER_CHOICE);
 
         periodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -139,7 +143,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 fragment = (Fragment)fragmentClass.newInstance();
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_container, fragment).commit();
-                ((ChartFragment) fragment).updateChart(startDateDate, endDateDate);
+                ((ChartFragment) fragment).updatePeriod(startDateDate, endDateDate);
             } catch (Exception e) {
                 Log.e("ChartError", e.toString());
             }

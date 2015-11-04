@@ -16,6 +16,8 @@ import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 
+import org.vmse.spbau.tobedone.statistics.StatisticsActivity;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 

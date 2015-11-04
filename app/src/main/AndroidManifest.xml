@@ -19,11 +19,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StatisticsActivity"
+            android:name=".statistics.StatisticsActivity"
             android:label="@string/title_activity_statistics"
             android:theme="@style/AppTheme" >
         </activity>
-        <activity android:name=".ChartActivity" >
+        <activity android:name=".statistics.ChartActivity" >
         </activity>
     </application>
 
