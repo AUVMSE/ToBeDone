@@ -8,7 +8,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.vmse.spbau.tobedone.connection.model.Task;
+import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -197,10 +197,10 @@ public class Util {
         return result;
     }
 
-    public static List<Task> getAllTasksForUser(String name) throws JSONException {
+    public static List<TaskEntity> getAllTasksForUser(String name) throws JSONException {
         final JSONArray jsonArray = new JSONArray(getJSONStringFromUrl(TASKS_API_ADDRESS + "?name=" + name));
         final int n = jsonArray.length();
-        final List<Task> result = new ArrayList<>(n);
+        final List<TaskEntity> result = new ArrayList<>(n);
         for (int i = 0; i < n; ++i) {
             final JSONObject jsonObject = jsonArray.getJSONObject(i);
             result.add(taskFromJson(jsonObject));
@@ -208,32 +208,32 @@ public class Util {
         return result;
     }
 
-    public static void addTask(Task task) {
+    public static void addTask(TaskEntity taskEntity) {
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new NameValuePair("id_user", Long.toString(task.getIdUser())));
-        params.add(new NameValuePair("name", task.getName()));
-        params.add(new NameValuePair("description", task.getDescription()));
-        params.add(new NameValuePair("priority", Long.toString(task.getPriority())));
-        params.add(new NameValuePair("deadline", task.getDeadline()));
-        params.add(new NameValuePair("breakTime", Long.toString(task.getBreakTime())));
-        params.add(new NameValuePair("isSolved", Boolean.toString(task.isSolved())));
-        params.add(new NameValuePair("elapsedTime", Long.toString(task.getElapsedTime())));
+        params.add(new NameValuePair("id_user", Long.toString(taskEntity.getIdUser())));
+        params.add(new NameValuePair("name", taskEntity.getName()));
+        params.add(new NameValuePair("description", taskEntity.getDescription()));
+        params.add(new NameValuePair("priority", Long.toString(taskEntity.getPriority())));
+        params.add(new NameValuePair("deadline", taskEntity.getDeadline()));
+        params.add(new NameValuePair("breakTime", Long.toString(taskEntity.getBreakTime())));
+        params.add(new NameValuePair("isSolved", Boolean.toString(taskEntity.isSolved())));
+        params.add(new NameValuePair("elapsedTime", Long.toString(taskEntity.getElapsedTime())));
         sendPOST(USERS_API_ADDRESS, params);
     }
 
-    public static void updateTask(Task task) throws JSONException {
+    public static void updateTask(TaskEntity taskEntity) throws JSONException {
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new NameValuePair("id", Long.toString(task.getId())));
-        params.add(new NameValuePair("id_user", Long.toString(task.getIdUser())));
-        params.add(new NameValuePair("name", task.getName()));
-        params.add(new NameValuePair("description", task.getDescription()));
-        params.add(new NameValuePair("priority", Long.toString(task.getPriority())));
-        params.add(new NameValuePair("deadline", task.getDeadline()));
-        params.add(new NameValuePair("breakTime", Long.toString(task.getBreakTime())));
-        params.add(new NameValuePair("isSolved", Boolean.toString(task.isSolved())));
-        params.add(new NameValuePair("elapsedTime", Long.toString(task.getElapsedTime())));
+        params.add(new NameValuePair("id", Long.toString(taskEntity.getId())));
+        params.add(new NameValuePair("id_user", Long.toString(taskEntity.getIdUser())));
+        params.add(new NameValuePair("name", taskEntity.getName()));
+        params.add(new NameValuePair("description", taskEntity.getDescription()));
+        params.add(new NameValuePair("priority", Long.toString(taskEntity.getPriority())));
+        params.add(new NameValuePair("deadline", taskEntity.getDeadline()));
+        params.add(new NameValuePair("breakTime", Long.toString(taskEntity.getBreakTime())));
+        params.add(new NameValuePair("isSolved", Boolean.toString(taskEntity.isSolved())));
+        params.add(new NameValuePair("elapsedTime", Long.toString(taskEntity.getElapsedTime())));
         final JSONObject jsonObject = new JSONObject(sendPUT(USERS_API_ADDRESS, params));
-        task.setId(jsonObject.getLong("id"));
+        taskEntity.setId(jsonObject.getLong("id"));
     }
 
     public static boolean isConnected(Context context) {
@@ -243,18 +243,18 @@ public class Util {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public static Task taskFromJson(JSONObject jsonObject) throws JSONException {
-        final Task task = new Task();
-        task.setId(jsonObject.getLong("id"));
-        task.setIdUser(jsonObject.getLong("id_user"));
-        task.setName(jsonObject.getString("name"));
-        task.setDescription(jsonObject.getString("description"));
-        task.setPriority(jsonObject.getLong("priority"));
-        task.setDeadline(jsonObject.getString("deadline"));
-        task.setBreakTime(jsonObject.getLong("breakTime"));
-        task.setIsSolved(jsonObject.getBoolean("isSolved"));
-        task.setElapsedTime(jsonObject.getLong("elapsedTime"));
-        return task;
+    public static TaskEntity taskFromJson(JSONObject jsonObject) throws JSONException {
+        final TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setId(jsonObject.getLong("id"));
+        taskEntity.setIdUser(jsonObject.getLong("id_user"));
+        taskEntity.setName(jsonObject.getString("name"));
+        taskEntity.setDescription(jsonObject.getString("description"));
+        taskEntity.setPriority(jsonObject.getLong("priority"));
+        taskEntity.setDeadline(jsonObject.getString("deadline"));
+        taskEntity.setBreakTime(jsonObject.getLong("breakTime"));
+        taskEntity.setIsSolved(jsonObject.getBoolean("isSolved"));
+        taskEntity.setElapsedTime(jsonObject.getLong("elapsedTime"));
+        return taskEntity;
     }
 
     private static class NameValuePair {
