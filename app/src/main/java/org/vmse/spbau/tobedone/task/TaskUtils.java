@@ -3,7 +3,9 @@ package org.vmse.spbau.tobedone.task;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import java.util.List;
 import java.util.SortedSet;
 
 import org.json.JSONArray;
@@ -30,6 +32,9 @@ public class TaskUtils {
 
     private static boolean startTime(Activity act) {
         SharedPreferences sPref = act.getPreferences(Activity.MODE_PRIVATE);
+//        if (sPref.getString("START_TIME", "") != "") {
+//            return false;
+//        }
         SharedPreferences.Editor ed = sPref.edit();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         ed.putString("START_TIME", df.format(new Date()));
@@ -41,11 +46,13 @@ public class TaskUtils {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         GregorianCalendar gc = new GregorianCalendar();
         SharedPreferences sPref = act.getPreferences(Activity.MODE_PRIVATE);
-        SharedPreferences.Editor ed = sPref.edit();
+//        SharedPreferences.Editor ed = sPref.edit();
         try {
             gc.setTime(df.parse(sPref.getString("START_TIME", "")));
         } catch (Exception e) {e.printStackTrace();}
-        return (new GregorianCalendar()).getTimeInMillis() - gc.getTimeInMillis();
+        long time = ((new GregorianCalendar()).getTimeInMillis() - gc.getTimeInMillis()) / 60 / 1000;
+        Log.e("MY_TAG", "" + time);
+        return time;
     }
 
     public static void start(Activity activity) {
@@ -60,8 +67,9 @@ public class TaskUtils {
         taskEntity.setName(task.getName());
         taskEntity.setId(task.getId());
         taskEntity.setIdUser(task.getIdUser());
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        taskEntity.setLastStop(df.format(new GregorianCalendar()));
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //  HH:mm:ss
+//        taskEntity.setLastStop(df.format(new GregorianCalendar()));
+        taskEntity.setLastStop(task.getLastStop());
         taskEntity.setIsSolved(task.isSolved());
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
         try {
@@ -79,24 +87,47 @@ public class TaskUtils {
         taskEntity.setIdUser(task.getIdUser());
         taskEntity.setLastStop(task.getLastStop());
         taskEntity.setIsSolved(true);
-        taskEntity.setElapsedTime((task.getElapsedTime() + stopTime(activity)) / 60 / 1000);
+        taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
         try {
             TaskDataWrapper.getInstance(activity).updateTask(taskEntity, task);
         } catch (Exception e) {e.printStackTrace();}
 
     }
 
+    private static SortedSet<TaskEntity> prevList = null;
     public static SortedSet<TaskEntity> getSortedTaskList(Context context) {
+
         SortedSet<TaskEntity> sortedTasks = new TreeSet<TaskEntity>(getComparator());
-        for(Iterator<TaskEntity> it = TaskDataWrapper.getInstance(context).getTaskEntityData().iterator(); it.hasNext();) {
+
+        List<TaskEntity> list = TaskDataWrapper.getInstance(context).getTaskEntityData();
+
+        list = new LinkedList<TaskEntity>();
+//        if (prevList == null) {
+//            for(int i = 0; i < 10; ++i) {
+//                TaskEntity te = new TaskEntity();
+//                te.setName("" + i + " task");
+//                te.setPriority(2);
+//                te.setDeadline("1995-10-01 11:11:11");
+////                Log.e("MY_TAG", te.getName());
+//                list.add(te);
+//            }
+//        } else {
+//            for (TaskEntity it : prevList) {
+//                Log.e("MY_TAG", it.getName() + " " + it.isSolved());
+//                list.add(it);
+//            }
+//        }
+        for(Iterator<TaskEntity> it = list.iterator(); it.hasNext();) {
             TaskEntity te = it.next();
-            if(!te.isSolved())
-                sortedTasks.add(it.next());
+            if(!te.isSolved()) {
+                sortedTasks.add(te);
+            }
         }
+        prevList = sortedTasks;
         return sortedTasks;
     }
 
-    private static Comparator<TaskEntity> getComparator() {
+    public static Comparator<TaskEntity> getComparator() {
         return new Comparator<TaskEntity>() {
 
             private GregorianCalendar currentDate = new GregorianCalendar();
