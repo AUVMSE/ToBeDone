@@ -13,8 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -115,9 +113,8 @@ public class TaskUtils {
 //        }
 
         SortedSet<TaskEntity> sortedTasks = new TreeSet<TaskEntity>(getComparator());
-        for(Iterator<TaskEntity> it = list.iterator(); it.hasNext();) {
-            TaskEntity te = it.next();
-            if(te != null && !te.isSolved()) {
+        for (TaskEntity te : list) {
+            if (te != null && (te.isSolved() != null && !te.isSolved())) {
                 sortedTasks.add(te);
             }
         }
