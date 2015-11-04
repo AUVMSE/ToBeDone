@@ -30,8 +30,6 @@ public class TaskDataWrapper {
 
     private static TaskDataWrapper instance;
 
-    private final Object syncMonitor = new Object();
-
     private final Context context;
 
     private boolean isSyncing = false;
@@ -45,7 +43,7 @@ public class TaskDataWrapper {
         return taskEntityData;
     }
 
-    public TaskDataWrapper newInstance(Context context) {
+    public static TaskDataWrapper getInstance(Context context) {
         if (instance == null) {
             instance = new TaskDataWrapper(context);
         }
@@ -264,30 +262,28 @@ public class TaskDataWrapper {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            synchronized (syncMonitor) {
-                isSyncing = true;
+            isSyncing = true;
 
-                List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
+            List<TaskEntity> newTaskEntityData = new ArrayList<>(taskEntityData);
 
-                for (TaskEntity taskEntity : newTaskEntityData) {
-                    try {
-                        Util.updateTask(taskEntity);
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-                }
+            for (TaskEntity taskEntity : newTaskEntityData) {
                 try {
-                    newTaskEntityData = Util.getAllTasksForUser(userName);
+                    Util.updateTask(taskEntity);
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage());
                 }
-
-                if (newTaskEntityData != null) {
-                    taskEntityData = newTaskEntityData;
-                }
-
-                isSyncing = false;
             }
+            try {
+                newTaskEntityData = Util.getAllTasksForUser(userName);
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+            }
+
+            if (newTaskEntityData != null) {
+                taskEntityData = newTaskEntityData;
+            }
+
+            isSyncing = false;
             return null;
         }
     }
