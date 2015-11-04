@@ -40,8 +40,10 @@ class Users:
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
-            cur.execute("INSERT INTO AndroidUser (name) VALUES ('{0}')".format(name))
-            db.commit()
+            cur.execute("SELECT COUNT(*) FROM AndroidUser WHERE name='{0}'".format(name))
+            if cur.fetchone()[0] == 0:
+                cur.execute("INSERT INTO AndroidUser (name) VALUES ('{0}')".format(name))
+                db.commit()
         finally:
             pg_pool.putconn(db)
 
@@ -110,16 +112,8 @@ class Tasks:
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
-            if lastStop != None:
-                cur.execute('''
-                    INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop)
-                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}') RETURNING id
-                    '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop))
-            else:
-                cur.execute('''
-                    INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime)
-                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}') RETURNING id
-                    '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop))
+            insertQuery = "INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id"            
+            cur.execute(insertQuery, (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop))
             id_task = cur.fetchone()[0]
             for tag in tags:
                 cur.execute("SELECT COUNT(*) FROM Tag WHERE name='{0}'".format(tag))
@@ -141,27 +135,26 @@ class Tasks:
         try:
             cur = db.cursor()
             if id == CREATED_OFFLINE:
-                cur.execute('''
-                INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop)
-                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}') RETURNING id
-                '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
+                insertQuery = "INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id"
+                cur.execute(insertQuery, (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
                 id = cur.fetchone()[0]
             else:
+                
                 cur.execute('''
                 UPDATE Task 
                 SET 
-                id_user         '{0}', 
-                name            '{1}', 
-                description     '{2}', 
-                priority        '{3}', 
-                deadline        '{4}', 
-                breakTime       '{5}', 
-                isSolved        '{6}', 
-                elapsedTime     '{7}',
-                lastStop        '{8}'
+                id_user         =%s, 
+                name            =%s, 
+                description     =%s, 
+                priority        =%s, 
+                deadline        =%s, 
+                breakTime       =%s, 
+                isSolved        =%s, 
+                elapsedTime     =%s,
+                lastStop        =%s
                 WHERE
-                id={9}
-                '''.format(id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, id))
+                id=%s
+                ''', (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, id))
             db.commit()
         finally:
             pg_pool.putconn(db)
