@@ -116,7 +116,7 @@ public class EditableTaskFragment extends Fragment {
         if (isForUpdate)
             fillForm();
 
-        
+
         return view;
     }
 
