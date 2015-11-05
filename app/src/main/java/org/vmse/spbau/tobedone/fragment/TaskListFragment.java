@@ -22,7 +22,6 @@ import org.vmse.spbau.tobedone.activity.MainActivity;
 import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
-import org.vmse.spbau.tobedone.task.Task;
 import org.vmse.spbau.tobedone.view.TaskEntityAdapter;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
 
@@ -180,7 +179,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
         @Override
         public List<TaskEntity> loadInBackground() {
-            MainApplication.getTaskDataWrapper().syncDataSync("Gregori");
+            MainApplication.getTaskDataWrapper().syncDataSync();
             return MainApplication.getTaskDataWrapper().getTaskEntityData();
         }
     }
