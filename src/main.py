@@ -38,14 +38,25 @@ class Users:
 
     def POST(self, name):
         db = pg_pool.getconn()
+        result_str = ""
         try:
             cur = db.cursor()
             cur.execute("SELECT COUNT(*) FROM AndroidUser WHERE name='{0}'".format(name))
             if cur.fetchone()[0] == 0:
                 cur.execute("INSERT INTO AndroidUser (name) VALUES ('{0}')".format(name))
                 db.commit()
+
+            cur = db.cursor()
+            cur.execute("SELECT id FROM AndroidUser WHERE name='{0}'".format(name))
+            user = cur.fetchone()
+            if user is None:
+                result_str = "name={0} not found in database".format(name)
+            else:
+                result_str = json.dumps({"id":user[0]})
         finally:
             pg_pool.putconn(db)
+
+        return result_str
 
 
 class Tags:
@@ -202,6 +213,6 @@ if __name__ == '__main__':
          }
     )
 
-    cherrypy.server.socket_host = '192.168.1.19'
+    cherrypy.server.socket_host = '192.168.65.143'
     cherrypy.engine.start()
     cherrypy.engine.block()
