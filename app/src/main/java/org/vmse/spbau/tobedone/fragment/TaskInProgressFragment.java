@@ -44,9 +44,9 @@ public class TaskInProgressFragment extends Fragment {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Long elapsedTime =
+            currentElapsedTime =
                     Long.valueOf(intent.getStringExtra(RestTimerService.SECONDS_ELAPSED_PARAM));
-            timerText.setText(timeConversion(elapsedTime));
+            timerText.setText(timeConversion(currentElapsedTime));
         }
     };
 

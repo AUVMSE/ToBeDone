@@ -40,13 +40,13 @@ public class TaskUtils {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         GregorianCalendar gc = new GregorianCalendar();
         SharedPreferences sPref = act.getPreferences(Activity.MODE_PRIVATE);
-//        SharedPreferences.Editor ed = sPref.edit();
+
         try {
             gc.setTime(df.parse(sPref.getString("START_TIME", "")));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        long time = ((new GregorianCalendar()).getTimeInMillis() - gc.getTimeInMillis()) / 60 / 1000;
+        long time = ((new GregorianCalendar()).getTimeInMillis() - gc.getTimeInMillis()) / 1000;
         Log.e("MY_TAG", "" + time);
         return time;
     }
