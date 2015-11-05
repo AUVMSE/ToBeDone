@@ -58,6 +58,7 @@ public class Util {
                 Log.e(TAG, ex.getMessage());
             }
         }
+        Log.d("RESPONSE", stringBuilder.toString());
         return stringBuilder.toString();
     }
 

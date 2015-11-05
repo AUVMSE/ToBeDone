@@ -129,6 +129,7 @@ public class TaskDataWrapper {
     public void updateSync() throws JSONException {
         Util.sendTasks(taskEntityData);
         taskEntityData = Util.getAllTasksForUser(username);
+        saveState();
     }
 
     public void updateASync(OnSyncFinishedListener listener) {
