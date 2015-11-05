@@ -35,6 +35,7 @@ public class TaskDataWrapper {
 
     private final Context context;
     private final String username;
+    private Long userId; // filled by addUser(...) async request
 
     private boolean isSyncing = false;
     private List<TaskEntity> taskEntityData = new ArrayList<>();
@@ -43,6 +44,10 @@ public class TaskDataWrapper {
     private TaskDataWrapper(Context context, String username) {
         this.context = context;
         this.username = username;
+
+        // TODO: think about possible errors
+        // That call fills user Id
+        this.addUser(username);
     }
 
     public static TaskDataWrapper getInstance(Context context, String username) {
@@ -119,7 +124,7 @@ public class TaskDataWrapper {
 
     public void addUser(String userName) {
         if (Util.isConnected(context)) {
-            new AddUserTask(userName);
+            new AddUserTask(userName).execute();
         }
     }
 
@@ -229,6 +234,10 @@ public class TaskDataWrapper {
         }
 
         syncDataAsync();
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     public interface OnSyncFinishedListener {
@@ -345,7 +354,7 @@ public class TaskDataWrapper {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Util.addUser(userName);
+            userId = Util.addUser(userName);
             return null;
         }
     }

@@ -2,8 +2,12 @@ package org.vmse.spbau.tobedone.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -69,5 +73,17 @@ public class TaskEntityView extends RelativeLayout {
         descriptionTextView.setText(taskEntity.getDescription());
         priorityTextView.setText(Long.toString(taskEntity.getPriority()));
         deadlineTextView.setText(taskEntity.getDeadline());
+
+        if (taskEntity.isSolved()) {
+            View v = findViewById(R.id.main_task_tile_layout);
+            LayerDrawable bgDrawable = (LayerDrawable) v.getBackground();
+            final GradientDrawable mainTileShape =
+                    (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.main_task_tile_layout);
+            mainTileShape.setColor(ContextCompat.getColor(getContext(), R.color.posActionColor));
+
+            final GradientDrawable shadTileShape =
+                    (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.main_task_tile_layout);
+            mainTileShape.setColor(ContextCompat.getColor(getContext(), R.color.deepPosActionColor));
+        }
     }
 }

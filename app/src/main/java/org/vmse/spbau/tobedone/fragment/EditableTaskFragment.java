@@ -18,6 +18,7 @@ import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
+import org.vmse.spbau.tobedone.connection.Util;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.util.ArrayList;
@@ -125,7 +126,7 @@ public class EditableTaskFragment extends Fragment {
 
     private void fillDefault() {
         taskEntity.setPriority(5);
-        taskEntity.setIdUser(1);
+        taskEntity.setIdUser(MainApplication.getTaskDataWrapper().getUserId());
         taskEntity.setName("Sample task" + new Random().nextInt());
         taskEntity.setDeadline("2015-07-07");
         taskEntity.setDescription("Task description");
@@ -153,8 +154,6 @@ public class EditableTaskFragment extends Fragment {
             setAllEditable();
             getActivity().getMenuInflater().inflate(R.menu.task_edit_menu, menu);
         }
-
-
     }
 
     public void setTaskEntity(TaskEntity taskEntity, boolean isForUpdate) {
@@ -207,7 +206,7 @@ public class EditableTaskFragment extends Fragment {
     }
 
     private List<String> constructNewTags() {
-        String newTags[] = editTags.getText().toString().split("[,\\s;]");
+        String newTags[] = editTags.getText().toString().replace("#", "").split("[,\\s;]");
         return Arrays.asList(newTags);
     }
 
