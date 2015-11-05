@@ -16,7 +16,7 @@ public class TaskEntity {
     private String deadline;
     private Long breakTime;
     private Boolean isSolved;
-    private Long elapsedTime;
+    private Long elapsedTime; //seconds
     private String lastStop;
 
     public static long getCreatedOffline() {
@@ -164,5 +164,22 @@ public class TaskEntity {
         result = 31 * result + (getElapsedTime() != null ? getElapsedTime().hashCode() : 0);
         result = 31 * result + (getLastStop() != null ? getLastStop().hashCode() : 0);
         return result;
+    }
+
+    public TaskEntity copy() {
+        TaskEntity newTaskEntity = new TaskEntity();
+
+        newTaskEntity.setId(getId());
+        newTaskEntity.setBreakTime(getBreakTime());
+        newTaskEntity.setDeadline(getDeadline());
+        newTaskEntity.setDescription(getDescription());
+        newTaskEntity.setElapsedTime(getElapsedTime());
+        newTaskEntity.setIsSolved(isSolved());
+        newTaskEntity.setLastStop(getLastStop());
+        newTaskEntity.setPriority(getPriority());
+        newTaskEntity.setIdUser(getIdUser());
+        newTaskEntity.setName(getName());
+
+        return newTaskEntity;
     }
 }

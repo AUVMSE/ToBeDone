@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/task_tile_margin_top"
+        android:id="@+id/taskInProgress_runningTaskView"
         />
 
     <LinearLayout
@@ -22,9 +23,19 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Resume"
+            android:id="@+id/taskInProgress_resumeButton"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Pause"
             android:id="@+id/taskInProgress_pauseButton"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            />
 
         <Button
             android:layout_width="wrap_content"
@@ -37,7 +48,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Finish"
+            android:text="Complete"
             android:id="@+id/taskInProgress_completeButton"
             android:layout_gravity="center_horizontal" />
 
@@ -46,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/time_text"
-        android:textSize="40dp"
+        android:textSize="50dp"
         android:text="00:00:00"
         android:textStyle="bold"
         android:layout_margin="@dimen/activity_vertical_margin"

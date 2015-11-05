@@ -175,6 +175,9 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
      *  TaskEntityList filter. Use it to filter whole list and pass it to view
      */
     private static List<TaskEntity> filter(List<TaskEntity> list, TaskEntityPredicate predicate) {
+        if (list == null)
+            return null;
+
         List<TaskEntity> result = new ArrayList<>();
         for (TaskEntity element : list) {
             if (predicate.apply(element)) {
