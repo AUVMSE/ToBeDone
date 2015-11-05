@@ -15,8 +15,6 @@ import java.util.List;
  */
 public class TaskEntity {
 
-    public static final long CREATED_OFFLINE = -1;
-
     private String taskname;
     private String username;
     private String description;
@@ -29,10 +27,6 @@ public class TaskEntity {
     private Boolean isDeleted = false;
     private List<String> tags = new ArrayList<>();
 
-    public static long getCreatedOffline() {
-        return CREATED_OFFLINE;
-    }
-
     public static TaskEntity taskFromJson(JSONObject jsonObject) throws JSONException {
         final TaskEntity taskEntity = new TaskEntity();
         taskEntity.setUsername(jsonObject.getString("username"));
@@ -44,6 +38,7 @@ public class TaskEntity {
         taskEntity.setIsSolved(jsonObject.getBoolean("isSolved"));
         taskEntity.setElapsedTime(jsonObject.getLong("elapsedTime"));
         taskEntity.setLastStop(jsonObject.getString("lastStop"));
+        taskEntity.setIsDeleted(jsonObject.getBoolean("isDeleted"));
         JSONArray jsonArray = jsonObject.getJSONArray("tags");
         List<String> tags = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); ++i) {
@@ -98,11 +93,11 @@ public class TaskEntity {
         return priority;
     }
 
-    public void setPriority(Long priority) {
+    public void setPriority(long priority) {
         this.priority = priority;
     }
 
-    public void setPriority(long priority) {
+    public void setPriority(Long priority) {
         this.priority = priority;
     }
 
@@ -118,11 +113,11 @@ public class TaskEntity {
         return breakTime;
     }
 
-    public void setBreakTime(Long breakTime) {
+    public void setBreakTime(long breakTime) {
         this.breakTime = breakTime;
     }
 
-    public void setBreakTime(long breakTime) {
+    public void setBreakTime(Long breakTime) {
         this.breakTime = breakTime;
     }
 
@@ -150,11 +145,11 @@ public class TaskEntity {
         return elapsedTime;
     }
 
-    public void setElapsedTime(Long elapsedTime) {
+    public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
-    public void setElapsedTime(long elapsedTime) {
+    public void setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 

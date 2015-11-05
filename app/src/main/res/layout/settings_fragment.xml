@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_marginLeft="10dp"
+            android:paddingRight="10dp"
             android:text="Username"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/labelColor"
@@ -27,7 +28,7 @@
             android:id="@+id/settings_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="1" />
+            android:layout_column="2" />
     </TableRow>
 
 </TableLayout>
