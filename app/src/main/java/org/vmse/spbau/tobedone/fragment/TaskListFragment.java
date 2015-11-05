@@ -38,7 +38,7 @@ import java.util.Random;
 public class TaskListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<TaskEntity>> {
 
     private TaskEntityAdapter adapter;
-    private Map<TaskEntity, List<String>> taskTagsMap = new HashMap<>();
+    private Map<Long, List<String>> taskTagsMap = new HashMap<>();
 
 
     @Override
@@ -127,7 +127,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
                 MainApplication.getTaskDataWrapper().getTagsForTask(taskEntity, new TaskDataWrapper.TagsListReceiver() {
                     @Override
                     public void onTagsListReceived(List<String> tags) {
-                        taskTagsMap.put(taskEntity, tags);
+                        taskTagsMap.put(taskEntity.getId(), tags);
                     }
                 });
             }
