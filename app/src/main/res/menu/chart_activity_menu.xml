@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ChartActivity">
+
+    <item android:id="@+id/action_statistics_back"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title=""
+        app:showAsAction="ifRoom"
+        android:orderInCategory="1"
+        android:menuCategory="secondary"
+        />
+
+</menu>

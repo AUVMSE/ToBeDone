@@ -79,6 +79,9 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
     }
 
     private void next() {
+        if (!it.hasNext())
+            it = sortedSet.iterator();
+        
         taskEntity = it.hasNext() ? it.next() : null;
         if (taskEntity != null) {
             taskEntityView.setTaskEntity(taskEntity);
