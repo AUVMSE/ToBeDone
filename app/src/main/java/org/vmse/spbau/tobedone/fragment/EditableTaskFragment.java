@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
@@ -29,11 +30,13 @@ import java.util.List;
 public class EditableTaskFragment extends Fragment {
     private TaskEntity taskEntity;
     private List<String> tags;
+    private boolean isForUpdate = true; // or for new task creation
 
     private EditText editName;
     private EditText editDescription;
     private EditText editDeadline;
     private EditText editTags;
+    private EditText editPriority;
     private Menu menu;
 
     public EditableTaskFragment() {
@@ -53,6 +56,10 @@ public class EditableTaskFragment extends Fragment {
         editName.setFocusableInTouchMode(false);
         editTags.setFocusable(false);
         editTags.setClickable(false);
+        editPriority.setFocusableInTouchMode(false);
+        editPriority.setFocusable(false);
+        editPriority.setClickable(false);
+
     }
 
     private void setAllEditable() {
@@ -68,12 +75,16 @@ public class EditableTaskFragment extends Fragment {
         editTags.setFocusableInTouchMode(true);
         editTags.setFocusable(true);
         editTags.setClickable(true);
+        editPriority.setFocusableInTouchMode(true);
+        editPriority.setFocusable(true);
+        editPriority.setClickable(true);
     }
 
     private void fillForm() {
         editName.setText(taskEntity.getName());
         editDeadline.setText(taskEntity.getDeadline());
         editDescription.setText(taskEntity.getDescription());
+        editPriority.setText(Long.toString(taskEntity.getPriority()));
 
         String tagString = "";
         if (tags != null) {
@@ -99,11 +110,13 @@ public class EditableTaskFragment extends Fragment {
         editDescription = (EditText) view.findViewById(R.id.editDescription);
         editDeadline = (EditText) view.findViewById(R.id.editDeadline);
         editTags = (EditText) view.findViewById(R.id.editTags);
+        editPriority = (EditText) view.findViewById(R.id.editPriority);
 
         setAllUneditable();
 
         // before it entity and tags must be set
-        fillForm();
+        if (isForUpdate)
+            fillForm();
 
         return view;
     }
@@ -119,7 +132,9 @@ public class EditableTaskFragment extends Fragment {
         getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
     }
 
-    public void setTaskEntity(TaskEntity taskEntity) {
+    public void setTaskEntity(TaskEntity taskEntity, boolean isForUpdate) {
+        this.isForUpdate = isForUpdate;
+
         if (taskEntity == null) {
             throw new NullPointerException("Task Entity can't be null!");
         }
@@ -131,8 +146,16 @@ public class EditableTaskFragment extends Fragment {
         this.tags = tags;
     }
 
-    private boolean checkFields() {
-        return editName.length() > 0 && editDeadline.length() > 0;
+    private String checkFields() {
+        if (editName.length() <= 0) {
+            return "Task name can't be empty!";
+        } else if (editDeadline.length() <= 0) {
+            return "Dead line can't be empty!";
+        } else if (editPriority.length() <= 0) {
+            return "Priority can't be empty!";
+        }
+
+        return null;
     }
 
     private TaskEntity constructNewTaskEntity() {
@@ -153,6 +176,7 @@ public class EditableTaskFragment extends Fragment {
         newTaskEntity.setName(editName.getText().toString());
         newTaskEntity.setDescription(editDescription.getText().toString());
         newTaskEntity.setDeadline(editDeadline.getText().toString());
+        newTaskEntity.setPriority(Long.valueOf(editPriority.getText().toString()));
 
         return newTaskEntity;
     }
@@ -172,10 +196,10 @@ public class EditableTaskFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_edit:
-                //TODO: handle edit
-                setAllEditable();
+                // change menu
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_edit_menu, menu);
+                setAllEditable();
                 return true;
 
             case R.id.action_remove:
@@ -206,24 +230,55 @@ public class EditableTaskFragment extends Fragment {
                 return true;
 
             case R.id.action_discard:
+                setAllUneditable();
+
+                // change menu
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
-                setAllUneditable();
                 return true;
 
             case R.id.action_save:
-                checkFields();
+                String resCheck = checkFields();
+                if (resCheck != null) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Bad input!")
+                            .setMessage(resCheck)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    return true;
+                }
+
                 TaskEntity newEntity = constructNewTaskEntity();
                 List<String> newTags = constructNewTags();
 
                 try {
-                    MainApplication.getTaskDataWrapper().updateTask(taskEntity, newEntity);
-                    MainApplication.getTaskDataWrapper().updateTaskTags(taskEntity, newTags);
+                    if (isForUpdate) {
+                        MainApplication.getTaskDataWrapper().updateTask(taskEntity, newEntity);
+                        MainApplication.getTaskDataWrapper().updateTaskTags(taskEntity, newTags);
+                    } else {
+                        MainApplication.getTaskDataWrapper().addTask(newEntity, newTags);
+                    }
                     taskEntity = newEntity;
                     tags = newTags;
                 } catch (TaskDataWrapper.SyncException e) {
                     e.printStackTrace();
                 }
+
+                if (isForUpdate)
+                    Toast.makeText(getContext(), "Task updated!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getContext(), "Task created!", Toast.LENGTH_SHORT).show();
+
+                isForUpdate = true;
+                setAllUneditable();
+                // change menu
+                menu.clear();
+                getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
+
 
                 return true;
 
