@@ -19,8 +19,6 @@ import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -68,7 +66,6 @@ public class LastLongestTasksFragment extends ChartFragment implements OnChartVa
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
 
         entryNames = new HashMap<>();
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         for (int i = 0; i < l.size() && yVals1.size() < LONGEST_TASKS_NUMBER; i++) {
             TaskEntity ent = l.get(i);
 

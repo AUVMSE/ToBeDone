@@ -120,7 +120,6 @@ public class EditableTaskFragment extends Fragment {
 
         fillForm();
 
-
         return view;
     }
 

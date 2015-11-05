@@ -13,6 +13,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
+import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.util.ArrayList;
@@ -34,7 +35,13 @@ public class TimeDifferentTagsFragment extends ChartFragment {
 
         chart = (PieChart) v.findViewById(R.id.time_per_tag_chart);
         chart.setDescription("");
-        updateChart();
+        MainApplication.getTaskDataWrapper().syncDataAsync(new TaskDataWrapper.OnSyncFinishedListener() {
+            @Override
+            public void onSyncFinished() {
+                updateChart();
+            }
+        });
+
         return v;
     }
 
@@ -48,6 +55,7 @@ public class TimeDifferentTagsFragment extends ChartFragment {
         List<TaskEntity> l = MainApplication.getTaskDataWrapper().getTaskEntityData();
 
         for (TaskEntity ent : l) {
+
             List<String> tags = MainApplication.getTaskDataWrapper().getTagsForTaskCached(ent);
             if (null == tags)
                 continue;
