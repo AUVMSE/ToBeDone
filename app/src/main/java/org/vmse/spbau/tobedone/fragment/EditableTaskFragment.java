@@ -112,12 +112,11 @@ public class EditableTaskFragment extends Fragment {
         editTags = (EditText) view.findViewById(R.id.editTags);
         editPriority = (EditText) view.findViewById(R.id.editPriority);
 
-        setAllUneditable();
-
         // before it entity and tags must be set
         if (isForUpdate)
             fillForm();
 
+        
         return view;
     }
 
@@ -129,7 +128,15 @@ public class EditableTaskFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         this.menu = menu;
-        getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
+        if (isForUpdate) {
+            setAllUneditable();
+            getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
+        } else {
+            setAllEditable();
+            getActivity().getMenuInflater().inflate(R.menu.task_edit_menu, menu);
+        }
+
+
     }
 
     public void setTaskEntity(TaskEntity taskEntity, boolean isForUpdate) {
