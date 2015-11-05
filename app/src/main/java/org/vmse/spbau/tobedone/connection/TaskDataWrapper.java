@@ -169,8 +169,8 @@ public class TaskDataWrapper {
         @Override
         protected void onPostExecute(List<TaskEntity> result) {
             super.onPostExecute(result);
-            listener.onSyncFinished();
             taskEntityData = result;
+            listener.onSyncFinished();
         }
     }
 }
