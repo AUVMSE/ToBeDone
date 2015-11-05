@@ -19,6 +19,7 @@ import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -42,6 +43,8 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     private List<String> newTags;
     private long lastTimeEditTagPressed = -1;
     private boolean isEditable;
+    EditText tv;
+
     public EditableTaskFragment() {
     }
 
@@ -56,8 +59,8 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
         editDeadline.setFocusableInTouchMode(isEditable);
         editDeadline.setFocusable(isEditable);
         editDeadline.setClickable(isEditable);
-        editTags.setFocusableInTouchMode(isEditable);
-        editTags.setFocusable(isEditable);
+        editTags.setFocusableInTouchMode(true);
+        editTags.setFocusable(false);
         editTags.setClickable(isEditable);
         editPriority.setFocusableInTouchMode(isEditable);
         editPriority.setFocusable(isEditable);
@@ -83,13 +86,8 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        
-        chosenExistingTags = new boolean[4];
-        existingTags = new String[4];
-        for (int i = 0; i < 4; i++) {
-            chosenExistingTags[i] = false;
-            existingTags[i] = new String("Tag" + Integer.toString(i));
-        }
+
+
         newTags = new LinkedList<>();
     }
 
@@ -103,6 +101,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
         editDeadline = (EditText) view.findViewById(R.id.editDeadline);
         editTags = (EditText) view.findViewById(R.id.editTags);
         editPriority = (EditText) view.findViewById(R.id.editPriority);
+        tv = new EditText(getActivity());
 
         editTags.setOnClickListener(this);
         editTags.setOnLongClickListener(this);
@@ -281,10 +280,18 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
         }
 
     void showChooseExistingTagDIalog() {
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Choose existing tag");
+        Collection<String> l = MainApplication.getTaskDataWrapper().getAllTags();
 
+        chosenExistingTags = new boolean[l.size()];
+        existingTags = new String[l.size()];
+        int idx = 0;
+        for (String tag : l) {
+            chosenExistingTags[idx] = false;
+            existingTags[idx] = tag;
+            idx++;
+        }
         builder.setMultiChoiceItems(existingTags, chosenExistingTags, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -305,7 +312,6 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     void showCreateNewTagDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Pick a name for new tag");
-        final EditText tv = new EditText(getContext());
         builder.setView(tv);
         builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
 
