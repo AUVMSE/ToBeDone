@@ -16,7 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author antonpp
@@ -43,6 +46,14 @@ public class TaskDataWrapper {
             instance = new TaskDataWrapper(username, context);
         }
         return instance;
+    }
+
+    public Collection<String> getAllTags() {
+        Set<String> tags = new HashSet<>();
+        for (TaskEntity taskEntity : taskEntityData) {
+            tags.addAll(taskEntity.getTags());
+        }
+        return tags;
     }
 
     public String getUsername() {
@@ -76,6 +87,7 @@ public class TaskDataWrapper {
         final JSONArray jsonArray = new JSONArray();
         for (TaskEntity taskEntity : taskEntityData) {
             final JSONObject jsonObject = taskEntity.toJsonObject();
+            jsonArray.put(jsonObject);
         }
         final String jsonString = jsonArray.toString();
         FileOutputStream outputStream;
