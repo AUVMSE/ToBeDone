@@ -29,9 +29,9 @@ import java.util.Random;
  * email: egor-mailbox@ya.ru
  */
 public class EditableTaskFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
+    EditText tv;
     private TaskEntity taskEntity;
     private boolean isForUpdate = true; // or for new task creation
-
     private EditText editName;
     private EditText editDescription;
     private EditText editDeadline;
@@ -43,7 +43,6 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     private List<String> newTags;
     private long lastTimeEditTagPressed = -1;
     private boolean isEditable;
-    EditText tv;
 
     public EditableTaskFragment() {
     }
@@ -189,17 +188,21 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
 
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_edit:
+            case R.id.action_edit: {
                 // change menu
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_edit_menu, menu);
                 setIsEditable(true);
                 return true;
-
-            case R.id.action_remove:
+            }
+            case R.id.action_remove: {
+                TaskEntity newTaskEntity = taskEntity.copy();
+                newTaskEntity.setIsDeleted(true);
+                MainApplication.getTaskDataWrapper().updateTask(newTaskEntity, taskEntity);
+                getActivity().onBackPressed();
                 return true;
-
-            case R.id.action_done:
+            }
+            case R.id.action_done: {
                 TaskEntity newTaskEntity = constructNewTaskEntity();
                 newTaskEntity.setIsSolved(true);
                 MainApplication.getTaskDataWrapper().updateTask(newTaskEntity, taskEntity);
@@ -217,16 +220,16 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
                         .show();
 
                 return true;
-
-            case R.id.action_discard:
+            }
+            case R.id.action_discard: {
                 setIsEditable(false);
                 // change menu
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
                 getActivity().onBackPressed();
                 return true;
-
-            case R.id.action_save:
+            }
+            case R.id.action_save: {
                 String resCheck = checkFields();
                 if (resCheck != null) {
                     new AlertDialog.Builder(getContext())
@@ -262,7 +265,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
                 return true;
-
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }

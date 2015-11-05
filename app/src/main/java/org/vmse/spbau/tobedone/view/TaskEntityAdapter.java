@@ -39,6 +39,8 @@ public class TaskEntityAdapter extends ArrayAdapter<TaskEntity> {
         View taskLayout = itemView.findViewById(R.id.main_task_tile_layout);
         if (itemView.getTaskEntity().isSolved())
             taskLayout.setBackgroundResource(R.drawable.solved_task_card);
+        else if (itemView.getTaskEntity().isDeleted())
+            taskLayout.setBackgroundResource(R.drawable.deleted_task_card);
         else
             taskLayout.setBackgroundResource(R.drawable.task_card);
 

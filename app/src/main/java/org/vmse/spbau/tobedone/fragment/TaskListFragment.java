@@ -34,24 +34,35 @@ import java.util.Map;
  */
 public class TaskListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<TaskEntity>> {
 
+    private final static TaskEntityPredicate DELETED_TASK_PREDICATE = new TaskEntityPredicate() {
+        @Override
+        public boolean apply(TaskEntity taskEntity) {
+            return taskEntity.isDeleted();
+        }
+    };
+
+    /**
+     * Not deleted tasks
+     */
     private final static TaskEntityPredicate ALL_TASK_PREDICATE = new TaskEntityPredicate() {
         @Override
         public boolean apply(TaskEntity taskEntity) {
-            return true;
+            return !taskEntity.isDeleted();
         }
     };
     private final static TaskEntityPredicate SOLVED_TASK_PREDICATE = new TaskEntityPredicate() {
         @Override
         public boolean apply(TaskEntity taskEntity) {
-            return taskEntity.isSolved();
+            return taskEntity.isSolved() && !taskEntity.isDeleted();
         }
     };
     private final static TaskEntityPredicate NOT_SOLVED_TASK_PREDICATE = new TaskEntityPredicate() {
         @Override
         public boolean apply(TaskEntity taskEntity) {
-            return !taskEntity.isSolved();
+            return !taskEntity.isSolved() && !taskEntity.isDeleted();
         }
     };
+
     private TaskEntityAdapter adapter;
     private Map<Long, List<String>> taskTagsMap = new HashMap<>();
     private TaskEntityPredicate currentTaskFilterPredicate = NOT_SOLVED_TASK_PREDICATE;
@@ -130,6 +141,9 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
                 return true;
             case R.id.action_show_solved_tasks:
                 changeCurrentTaskFilterPredicate(SOLVED_TASK_PREDICATE);
+                return true;
+            case R.id.action_show_deleted_tasks:
+                changeCurrentTaskFilterPredicate(DELETED_TASK_PREDICATE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
