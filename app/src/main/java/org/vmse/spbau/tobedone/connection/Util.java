@@ -210,6 +210,9 @@ public class Util {
 
         JSONObject jsonObject = null;
         Long userId = null;
+        /*temporary*/
+        if (jsonUserId == null)
+            return -1l;
         try {
             jsonObject = new JSONObject(jsonUserId);
             userId = jsonObject.getLong("id");
