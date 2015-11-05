@@ -35,6 +35,7 @@ public class TaskDataWrapper {
     private final String username;
     private final Context context;
     private List<TaskEntity> taskEntityData = new ArrayList<>();
+    private UpdateTask updateTask;
 
     private TaskDataWrapper(String username, Context context) {
         this.username = username;
@@ -138,14 +139,21 @@ public class TaskDataWrapper {
         }
     }
 
-    public void updateSync() throws JSONException {
+    public void updateSync() throws JSONException, SyncException {
+        if (updateTask != null) {
+            throw new SyncException("Already updating");
+        }
         Util.sendTasks(taskEntityData);
         taskEntityData = Util.getAllTasksForUser(username);
         saveState();
     }
 
-    public void updateASync(OnSyncFinishedListener listener) {
-        new UpdateTask(taskEntityData, listener).execute();
+    public void updateASync(OnSyncFinishedListener listener) throws SyncException {
+        if (updateTask != null) {
+            throw new SyncException("Already updating");
+        }
+        updateTask = new UpdateTask(taskEntityData, listener);
+        updateTask.execute();
     }
 
     public interface OnSyncFinishedListener {
@@ -158,10 +166,7 @@ public class TaskDataWrapper {
         }
     }
 
-    private abstract class VoidAsyncTask extends AsyncTask<Void, Void, List<TaskEntity>> {
-    }
-
-    private class UpdateTask extends VoidAsyncTask {
+    private class UpdateTask extends AsyncTask<Void, Void, List<TaskEntity>> {
 
         private final List<TaskEntity> taskEntities;
         private final OnSyncFinishedListener listener;
@@ -186,6 +191,7 @@ public class TaskDataWrapper {
         protected void onPostExecute(List<TaskEntity> result) {
             super.onPostExecute(result);
             taskEntityData = result;
+            updateTask = null;
             listener.onSyncFinished();
         }
     }

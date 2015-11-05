@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.algorithm.TaskUtils;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
@@ -86,7 +85,8 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
     }
 
     public void startRefreshing() {
-        MainApplication.getTaskDataWrapper().updateASync(this);
+//        MainApplication.getTaskDataWrapper().updateASync(this);
+        refresh();
     }
 
     public void refresh() {
