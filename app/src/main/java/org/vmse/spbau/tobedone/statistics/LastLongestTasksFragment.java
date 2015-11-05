@@ -24,12 +24,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LastLongestTasksFragment extends ChartFragment implements OnChartValueSelectedListener {
 
     public static final int LONGEST_TASKS_NUMBER = 10;
     private BarChart chart;
-    private HashMap<Integer, String> entryNames;
+    private Map<Integer, String> entryNames;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
