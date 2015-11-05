@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.util.SortedList;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,6 @@ import org.vmse.spbau.tobedone.view.TaskEntityView;
 
 import java.util.Iterator;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Created by egorbunov on 03.11.15.
@@ -76,6 +73,9 @@ public class TaskChoiceFragment extends Fragment {
     }
 
     private void next() {
+        if (!it.hasNext())
+            it = sortedSet.iterator();
+        
         taskEntity = it.hasNext() ? it.next() : null;
         if (taskEntity != null) {
             taskEntityView.setTaskEntity(taskEntity);
