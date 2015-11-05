@@ -2,7 +2,6 @@ package org.vmse.spbau.tobedone.fragment;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,9 +17,7 @@ import android.widget.TextView;
 
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
-import org.vmse.spbau.tobedone.activity.MainActivity;
 import org.vmse.spbau.tobedone.algorithm.TaskUtils;
-import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.service.RestTimerService;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
@@ -41,6 +38,35 @@ public class TaskInProgressFragment extends Fragment {
     TextView timerText;
     TaskEntity taskEntity;
     private Intent serviceIntent;
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Long elapsedTime =
+                    Long.valueOf(intent.getStringExtra(RestTimerService.SECONDS_ELAPSED_PARAM));
+            timerText.setText(timeConversion(elapsedTime));
+        }
+    };
+
+    private static String dummyFormat(long x) {
+        String xs = Long.toString(x);
+        if (xs.length() == 1) {
+            xs = "0" + xs;
+        }
+        return xs;
+    }
+
+    private static String timeConversion(long totalSeconds) {
+        final int MINUTES_IN_AN_HOUR = 60;
+        final int SECONDS_IN_A_MINUTE = 60;
+
+        long seconds = totalSeconds % SECONDS_IN_A_MINUTE;
+        long totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
+        long minutes = totalMinutes % MINUTES_IN_AN_HOUR;
+        long hours = totalMinutes / MINUTES_IN_AN_HOUR;
+
+
+        return dummyFormat(hours) + ":" + dummyFormat(minutes) + ":" + dummyFormat(seconds);
+    }
 
     /**
      * You must set TaskEntity, work on that was started
@@ -48,7 +74,6 @@ public class TaskInProgressFragment extends Fragment {
     public void setTaskEntity(TaskEntity taskEntity) {
         this.taskEntity = taskEntity;
     }
-
 
     @Nullable
     @Override
@@ -130,12 +155,8 @@ public class TaskInProgressFragment extends Fragment {
 
                 TaskEntity newTaskEntity = taskEntity.copy();
                 newTaskEntity.setIsSolved(true);
-                try {
-                    MainApplication.getTaskDataWrapper().updateTask(newTaskEntity, taskEntity);
-                    taskEntity = newTaskEntity;
-                } catch (TaskDataWrapper.SyncException e) {
-                    e.printStackTrace();
-                }
+                MainApplication.getTaskDataWrapper().updateTask(newTaskEntity);
+                taskEntity = newTaskEntity;
 
                 new AlertDialog.Builder(getContext())
                         .setTitle("Task solved!")
@@ -156,15 +177,6 @@ public class TaskInProgressFragment extends Fragment {
         return view;
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Long elapsedTime =
-                    Long.valueOf(intent.getStringExtra(RestTimerService.SECONDS_ELAPSED_PARAM));
-            timerText.setText(timeConversion(elapsedTime));
-        }
-    };
-
     @Override
     public void onResume() {
         super.onResume();
@@ -181,27 +193,6 @@ public class TaskInProgressFragment extends Fragment {
         super.onPause();
         getActivity().unregisterReceiver(broadcastReceiver);
         getActivity().stopService(serviceIntent);
-    }
-
-    private static String dummyFormat(long x) {
-        String xs = Long.toString(x);
-        if (xs.length() == 1) {
-            xs = "0" + xs;
-        }
-        return xs;
-    }
-    private static String timeConversion(long totalSeconds) {
-        final int MINUTES_IN_AN_HOUR = 60;
-        final int SECONDS_IN_A_MINUTE = 60;
-
-        long seconds = totalSeconds % SECONDS_IN_A_MINUTE;
-        long totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
-        long minutes = totalMinutes % MINUTES_IN_AN_HOUR;
-        long hours = totalMinutes / MINUTES_IN_AN_HOUR;
-
-
-
-        return dummyFormat(hours) + ":" + dummyFormat(minutes) + ":" + dummyFormat(seconds);
     }
 
 

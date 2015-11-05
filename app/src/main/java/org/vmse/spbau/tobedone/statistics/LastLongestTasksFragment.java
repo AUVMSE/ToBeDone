@@ -75,8 +75,8 @@ public class LastLongestTasksFragment extends ChartFragment implements OnChartVa
 
             BarEntry entry = new BarEntry(ent.getElapsedTime(), i);
             yVals1.add(entry);
-            entryNames.put(i, ent.getName());
-            xVals.add(ent.getName().substring(0, 4));
+            entryNames.put(i, ent.getTaskname());
+            xVals.add(ent.getTaskname().substring(0, 4));
         }
 
         BarDataSet set1 = new BarDataSet(yVals1, "Longest tasks");

@@ -35,7 +35,7 @@ public class TimeDifferentTagsFragment extends ChartFragment {
 
         chart = (PieChart) v.findViewById(R.id.time_per_tag_chart);
         chart.setDescription("");
-        MainApplication.getTaskDataWrapper().syncDataAsync(new TaskDataWrapper.OnSyncFinishedListener() {
+        MainApplication.getTaskDataWrapper().updateASync(new TaskDataWrapper.OnSyncFinishedListener() {
             @Override
             public void onSyncFinished() {
                 updateChart();
@@ -56,7 +56,7 @@ public class TimeDifferentTagsFragment extends ChartFragment {
 
         for (TaskEntity ent : l) {
 
-            List<String> tags = MainApplication.getTaskDataWrapper().getTagsForTaskCached(ent);
+            List<String> tags = ent.getTags();
             if (null == tags)
                 continue;
 

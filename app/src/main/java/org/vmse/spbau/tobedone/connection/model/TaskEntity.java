@@ -1,5 +1,7 @@
 package org.vmse.spbau.tobedone.connection.model;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +63,12 @@ public class TaskEntity {
     }
 
     public TaskEntity copy() {
-        TaskEntity taskEntity = new TaskEntity();
+        try {
+            return taskFromJson(toJsonObject());
+        } catch (JSONException e) {
+            Log.e("WOW", "LAH: " + e.getMessage());
+        }
+        return null;
     }
 
     public List<String> getTags() {
@@ -69,7 +76,7 @@ public class TaskEntity {
     }
 
     public void setTags(List<String> tags) {
-        this.tags = tags;
+        this.tags = tags == null ? new ArrayList<String>() : new ArrayList<>(tags);
     }
 
     public String getDescription() {
@@ -84,11 +91,11 @@ public class TaskEntity {
         return priority;
     }
 
-    public void setPriority(Long priority) {
+    public void setPriority(long priority) {
         this.priority = priority;
     }
 
-    public void setPriority(long priority) {
+    public void setPriority(Long priority) {
         this.priority = priority;
     }
 
@@ -104,11 +111,11 @@ public class TaskEntity {
         return breakTime;
     }
 
-    public void setBreakTime(Long breakTime) {
+    public void setBreakTime(long breakTime) {
         this.breakTime = breakTime;
     }
 
-    public void setBreakTime(long breakTime) {
+    public void setBreakTime(Long breakTime) {
         this.breakTime = breakTime;
     }
 
@@ -128,11 +135,11 @@ public class TaskEntity {
         return elapsedTime;
     }
 
-    public void setElapsedTime(Long elapsedTime) {
+    public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
-    public void setElapsedTime(long elapsedTime) {
+    public void setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
