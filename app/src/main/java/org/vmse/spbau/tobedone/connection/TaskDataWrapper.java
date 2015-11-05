@@ -76,6 +76,7 @@ public class TaskDataWrapper {
         final JSONArray jsonArray = new JSONArray();
         for (TaskEntity taskEntity : taskEntityData) {
             final JSONObject jsonObject = taskEntity.toJsonObject();
+            jsonArray.put(jsonObject);
         }
         final String jsonString = jsonArray.toString();
         FileOutputStream outputStream;
