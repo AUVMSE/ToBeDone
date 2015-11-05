@@ -79,7 +79,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
             case R.id.action_create_new_task:
                 TaskEntity taskEntity = new TaskEntity();
                 taskEntity.setPriority(5);
-                taskEntity.setIdUser(1);
+                taskEntity.setIdUser(3);
                 taskEntity.setName("Dummy task" + new Random().nextInt());
                 taskEntity.setDeadline("2015-07-07");
                 taskEntity.setDescription("Task description");
