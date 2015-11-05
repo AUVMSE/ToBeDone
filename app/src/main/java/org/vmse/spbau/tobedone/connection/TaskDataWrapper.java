@@ -110,6 +110,9 @@ public class TaskDataWrapper {
                     Log.e(TAG, ex.getMessage());
                 }
             }
+
+            Log.d("DUMP", stringBuilder.toString());
+
             final JSONArray jsonArray = new JSONArray(stringBuilder.toString());
             final int n = jsonArray.length();
             final List<TaskEntity> result = new ArrayList<>(n);
