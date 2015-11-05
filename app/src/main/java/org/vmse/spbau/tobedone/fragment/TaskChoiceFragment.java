@@ -116,11 +116,6 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onSyncFinished() {
         refresh();
     }
