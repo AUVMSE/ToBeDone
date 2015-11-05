@@ -38,11 +38,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Finish"
-            android:id="@+id/taskInProgress_finishButton"
+            android:id="@+id/taskInProgress_completeButton"
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/time_text"
+        android:textSize="40dp"
+        android:text="00:00:00"
+        android:textStyle="bold"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_gravity="center_horizontal"/>
 
 
 </LinearLayout>

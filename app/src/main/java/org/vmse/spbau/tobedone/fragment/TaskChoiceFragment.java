@@ -39,6 +39,7 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
     Iterator<TaskEntity> it;
     Formatter f = new Formatter();
     private boolean isStart = false;
+    private long remainingTime = 0;
 
     @Nullable
     @Override
@@ -103,6 +104,7 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
                         btnStart.setText("Start");
                         btnStop.setEnabled(true);
                         btnSkip.setEnabled(true);
+                        taskEntity.setElapsedTime(remainingTime);
 
                         TaskUtils.pause(taskEntity, getActivity());
                         getActivity().startService(new Intent(getActivity(), TimerService.class)
@@ -116,7 +118,7 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
                                 long seconds = millisUntilFinished / 1000 - hours * 3600 - minutes * 60;
                                 timeText.setText(String.format("%02d:%02d:%02d",
                                         hours, minutes, seconds));
-                                taskEntity.setElapsedTime(millisUntilFinished);
+                                remainingTime = millisUntilFinished;
                             }
 
                             @Override
