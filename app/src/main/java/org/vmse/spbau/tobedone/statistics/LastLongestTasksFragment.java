@@ -82,7 +82,7 @@ public class LastLongestTasksFragment extends ChartFragment implements OnChartVa
         BarDataSet set1 = new BarDataSet(yVals1, "Longest tasks");
         set1.setBarSpacePercent(35f);
 
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+        List<BarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
 
         BarData data = new BarData(xVals, dataSets);
