@@ -125,18 +125,18 @@ public class EditableTaskFragment extends Fragment {
     }
 
     private void fillDefault() {
-        taskEntity.setPriority(5);
+        taskEntity.setPriority(0);
         taskEntity.setIdUser(MainApplication.getTaskDataWrapper().getUserId());
-        taskEntity.setName("Sample task" + new Random().nextInt());
-        taskEntity.setDeadline("2015-07-07");
-        taskEntity.setDescription("Task description");
+        taskEntity.setName("");
+        taskEntity.setDeadline("2015-09-05");
+        taskEntity.setDescription("");
         taskEntity.setIsSolved(false);
 
-        tags = new ArrayList<String>() {{
-            add("university");
-            add("study");
-            add("ha");
-        }};
+//        tags = new ArrayList<String>() {{
+//            add("university");
+//            add("study");
+//            add("ha");
+//        }};
     }
 
     @Override
