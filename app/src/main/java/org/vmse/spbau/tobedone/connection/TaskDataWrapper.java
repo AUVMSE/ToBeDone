@@ -156,6 +156,9 @@ public class TaskDataWrapper {
     }
 
     public void updateASync(OnSyncFinishedListener listener) throws SyncException {
+        if (!Util.isConnected(context)) {
+            throw new SyncException("Server is unreachable!");
+        }
         if (updateTask != null) {
             throw new SyncException("Already updating");
         }

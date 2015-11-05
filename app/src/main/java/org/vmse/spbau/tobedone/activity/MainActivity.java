@@ -132,14 +132,14 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, StatisticsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_synchronize) {
-
             try {
                 MainApplication.getTaskDataWrapper().updateASync(this);
+                progressDialog = ProgressDialog.show(this, "Synchronization with server...", "Please wait", true);
             } catch (TaskDataWrapper.SyncException e) {
                 Log.e(getClass().getCanonicalName(), e.getMessage());
                 new AlertDialog.Builder(this)
                         .setTitle("Error...")
-                        .setMessage("Can't synchronize with server =(")
+                        .setMessage(e.getMessage())
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity
                         .show();
             }
 
-            progressDialog = ProgressDialog.show(this, "Synchronization with server...", "Please wait", true);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
