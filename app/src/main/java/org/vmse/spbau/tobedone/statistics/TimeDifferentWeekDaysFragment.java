@@ -86,7 +86,7 @@ public class TimeDifferentWeekDaysFragment extends ChartFragment {
         }
         yVals1.add(new BarEntry(tasks[0] / weeks, 6));
 
-        BarDataSet set1 = new BarDataSet(yVals1, "DataSet");
+        BarDataSet set1 = new BarDataSet(yVals1, "Deadlines / day");
         set1.setBarSpacePercent(35f);
 
         ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();

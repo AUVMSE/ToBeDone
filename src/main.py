@@ -7,193 +7,56 @@ import cherrypy
 import json
 
 MAX_THREADS = 10
-CREATED_OFFLINE = -1
-
-class Users:
-
-    exposed = True
-
-    def GET(self, id=None):
-        db = pg_pool.getconn()
-        result_str = ""
-        try:
-            cur = db.cursor()
-            if id is None:
-                cur.execute("SELECT * FROM AndroidUser")
-                result = []
-                for row in cur.fetchall():
-                    result.append({"id":row[0], "name":row[1]})
-                result_str = json.dumps(result)
-            else:
-                cur.execute("SELECT * FROM AndroidUser WHERE id='{0}'".format(id))
-                user = cur.fetchone()
-                if user is None:
-                    result_str = "id={0} not found in database".format(id)
-                else:
-                    result_str = json.dumps({"id":user[0], "name":user[1]})
-        finally:
-            pg_pool.putconn(db)
-
-        return result_str
-
-    def POST(self, name):
-        db = pg_pool.getconn()
-        try:
-            cur = db.cursor()
-            cur.execute("SELECT COUNT(*) FROM AndroidUser WHERE name='{0}'".format(name))
-            if cur.fetchone()[0] == 0:
-                cur.execute("INSERT INTO AndroidUser (name) VALUES ('{0}')".format(name))
-                db.commit()
-        finally:
-            pg_pool.putconn(db)
-
-
-class Tags:
-
-    exposed = True
-
-    def GET(self, id_task=None):
-        db = pg_pool.getconn()
-        result_str = ""
-        try:
-            cur = db.cursor()
-            if id_task is None:
-                cur.execute("SELECT * FROM Tag")
-                result = []
-                for row in cur.fetchall():
-                    result.append({"id":row[0], "name":row[1]})
-                result_str = json.dumps(result)
-            else:
-                cur.execute("SELECT Tag.id, Tag.name FROM Tag, TaskTag WHERE TaskTag.id_task='{0}' AND TaskTag.id_tag = Tag.id".format(id_task))
-                result = []
-                for row in cur.fetchall():
-                    result.append({"id":row[0], "name":row[1]})
-                if len(result) == 0:
-                    result_str = "Task with id={0} has no tags".format(id_task)
-                else:
-                    result_str = json.dumps(result)
-        finally:
-            pg_pool.putconn(db)
-
-        return result_str
 
 class Tasks:
 
     exposed = True
 
-    def __init__(self):
-        self.cols = ["id", "id_user", "name", "description", "priority", "deadline", "breakTime", "isSolved", "elapsedTime", "lastStop"]
-
-    def GET(self, name=None):
+    def GET(self, username):
         db = pg_pool.getconn()
         result_str = ""
         try:
             cur = db.cursor()
-            if name is None:
-                cur.execute("SELECT * FROM Task")
-                result = []
-                for row in cur.fetchall():
-                    result.append(dict(zip(self.cols, [str(i) for i in row])))
-                result_str = json.dumps(result)
-            else:
-                cur.execute("SELECT id FROM AndroidUser WHERE name='{0}'".format(name))
-                id_user = cur.fetchone()[0]
-                cur.execute("SELECT * FROM Task WHERE id_user='{0}'".format(id_user))
-                result = []
-                for row in cur.fetchall():
-                    result.append(dict(zip(self.cols, [str(i) for i in row])))
-                result_str = json.dumps(result)
+            cur.execute("SELECT * FROM Task WHERE username='{0}'".format(username))
+            result = []
+            rows = cur.fetchall()
+            for row in rows:
+                taskname = row[0]
+                cur.execute("SELECT tag FROM TaskTag WHERE username='{0}' and taskname='{1}'".format(username, taskname))
+                tags = [x[0] for x in cur.fetchall()]
+                result.append({"taskname":row[0], "username":row[1], "description":row[2], "priority":row[3], "deadline":str(row[4]), "breakTime":row[5], "isSolved":row[6], "elapsedTime":row[7],"lastStop":str(row[8]),"isDeleted":str(row[9]), "tags":tags})
+            result_str = json.dumps(result)
         finally:
             pg_pool.putconn(db)
 
         return result_str
 
-    def POST(self, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[], lastStop=None):
+    def POST(self, taskname, username, description, priority, deadline, breakTime=0, isSolved=False, elapsedTime=0, lastStop=None, isDeleted=False, tags=[]):
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
-            insertQuery = "INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id"            
-            cur.execute(insertQuery, (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop))
-            id_task = cur.fetchone()[0]
+
+            if lastStop == "" or lastStop == "None":
+                lastStop = None
+
+            cur.execute("DELETE FROM TaskTag WHERE username='{0}' and taskname='{1}'".format(username, taskname))
+            cur.execute("DELETE FROM Task WHERE username='{0}' and taskname='{1}'".format(username, taskname))
+            if isinstance(tags, basestring):
+                tags = [tags]
             for tag in tags:
-                cur.execute("SELECT COUNT(*) FROM Tag WHERE name='{0}'".format(tag))
-                t = int(cur.fetchone()[0])
-                if t == 0:
-                    cur.execute("INSERT INTO Tag (name) VALUES ('{0}')".format(tag))
-                    db.commit()
-                cur.execute("SELECT id FROM Tag WHERE name='{0}'".format(tag))
-                id_tag = cur.fetchone()[0]
-                cur.execute("INSERT INTO TaskTag (id_task, id_tag) VALUES ('{0}', '{1}')".format(id_task, id_tag))
+                print tag
+                cur.execute("INSERT INTO TaskTag (taskname, username, tag) VALUES ('{0}', '{1}', '{2}')".format(taskname, username, tag))
+            insertQuery = "INSERT INTO Task (taskname, username, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, isDeleted) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"            
+            cur.execute(insertQuery, (taskname, username, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, isDeleted))
+            
             db.commit()
         finally:
             pg_pool.putconn(db)
 
-        return json.dumps({"id":id_task})
-
-    def PUT(self, id, id_user, name, priority, deadline, description="", breakTime=0, isSolved=False, elapsedTime=0, tags=[], lastStop=None):
-        db = pg_pool.getconn()
-        try:
-            cur = db.cursor()
-            if id == CREATED_OFFLINE:
-                insertQuery = "INSERT INTO Task (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id"
-                cur.execute(insertQuery, (id_user, name, description, priority, deadline, breakTime, isSolved, elapsedTime))
-                id = cur.fetchone()[0]
-            else:
-                sql = "UPDATE Task SET name='{0}', description='{1}', priority='{2}', deadline='{3}', breakTime='{4}', isSolved='{5}', elapsedTime='{6}'".format(name, description, priority, deadline, breakTime, isSolved, elapsedTime)
-                if lastStop != None and lastStop != "" and lastStop != 'None':
-                    sql += ", lastStop='{0}'".format(lastStop)
-                sql += " WHERE id='{0}'".format(id)
-                cur.execute(sql)
-            db.commit()
-        finally:
-            pg_pool.putconn(db)
-        return json.dumps({"id":id})
-
-class TaskTags:
-
-    exposed = True
-
-    def POST(self, id_task, id_tag):
-        db = pg_pool.getconn()
-        try:
-            cur = db.cursor()
-            cur.execute("INSERT INTO TaskTag (id_task, id_tag) VALUES ('{0}', '{1}')".format(id_task, id_tag))
-            db.commit()
-        finally:
-            pg_pool.putconn(db)
-
-    def DELETE(self, id_task):
-        db = pg_pool.getconn()
-        try:
-            cur = db.cursor()
-            cur.execute("DELETE FROM TaskTag WHERE id_task={0}".format(id_task))
-            db.commit()
-        finally:
-            pg_pool.putconn(db)
+        return ""
 
 if __name__ == '__main__':
     pg_pool = pool.ThreadedConnectionPool(1, MAX_THREADS, user="tobedone", password="tobedone", host="localhost", dbname="tobedone")
-
-    cherrypy.tree.mount(
-        Users(), '/api/users',
-        {'/':
-            {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
-         }
-    )
-
-    cherrypy.tree.mount(
-        Tags(), '/api/tags',
-        {'/':
-            {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
-         }
-    )
-
-    cherrypy.tree.mount(
-        TaskTags(), '/api/tasktags',
-        {'/':
-            {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
-         }
-    )
 
     cherrypy.tree.mount(
         Tasks(), '/api/tasks',

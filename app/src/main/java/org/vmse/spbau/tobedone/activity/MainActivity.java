@@ -27,7 +27,7 @@ import org.vmse.spbau.tobedone.fragment.SettingsFragment;
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
 import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
-import org.vmse.spbau.tobedone.statistics.StatisticsActivity;
+import org.vmse.spbau.tobedone.statistics.ChartActivity;
 
 
 public class MainActivity extends AppCompatActivity
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity
 
             setupBackButton();
         } else if (id == R.id.nav_statistics) {
-            Intent intent = new Intent(this, StatisticsActivity.class);
+            Intent intent = new Intent(this, ChartActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_synchronize) {
             try {

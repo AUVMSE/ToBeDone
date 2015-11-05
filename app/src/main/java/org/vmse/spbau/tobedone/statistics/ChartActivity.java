@@ -2,9 +2,7 @@ package org.vmse.spbau.tobedone.statistics;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -31,9 +29,10 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
     TextView startDate;
     TextView endDate;
     Spinner periodSpinner;
+    Spinner chartTypeSpinner;
     Dialog startDateDialog;
     Dialog endDateDialog;
-    Fragment fragment;
+    ChartFragment fragment;
     Date startDateDate;
     Date endDateDate;
 
@@ -48,14 +47,33 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart);
 
-        Intent intent = getIntent();
-        String fragmentClassName = intent.getStringExtra(StatisticsActivity.FragmentNameExtra);
-        Class<?> fragmentClass = null;
-        Log.i("fragName", fragmentClassName);
-        try {
-            fragmentClass = Class.forName(fragmentClassName);
-        } catch (Exception ignored) {
-        }
+        chartTypeSpinner = (Spinner) findViewById(R.id.chart_type_spinner);
+        chartTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        fragment = new TimeDifferentTagsFragment();
+                        break;
+                    case 1:
+                        fragment = new LastLongestTasksFragment();
+                        break;
+                    case 2:
+                        fragment = new TimeDifferentWeekDaysFragment();
+                        break;
+                }
+                if (null != fragment) {
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.fragment_container, fragment).commit();
+                    ((ChartFragment) fragment).updatePeriod(startDateDate, endDateDate);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         startDate = (TextView) findViewById(R.id.start_date_text);
         endDate = (TextView) findViewById(R.id.end_date_text);
@@ -151,24 +169,6 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 // do nothing?
             }
         });
-
-        Log.i("CHART", "Constructor called");
-        if (findViewById(R.id.fragment_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-
-            try {
-                fragment = (Fragment) fragmentClass.newInstance();
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, fragment).commit();
-                ((ChartFragment) fragment).updatePeriod(startDateDate, endDateDate);
-            } catch (Exception e) {
-                Log.e("ChartError", e.toString());
-            }
-        } else {
-            Log.e("ChartError", "Fragment container not found.");
-        }
     }
 
     @Override
