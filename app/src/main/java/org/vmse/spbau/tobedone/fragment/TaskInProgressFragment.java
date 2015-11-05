@@ -38,12 +38,16 @@ public class TaskInProgressFragment extends Fragment {
     TextView timerText;
     TaskEntity taskEntity;
     private Intent serviceIntent;
+
+    boolean isRunning;
+    long currentElapsedTime = 0;
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Long elapsedTime =
+            currentElapsedTime =
                     Long.valueOf(intent.getStringExtra(RestTimerService.SECONDS_ELAPSED_PARAM));
-            timerText.setText(timeConversion(elapsedTime));
+            timerText.setText(timeConversion(currentElapsedTime));
         }
     };
 
@@ -68,9 +72,7 @@ public class TaskInProgressFragment extends Fragment {
         return dummyFormat(hours) + ":" + dummyFormat(minutes) + ":" + dummyFormat(seconds);
     }
 
-    /**
-     * You must set TaskEntity, work on that was started
-     */
+
     public void setTaskEntity(TaskEntity taskEntity) {
         this.taskEntity = taskEntity;
     }
@@ -97,31 +99,14 @@ public class TaskInProgressFragment extends Fragment {
         btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnResume.setVisibility(View.VISIBLE);
-                btnPause.setVisibility(View.GONE);
-
-                //TODO: ?
-                getActivity().unregisterReceiver(broadcastReceiver);
-                getActivity().stopService(serviceIntent);
-
-                TaskUtils.stop(taskEntity, getActivity());
+                pause();
             }
         });
 
         btnResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnResume.setVisibility(View.GONE);
-                btnPause.setVisibility(View.VISIBLE);
-
-                // TODO: ???
-                getContext().registerReceiver(broadcastReceiver,
-                        new IntentFilter(RestTimerService.BROADCAST_ACTION));
-                getContext().startService(serviceIntent
-                        .putExtra(SEC_INTERVAL_PARAM, 1)
-                        .putExtra(SEC_BREAK_TIME_PARAM, 5));
-
-                TaskUtils.start(getActivity());
+                start();
             }
 
         });
@@ -129,15 +114,9 @@ public class TaskInProgressFragment extends Fragment {
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnPause.callOnClick();
-
-                //TODO: ?
-                getActivity().unregisterReceiver(broadcastReceiver);
-                getActivity().stopService(serviceIntent);
-
-                TaskUtils.stop(taskEntity, getActivity());
-
-                getActivity().onBackPressed(); // go to home screen (it can only be prev. in stack)
+                //TODO: onBackPressed
+                pause();
+                getActivity().onBackPressed();
             }
         });
 
@@ -147,16 +126,8 @@ public class TaskInProgressFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                //TODO: FIX
-//                getActivity().unregisterReceiver(broadcastReceiver);
-//                getActivity().stopService(serviceIntent);
-
+                pause();
                 TaskUtils.stop(taskEntity, getActivity());
-
-                TaskEntity newTaskEntity = taskEntity.copy();
-                newTaskEntity.setIsSolved(true);
-                MainApplication.getTaskDataWrapper().updateTask(newTaskEntity);
-                taskEntity = newTaskEntity;
 
                 new AlertDialog.Builder(getContext())
                         .setTitle("Task solved!")
@@ -171,29 +142,55 @@ public class TaskInProgressFragment extends Fragment {
             }
         });
 
-        TaskUtils.start(getActivity());
+        isRunning = false;
         serviceIntent = new Intent(getActivity(), RestTimerService.class);
 
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void start() {
+        if (isRunning)
+            return;
+
+        btnResume.setVisibility(View.GONE);
+        btnPause.setVisibility(View.VISIBLE);
+        isRunning = true;
+        TaskUtils.start(getActivity());
+
         getContext().registerReceiver(broadcastReceiver,
                 new IntentFilter(RestTimerService.BROADCAST_ACTION));
-        getContext().startService(serviceIntent
-                .putExtra(SEC_INTERVAL_PARAM, 1)
-                .putExtra(SEC_BREAK_TIME_PARAM, 5));
-
+        getContext().startService(serviceIntent.putExtra("elapsed", currentElapsedTime).
+                putExtra(SEC_BREAK_TIME_PARAM, 60));
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    private void pause() {
+        if (!isRunning)
+            return;
+
+        btnResume.setVisibility(View.VISIBLE);
+        btnPause.setVisibility(View.GONE);
+        isRunning = false;
+        TaskUtils.pause(taskEntity, getActivity());
+
         getActivity().unregisterReceiver(broadcastReceiver);
         getActivity().stopService(serviceIntent);
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        start();
+
+    }
+
+    // TODO
+    @Override
+    public void onDestroy() {
+        pause();
+        super.onDestroy();
+    }
+
 
 
 }

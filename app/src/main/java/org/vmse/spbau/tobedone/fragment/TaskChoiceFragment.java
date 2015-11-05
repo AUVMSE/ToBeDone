@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.algorithm.TaskUtils;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
@@ -31,7 +30,7 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
     CountDownTimer timer;
     TaskEntityView taskEntityView;
     TaskEntity taskEntity;
-    TextView timeText;
+    TextView textView;
     SortedSet<TaskEntity> sortedSet;
     Iterator<TaskEntity> it;
 
@@ -42,7 +41,7 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
         btnStart = (Button) view.findViewById(R.id.taskChooseFragment_startButton);
         btnSkip = (Button) view.findViewById(R.id.taskChooseFragment_skipButton);
         taskEntityView = (TaskEntityView) view.findViewById(R.id.taskChooseFragment_view);
-        timeText = (TextView) view.findViewById(R.id.time_text);
+        textView = (TextView) view.findViewById(R.id.taskChooseFragment_textView);
         timer = null;
 
         taskEntity = null;
@@ -75,32 +74,48 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
 
 
         startRefreshing();
-
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        refresh();
+
+    }
+
     public void startRefreshing() {
-        MainApplication.getTaskDataWrapper().updateASync(this);
+//        MainApplication.getTaskDataWrapper().updateASync(this);
+        refresh();
     }
 
     public void refresh() {
         sortedSet = TaskUtils.getSortedTaskList(getActivity());
         taskEntityView.setVisibility(View.VISIBLE);
         it = sortedSet.iterator();
-        next();
+        if (it.hasNext())
+            next();
+        else {
+            taskEntityView.setVisibility(View.INVISIBLE);
+            textView.setText("No active tasks in list");
+            btnStart.setEnabled(false);
+        }
     }
 
     private void next() {
-        if (!it.hasNext())
-            it = sortedSet.iterator();
 
         taskEntity = it.hasNext() ? it.next() : null;
         if (taskEntity != null) {
             taskEntityView.setTaskEntity(taskEntity);
             btnStart.setEnabled(true);
+            textView.setText("");
         } else {
-            taskEntityView.setVisibility(View.INVISIBLE);
             btnStart.setEnabled(false);
+            refresh();
+        }
+
+        if (!it.hasNext()) {
+            textView.setText("No more tasks left");
         }
     }
 

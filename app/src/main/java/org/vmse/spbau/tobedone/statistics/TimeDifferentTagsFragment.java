@@ -1,6 +1,7 @@
 package org.vmse.spbau.tobedone.statistics;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import java.util.List;
  */
 public class TimeDifferentTagsFragment extends ChartFragment {
 
+    private static final String TAG = TimeDifferentTagsFragment.class.getName();
+
     PieChart chart;
 
     @Override
@@ -35,12 +38,16 @@ public class TimeDifferentTagsFragment extends ChartFragment {
 
         chart = (PieChart) v.findViewById(R.id.time_per_tag_chart);
         chart.setDescription("");
-        MainApplication.getTaskDataWrapper().updateASync(new TaskDataWrapper.OnSyncFinishedListener() {
-            @Override
-            public void onSyncFinished() {
-                updateChart();
-            }
-        });
+        try {
+            MainApplication.getTaskDataWrapper().updateASync(new TaskDataWrapper.OnSyncFinishedListener() {
+                @Override
+                public void onSyncFinished() {
+                    updateChart();
+                }
+            });
+        } catch (TaskDataWrapper.SyncException e) {
+            Log.e(TAG, e.getMessage());
+        }
 
         return v;
     }

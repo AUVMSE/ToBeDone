@@ -202,7 +202,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
             case R.id.action_done:
                 TaskEntity newTaskEntity = constructNewTaskEntity();
                 newTaskEntity.setIsSolved(true);
-                MainApplication.getTaskDataWrapper().updateTask(newTaskEntity);
+                MainApplication.getTaskDataWrapper().updateTask(newTaskEntity, taskEntity);
                 taskEntity = newTaskEntity;
 
                 new AlertDialog.Builder(getContext())
@@ -244,7 +244,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
                 TaskEntity newEntity = constructNewTaskEntity();
 
                 if (isForUpdate) {
-                    MainApplication.getTaskDataWrapper().updateTask(newEntity);
+                    MainApplication.getTaskDataWrapper().updateTask(newEntity, taskEntity);
                 } else {
                     MainApplication.getTaskDataWrapper().addTask(newEntity);
                 }

@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 
 /**
@@ -18,6 +20,13 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
+
+        EditText username = (EditText) view.findViewById(R.id.settings_username);
+        username.setClickable(false);
+        username.setFocusableInTouchMode(false);
+        username.setFocusable(false);
+
+        username.setText(MainApplication.getTaskDataWrapper().getUsername());
 
         return view;
     }
