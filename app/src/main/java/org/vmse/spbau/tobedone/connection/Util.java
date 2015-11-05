@@ -28,9 +28,8 @@ import java.util.List;
  * @since 04/11/15
  */
 public class Util {
-
     public static final String TAG = Util.class.getName();
-    private static final String IP = "192.168.1.35";
+    private static final String IP = "46.101.188.18";
     private static final String SERVER_ADDRESS = "http://" + IP + ":8080/";
     private static final String TASKS_API_ADDRESS = SERVER_ADDRESS + "api/tasks";
 
