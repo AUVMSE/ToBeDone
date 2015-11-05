@@ -3,6 +3,7 @@ package org.vmse.spbau.tobedone.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
+import org.vmse.spbau.tobedone.activity.MainActivity;
 import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
@@ -77,27 +79,39 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_create_new_task:
-                TaskEntity taskEntity = new TaskEntity();
-                taskEntity.setPriority(5);
-                taskEntity.setIdUser(1);
-                taskEntity.setName("Dummy task" + new Random().nextInt());
-                taskEntity.setDeadline("2015-07-07");
-                taskEntity.setDescription("Task description");
-                taskEntity.setIsSolved(false);
 
-                List<String> tags = new ArrayList<String>() {{
-                    add("university");
-                    add("study");
-                    add("ha");
-                }};
+                EditableTaskFragment editableTaskFragment = new EditableTaskFragment();
+                editableTaskFragment.setTags(null);
+                editableTaskFragment.setTaskEntity(new TaskEntity(), false); // new task!
+
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.contents_fragment_container, editableTaskFragment,
+                        "TASK_EDIT_FRAGMENT");
+                transaction.addToBackStack(null);
+                transaction.commit();
 
 
-                try {
-                    MainApplication.getTaskDataWrapper().addTask(taskEntity, tags);
-                } catch (Exception ignored) {
-                }
-
-                TaskListFragment.this.getLoaderManager().restartLoader(0, null, TaskListFragment.this);
+//                TaskEntity taskEntity = new TaskEntity();
+//                taskEntity.setPriority(5);
+//                taskEntity.setIdUser(1);
+//                taskEntity.setName("Dummy task" + new Random().nextInt());
+//                taskEntity.setDeadline("2015-07-07");
+//                taskEntity.setDescription("Task description");
+//                taskEntity.setIsSolved(false);
+//
+//                List<String> tags = new ArrayList<String>() {{
+//                    add("university");
+//                    add("study");
+//                    add("ha");
+//                }};
+//
+//
+//                try {
+//                    MainApplication.getTaskDataWrapper().addTask(taskEntity, tags);
+//                } catch (Exception ignored) {
+//                }
+//
+//                TaskListFragment.this.getLoaderManager().restartLoader(0, null, TaskListFragment.this);
 
                 return true;
             default:

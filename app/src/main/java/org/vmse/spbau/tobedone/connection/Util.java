@@ -171,7 +171,7 @@ public class Util {
 
     private static String sendPUT(String url, List<NameValuePair> params) {
         HttpURLConnection httpURLConnection = null;
-        String result = null;
+        String jsonString = null;
 
         try {
             final URL u = new URL(url);
@@ -188,7 +188,7 @@ public class Util {
             writer.close();
             os.close();
 
-            result = getResponse(httpURLConnection);
+            jsonString = getResponse(httpURLConnection);
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         } finally {
@@ -197,7 +197,7 @@ public class Util {
             }
         }
 
-        return result;
+        return jsonString;
     }
 
     public static void addUser(String name) {
