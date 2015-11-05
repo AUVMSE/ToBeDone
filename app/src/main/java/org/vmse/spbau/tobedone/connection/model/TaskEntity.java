@@ -35,11 +35,11 @@ public class TaskEntity {
         return idUser;
     }
 
-    public void setIdUser(long idUser) {
+    public void setIdUser(Long idUser) {
         this.idUser = idUser;
     }
 
-    public void setIdUser(Long idUser) {
+    public void setIdUser(long idUser) {
         this.idUser = idUser;
     }
 
@@ -63,11 +63,11 @@ public class TaskEntity {
         return priority;
     }
 
-    public void setPriority(long priority) {
+    public void setPriority(Long priority) {
         this.priority = priority;
     }
 
-    public void setPriority(Long priority) {
+    public void setPriority(long priority) {
         this.priority = priority;
     }
 
@@ -83,11 +83,11 @@ public class TaskEntity {
         return breakTime;
     }
 
-    public void setBreakTime(long breakTime) {
+    public void setBreakTime(Long breakTime) {
         this.breakTime = breakTime;
     }
 
-    public void setBreakTime(Long breakTime) {
+    public void setBreakTime(long breakTime) {
         this.breakTime = breakTime;
     }
 
@@ -107,11 +107,11 @@ public class TaskEntity {
         return elapsedTime;
     }
 
-    public void setElapsedTime(long elapsedTime) {
+    public void setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
-    public void setElapsedTime(Long elapsedTime) {
+    public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
@@ -121,5 +121,48 @@ public class TaskEntity {
 
     public void setLastStop(String lastStop) {
         this.lastStop = lastStop;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TaskEntity that = (TaskEntity) o;
+
+        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+        if (getIdUser() != null ? !getIdUser().equals(that.getIdUser()) : that.getIdUser() != null)
+            return false;
+        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null)
+            return false;
+        if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null)
+            return false;
+        if (getPriority() != null ? !getPriority().equals(that.getPriority()) : that.getPriority() != null)
+            return false;
+        if (getDeadline() != null ? !getDeadline().equals(that.getDeadline()) : that.getDeadline() != null)
+            return false;
+        if (getBreakTime() != null ? !getBreakTime().equals(that.getBreakTime()) : that.getBreakTime() != null)
+            return false;
+        if (isSolved != null ? !isSolved.equals(that.isSolved) : that.isSolved != null)
+            return false;
+        if (getElapsedTime() != null ? !getElapsedTime().equals(that.getElapsedTime()) : that.getElapsedTime() != null)
+            return false;
+        return !(getLastStop() != null ? !getLastStop().equals(that.getLastStop()) : that.getLastStop() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getIdUser() != null ? getIdUser().hashCode() : 0);
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getPriority() != null ? getPriority().hashCode() : 0);
+        result = 31 * result + (getDeadline() != null ? getDeadline().hashCode() : 0);
+        result = 31 * result + (getBreakTime() != null ? getBreakTime().hashCode() : 0);
+        result = 31 * result + (isSolved != null ? isSolved.hashCode() : 0);
+        result = 31 * result + (getElapsedTime() != null ? getElapsedTime().hashCode() : 0);
+        result = 31 * result + (getLastStop() != null ? getLastStop().hashCode() : 0);
+        return result;
     }
 }

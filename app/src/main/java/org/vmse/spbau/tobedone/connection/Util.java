@@ -178,6 +178,7 @@ public class Util {
             httpURLConnection = (HttpURLConnection) u.openConnection();
             httpURLConnection.setRequestMethod("PUT");
             httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
 
             final OutputStream os = httpURLConnection.getOutputStream();
             final BufferedWriter writer = new BufferedWriter(
@@ -253,6 +254,7 @@ public class Util {
         addParam(params, "priority", taskEntity.getPriority());
         addParam(params, "deadline", taskEntity.getDeadline());
         addParam(params, "isSolved", taskEntity.isSolved());
+        addParam(params, "breakTime", taskEntity.getBreakTime());
         addParam(params, "elapsedTime", taskEntity.getElapsedTime());
         addParam(params, "lastStop", taskEntity.getLastStop());
         for (String tag : tags) {
@@ -275,6 +277,7 @@ public class Util {
         addParam(params, "description", taskEntity.getDescription());
         addParam(params, "priority", taskEntity.getPriority());
         addParam(params, "deadline", taskEntity.getDeadline());
+        addParam(params, "breakTime", taskEntity.getBreakTime());
         addParam(params, "isSolved", taskEntity.isSolved());
         addParam(params, "elapsedTime", taskEntity.getElapsedTime());
         addParam(params, "lastStop", taskEntity.getLastStop());

@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity
             setupBackButton();
 
         } else if (id == R.id.nav_settings) {
+
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.contents_fragment_container, settingsFragment,
                     SETTINGS_FRAGMENT_TAG);
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity
         final String TASK_FRAGMENT = "TASK_FRAGMENT";
 
         EditableTaskFragment taskFragment = new EditableTaskFragment();
-        taskFragment.setTaskEntity(taskEntity);
+        taskFragment.setTaskEntity(taskEntity, true);
         taskFragment.setTags(tags);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
