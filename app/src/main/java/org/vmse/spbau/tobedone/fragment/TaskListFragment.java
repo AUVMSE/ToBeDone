@@ -115,7 +115,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
         ToBeDoneActivity toBeDoneActivity = (ToBeDoneActivity) getActivity();
 
-        toBeDoneActivity.taskChooseFromList(taskEntity, taskTagsMap.get(taskEntity));
+        toBeDoneActivity.taskChooseFromList(taskEntity, taskTagsMap.get(taskEntity.getId()));
     }
 
     @Override
