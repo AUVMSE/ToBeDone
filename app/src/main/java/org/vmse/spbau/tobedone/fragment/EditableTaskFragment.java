@@ -163,7 +163,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     }
 
     private List<String> constructNewTags() {
-        String newTags[] = editTags.getText().toString().replace("#", "").split("[,\\s;]");
+        String newTags[] = editTags.getText().toString().replace("#", "").split(" ");
         return Arrays.asList(newTags);
     }
 
