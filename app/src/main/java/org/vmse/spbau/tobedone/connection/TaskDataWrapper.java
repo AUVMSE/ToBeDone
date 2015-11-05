@@ -16,7 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author antonpp
@@ -45,6 +48,14 @@ public class TaskDataWrapper {
         return instance;
     }
 
+    public Collection<String> getAllTags() {
+        Set<String> tags = new HashSet<>();
+        for (TaskEntity taskEntity : taskEntityData) {
+            tags.addAll(taskEntity.getTags());
+        }
+        return tags;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -57,10 +68,16 @@ public class TaskDataWrapper {
         taskEntityData.add(taskEntity);
     }
 
-    public void updateTask(TaskEntity taskEntity) {
-        final TaskEntity oldTaskEntity = findTaskByName(taskEntity.getTaskname());
+    /**
+     * taskEntity must have OLD NOT CHANGED NAME!!!!
+     *
+     * @param newEntity
+     * @param oldEntity
+     */
+    public void updateTask(TaskEntity newEntity, TaskEntity oldEntity) {
+        final TaskEntity oldTaskEntity = findTaskByName(oldEntity.getTaskname());
         taskEntityData.remove(oldTaskEntity);
-        taskEntityData.add(taskEntity);
+        taskEntityData.add(newEntity);
     }
 
     private TaskEntity findTaskByName(String name) {
@@ -76,8 +93,10 @@ public class TaskDataWrapper {
         final JSONArray jsonArray = new JSONArray();
         for (TaskEntity taskEntity : taskEntityData) {
             final JSONObject jsonObject = taskEntity.toJsonObject();
+            jsonArray.put(jsonObject);
         }
         final String jsonString = jsonArray.toString();
+        Log.d(getClass().getCanonicalName(), jsonString);
         FileOutputStream outputStream;
         try {
             outputStream = context.openFileOutput(DUMP_FILE, Context.MODE_PRIVATE);
