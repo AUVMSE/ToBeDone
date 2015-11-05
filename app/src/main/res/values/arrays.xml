@@ -5,4 +5,10 @@
         <item>Longest tasks</item>
         <item>Deadlines / week day</item>
     </string-array>
+
+    <string-array name="task_filter_types">
+        <item>Filter by name</item>
+        <item>Filter by priority</item>
+        <item>Filter by tags</item>
+    </string-array>P
 </resources>

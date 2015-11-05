@@ -27,6 +27,7 @@ import org.vmse.spbau.tobedone.fragment.SettingsFragment;
 import org.vmse.spbau.tobedone.fragment.TaskChoiceFragment;
 import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
+import org.vmse.spbau.tobedone.fragment.TaskListWrapperFragment;
 import org.vmse.spbau.tobedone.statistics.ChartActivity;
 
 
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity
 
     private TaskChoiceFragment taskChoiceFragment;
     private TaskListFragment taskListFragment;
+    private TaskListWrapperFragment taskListWrapperFragment;
     private SettingsFragment settingsFragment;
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity
                 TASK_CHOICE_FRAGMENT_TAG).commit();
 
         taskListFragment = new TaskListFragment();
+        taskListWrapperFragment = new TaskListWrapperFragment();
         settingsFragment = new SettingsFragment();
         taskInProgressFragment = new TaskInProgressFragment();
     }
@@ -112,12 +115,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_show_task_list) {
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.contents_fragment_container, taskListFragment,
+            transaction.replace(R.id.contents_fragment_container, taskListWrapperFragment,
                     TASK_LIST_FRAGMENT_TAG);
             transaction.addToBackStack(null);
             transaction.commit();
-
-            setupBackButton();
 
         } else if (id == R.id.nav_settings) {
 

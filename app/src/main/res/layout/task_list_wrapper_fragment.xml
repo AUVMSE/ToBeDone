@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_height="match_parent"
+     android:layout_width="match_parent"
+     android:orientation="vertical">
+     <Spinner
+         android:id="@+id/filter_task_spinner"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:textAlignment="center"
+         android:padding="@dimen/stats_spinner_padding"
+         android:background="@drawable/spinner_shape"
+         android:layout_margin="@dimen/activity_statistics_vertical_margin"
+         android:entries="@array/task_filter_types"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/task_filter_edit"/>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+        android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/app_bar_main"
+        tools:context=".MainActivity"
+        android:id="@+id/contents_list_tasks_frame"/>
+
+
+
+</LinearLayout>

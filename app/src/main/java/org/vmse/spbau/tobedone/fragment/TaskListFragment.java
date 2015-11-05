@@ -63,6 +63,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
         }
     };
 
+
     private TaskEntityAdapter adapter;
     private Map<Long, List<String>> taskTagsMap = new HashMap<>();
     private TaskEntityPredicate currentTaskFilterPredicate = NOT_SOLVED_TASK_PREDICATE;
@@ -193,9 +194,24 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
         adapter.setData(filter(wholeListData, predicate));
     }
 
-    private interface TaskEntityPredicate { boolean apply(TaskEntity taskEntity); }
+    private interface TaskEntityPredicate { boolean apply(org.vmse.spbau.tobedone.connection.model.TaskEntity taskEntity); }
 
-    private static class TaskEntityLoader extends AsyncTaskLoader<List<TaskEntity>> {
+    private static class TaskEntityNameFilter implements TaskEntityPredicate {
+        String myFilter;
+
+        TaskEntityNameFilter(String s) {
+            myFilter = s;
+        }
+
+        @Override
+         public boolean apply(TaskEntity taskEntity) {
+            return taskEntity.getTaskname().startsWith(myFilter);
+        }
+
+
+    }
+
+    private static class TaskEntityLoader extends AsyncTaskLoader<List<org.vmse.spbau.tobedone.connection.model.TaskEntity>> {
 
         public TaskEntityLoader(Context context) {
             super(context);
@@ -207,7 +223,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
         }
 
         @Override
-        public List<TaskEntity> loadInBackground() {
+        public List<org.vmse.spbau.tobedone.connection.model.TaskEntity> loadInBackground() {
 //            try {
 //                MainApplication.getTaskDataWrapper().updateSync();
 //            } catch (JSONException e) {
