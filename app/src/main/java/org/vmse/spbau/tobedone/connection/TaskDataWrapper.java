@@ -29,10 +29,8 @@ public class TaskDataWrapper {
     private static final String DUMP_FILE = "dump.txt";
 
     private static TaskDataWrapper instance;
-
     private final String username;
     private final Context context;
-
     private List<TaskEntity> taskEntityData = new ArrayList<>();
 
     private TaskDataWrapper(String username, Context context) {
@@ -45,6 +43,10 @@ public class TaskDataWrapper {
             instance = new TaskDataWrapper(username, context);
         }
         return instance;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public List<TaskEntity> getTaskEntityData() {
