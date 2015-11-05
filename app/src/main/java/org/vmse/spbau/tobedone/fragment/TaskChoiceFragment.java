@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.TimerService;
+import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.task.TaskUtils;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
@@ -22,7 +24,7 @@ import java.util.SortedSet;
  * Created by egorbunov on 03.11.15.
  * Email: egor-mailbox@ya.ru
  */
-public class TaskChoiceFragment extends Fragment {
+public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSyncFinishedListener {
     Button btnStart;
     Button btnStop;
     Button btnSkip;
@@ -60,9 +62,13 @@ public class TaskChoiceFragment extends Fragment {
                     next();
             }
         });
-        refresh();
+        startRefreshing();
 
         return view;
+    }
+
+    public void startRefreshing() {
+        MainApplication.getTaskDataWrapper().syncDataAsync(this);
     }
 
     public void refresh() {
@@ -112,5 +118,10 @@ public class TaskChoiceFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onSyncFinished() {
+        refresh();
     }
 }
