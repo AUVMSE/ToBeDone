@@ -68,7 +68,7 @@ public class TaskUtils {
 
     public static void stop(TaskEntity task, Activity activity) {
         TaskEntity taskEntity = task.copy();
-        taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
+        taskEntity.setIsSolved(true);
         try {
             MainApplication.getTaskDataWrapper().updateTask(taskEntity);
         } catch (Exception e) {
