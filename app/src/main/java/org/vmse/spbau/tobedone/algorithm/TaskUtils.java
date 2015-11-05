@@ -78,8 +78,24 @@ public class TaskUtils {
     }
 
     public static SortedSet<TaskEntity> getSortedTaskList(Context context) {
+
         List<TaskEntity> list = MainApplication.getTaskDataWrapper().getTaskEntityData();
-        SortedSet<TaskEntity> sortedTasks = new TreeSet<>(getComparator());
+        SortedSet<TaskEntity> ss = new TreeSet(new Comparator<TaskEntity>() {
+            @Override
+            public int compare(TaskEntity lhs, TaskEntity rhs) {
+                return lhs.getLastStop().compareTo(rhs.getLastStop());
+            }
+        });
+        long max = 0;
+        for (TaskEntity te : list)
+            if (!te.isSolved()) {
+                ss.add(te);
+                max = max > te.getPriority() ? max : te.getPriority();
+            }
+        while (ss.size() > 3)
+            ss.remove(ss.last());
+
+        SortedSet<TaskEntity> sortedTasks = new TreeSet<>(getComparator(ss, max));
         for (TaskEntity te : list) {
             if (te != null && (te.isSolved() != null && !te.isSolved())) {
                 sortedTasks.add(te);
@@ -89,11 +105,13 @@ public class TaskUtils {
         return sortedTasks;
     }
 
-    public static Comparator<TaskEntity> getComparator() {
+    public static Comparator<TaskEntity> getComparator(final SortedSet<TaskEntity> prev,
+                                                       final long max) {
         return new Comparator<TaskEntity>() {
 
             private GregorianCalendar currentDate = new GregorianCalendar();
-
+            private SortedSet<TaskEntity> prevTasks = prev;
+            private long mx = max;
             @Override
             public int compare(TaskEntity t1, TaskEntity t2) {
                 if (t1.isSolved())
@@ -102,11 +120,11 @@ public class TaskUtils {
                     return -1;
 
                 long priority1 = t1.getPriority();
-//                if(prevTasks.contains(t1))
-//                    priority1 = 1;
+                if(prevTasks != null && prevTasks.contains(t1))
+                    priority1 = 1;
                 long priority2 = t2.getPriority();
-//                if(prevTasks.contains(t2))
-//                    priority2 = 1;
+                if(prevTasks != null && prevTasks.contains(t2))
+                    priority2 = 1;
 
                 String s = t1.getDeadline();
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -119,11 +137,11 @@ public class TaskUtils {
 
                 long handicap1 = gc.getTimeInMillis() - currentDate.getTimeInMillis();
                 if (handicap1 < 1 * 24 * 60 * 60 * 1000)
-                    priority1 += 3;
+                    priority1 += mx;
                 else if (handicap1 < 2 * 24 * 60 * 60 * 1000)
-                    priority1 += 2;
+                    priority1 += mx / 2;
                 else if (handicap1 < 3 * 24 * 60 * 60 * 1000)
-                    priority1 += 1;
+                    priority1 += mx / 4;
 
                 s = t2.getDeadline();
                 df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -136,11 +154,11 @@ public class TaskUtils {
 
                 long handicap2 = gc.getTimeInMillis() - currentDate.getTimeInMillis();
                 if (handicap2 < 1 * 24 * 60 * 60 * 1000)
-                    priority2 += 3;
+                    priority2 += mx;
                 else if (handicap2 < 2 * 24 * 60 * 60 * 1000)
-                    priority2 += 2;
+                    priority2 += mx / 2;
                 else if (handicap2 < 3 * 24 * 60 * 60 * 1000)
-                    priority2 += 1;
+                    priority2 += mx / 4;
 
                 if (priority1 == priority2)
                     return -1;
