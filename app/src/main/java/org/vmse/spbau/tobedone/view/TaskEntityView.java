@@ -2,12 +2,8 @@ package org.vmse.spbau.tobedone.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -65,7 +61,7 @@ public class TaskEntityView extends RelativeLayout {
 
     public void setTaskEntity(TaskEntity taskEntity) {
         this.taskEntity = taskEntity;
-        nameTextView.setText(taskEntity.getName());
+        nameTextView.setText(taskEntity.getTaskname());
         descriptionTextView.setText(taskEntity.getDescription());
         priorityTextView.setText(Long.toString(taskEntity.getPriority()));
         deadlineTextView.setText(taskEntity.getDeadline());

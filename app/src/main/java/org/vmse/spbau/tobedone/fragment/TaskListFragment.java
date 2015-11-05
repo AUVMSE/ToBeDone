@@ -19,7 +19,6 @@ import android.widget.ListView;
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
-import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.view.TaskEntityAdapter;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
@@ -35,11 +34,44 @@ import java.util.Map;
  */
 public class TaskListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<TaskEntity>> {
 
+    private final static TaskEntityPredicate ALL_TASK_PREDICATE = new TaskEntityPredicate() {
+        @Override
+        public boolean apply(TaskEntity taskEntity) {
+            return true;
+        }
+    };
+    private final static TaskEntityPredicate SOLVED_TASK_PREDICATE = new TaskEntityPredicate() {
+        @Override
+        public boolean apply(TaskEntity taskEntity) {
+            return taskEntity.isSolved();
+        }
+    };
+    private final static TaskEntityPredicate NOT_SOLVED_TASK_PREDICATE = new TaskEntityPredicate() {
+        @Override
+        public boolean apply(TaskEntity taskEntity) {
+            return !taskEntity.isSolved();
+        }
+    };
     private TaskEntityAdapter adapter;
     private Map<Long, List<String>> taskTagsMap = new HashMap<>();
     private TaskEntityPredicate currentTaskFilterPredicate = NOT_SOLVED_TASK_PREDICATE;
     private List<TaskEntity> wholeListData = null;
 
+    /**
+     * TaskEntityList filter. Use it to filter whole list and pass it to view
+     */
+    private static List<TaskEntity> filter(List<TaskEntity> list, TaskEntityPredicate predicate) {
+        if (list == null)
+            return null;
+
+        List<TaskEntity> result = new ArrayList<>();
+        for (TaskEntity element : list) {
+            if (predicate.apply(element)) {
+                result.add(element);
+            }
+        }
+        return result;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,7 +113,6 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
             case R.id.action_create_new_task:
 
                 EditableTaskFragment editableTaskFragment = new EditableTaskFragment();
-                editableTaskFragment.setTags(null);
                 editableTaskFragment.setTaskEntity(new TaskEntity(), false); // new task!
 
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -105,7 +136,6 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
         }
     }
 
-
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -115,7 +145,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
         ToBeDoneActivity toBeDoneActivity = (ToBeDoneActivity) getActivity();
 
-        toBeDoneActivity.taskChooseFromList(taskEntity, taskTagsMap.get(taskEntity.getId()));
+        toBeDoneActivity.taskChooseFromList(taskEntity);
     }
 
     @Override
@@ -131,15 +161,6 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
             setListShownNoAnimation(true);
         }
         if (data != null && !data.isEmpty()) {
-
-            for (final TaskEntity taskEntity : data) {
-                MainApplication.getTaskDataWrapper().getTagsForTask(taskEntity, new TaskDataWrapper.TagsListReceiver() {
-                    @Override
-                    public void onTagsListReceived(List<String> tags) {
-                        taskTagsMap.put(taskEntity.getId(), tags);
-                    }
-                });
-            }
             wholeListData = data;
             adapter.setData(filter(wholeListData, currentTaskFilterPredicate));
         } else {
@@ -152,6 +173,13 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
         wholeListData = null;
         adapter.setData(null);
     }
+
+    private void changeCurrentTaskFilterPredicate(TaskEntityPredicate predicate) {
+        currentTaskFilterPredicate = predicate;
+        adapter.setData(filter(wholeListData, predicate));
+    }
+
+    private interface TaskEntityPredicate { boolean apply(TaskEntity taskEntity); }
 
     private static class TaskEntityLoader extends AsyncTaskLoader<List<TaskEntity>> {
 
@@ -166,52 +194,12 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
         @Override
         public List<TaskEntity> loadInBackground() {
-            MainApplication.getTaskDataWrapper().syncDataSync();
+//            try {
+//                MainApplication.getTaskDataWrapper().updateSync();
+//            } catch (JSONException e) {
+//                Log.e(this.getClass().getName(), e.getMessage());
+//            }
             return MainApplication.getTaskDataWrapper().getTaskEntityData();
         }
     }
-
-    /**
-     *  TaskEntityList filter. Use it to filter whole list and pass it to view
-     */
-    private static List<TaskEntity> filter(List<TaskEntity> list, TaskEntityPredicate predicate) {
-        if (list == null)
-            return null;
-
-        List<TaskEntity> result = new ArrayList<>();
-        for (TaskEntity element : list) {
-            if (predicate.apply(element)) {
-                result.add(element);
-            }
-        }
-        return result;
-    }
-
-    private void changeCurrentTaskFilterPredicate(TaskEntityPredicate predicate) {
-        currentTaskFilterPredicate = predicate;
-        adapter.setData(filter(wholeListData, predicate));
-    }
-
-    private interface TaskEntityPredicate { boolean apply(TaskEntity taskEntity); }
-
-    private final static TaskEntityPredicate ALL_TASK_PREDICATE = new TaskEntityPredicate() {
-        @Override
-        public boolean apply(TaskEntity taskEntity) {
-            return true;
-        }
-    };
-
-    private final static TaskEntityPredicate SOLVED_TASK_PREDICATE = new TaskEntityPredicate() {
-        @Override
-        public boolean apply(TaskEntity taskEntity) {
-            return taskEntity.isSolved();
-        }
-    };
-
-    private final static TaskEntityPredicate NOT_SOLVED_TASK_PREDICATE = new TaskEntityPredicate() {
-        @Override
-        public boolean apply(TaskEntity taskEntity) {
-            return !taskEntity.isSolved();
-        }
-    };
 }

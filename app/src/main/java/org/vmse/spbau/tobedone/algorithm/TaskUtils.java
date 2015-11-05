@@ -56,40 +56,21 @@ public class TaskUtils {
     }
 
     public static void pause(TaskEntity task, Activity activity) {
-        TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setBreakTime(task.getBreakTime());
-        taskEntity.setDeadline(task.getDeadline());
-        taskEntity.setDescription(task.getDescription());
-        taskEntity.setName(task.getName());
-        taskEntity.setId(task.getId());
-        taskEntity.setIdUser(task.getIdUser());
-        taskEntity.setPriority(task.getPriority());
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //  HH:mm:ss
-//        taskEntity.setLastStop(df.format(new GregorianCalendar()));
-        taskEntity.setLastStop(task.getLastStop());
-        taskEntity.setIsSolved(task.isSolved());
+        TaskEntity taskEntity = task.copy();
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
+
         try {
-            MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
+            MainApplication.getTaskDataWrapper().updateTask(taskEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void stop(TaskEntity task, Activity activity) {
-        TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setBreakTime(task.getBreakTime());
-        taskEntity.setDeadline(task.getDeadline());
-        taskEntity.setDescription(task.getDescription());
-        taskEntity.setName(task.getName());
-        taskEntity.setId(task.getId());
-        taskEntity.setIdUser(task.getIdUser());
-        taskEntity.setLastStop(task.getLastStop());
-        taskEntity.setIsSolved(true);
-        taskEntity.setPriority(task.getPriority());
+        TaskEntity taskEntity = task.copy();
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
         try {
-            MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
+            MainApplication.getTaskDataWrapper().updateTask(taskEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }

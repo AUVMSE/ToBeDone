@@ -37,13 +37,44 @@ public class TaskInProgressFragment extends Fragment {
     TextView timerText;
     TaskEntity taskEntity;
     private Intent serviceIntent;
+
     boolean isRunning;
     long currentElapsedTime = 0;
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Long elapsedTime =
+                    Long.valueOf(intent.getStringExtra(RestTimerService.SECONDS_ELAPSED_PARAM));
+            timerText.setText(timeConversion(elapsedTime));
+        }
+    };
+
+    private static String dummyFormat(long x) {
+        String xs = Long.toString(x);
+        if (xs.length() == 1) {
+            xs = "0" + xs;
+        }
+        return xs;
+    }
+
+    private static String timeConversion(long totalSeconds) {
+        final int MINUTES_IN_AN_HOUR = 60;
+        final int SECONDS_IN_A_MINUTE = 60;
+
+        long seconds = totalSeconds % SECONDS_IN_A_MINUTE;
+        long totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
+        long minutes = totalMinutes % MINUTES_IN_AN_HOUR;
+        long hours = totalMinutes / MINUTES_IN_AN_HOUR;
+
+
+        return dummyFormat(hours) + ":" + dummyFormat(minutes) + ":" + dummyFormat(seconds);
+    }
+
 
     public void setTaskEntity(TaskEntity taskEntity) {
         this.taskEntity = taskEntity;
     }
-
 
     @Nullable
     @Override
@@ -142,14 +173,6 @@ public class TaskInProgressFragment extends Fragment {
         getActivity().stopService(serviceIntent);
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            currentElapsedTime =
-                    Long.valueOf(intent.getStringExtra(RestTimerService.SECONDS_ELAPSED_PARAM));
-            timerText.setText(timeConversion(currentElapsedTime));
-        }
-    };
 
     @Override
     public void onResume() {
@@ -165,24 +188,6 @@ public class TaskInProgressFragment extends Fragment {
         super.onDestroy();
     }
 
-    private static String dummyFormat(long x) {
-        String xs = Long.toString(x);
-        if (xs.length() == 1) {
-            xs = "0" + xs;
-        }
-        return xs;
-    }
-    private static String timeConversion(long totalSeconds) {
-        final int MINUTES_IN_AN_HOUR = 60;
-        final int SECONDS_IN_A_MINUTE = 60;
-
-        long seconds = totalSeconds % SECONDS_IN_A_MINUTE;
-        long totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
-        long minutes = totalMinutes % MINUTES_IN_AN_HOUR;
-        long hours = totalMinutes / MINUTES_IN_AN_HOUR;
-
-        return dummyFormat(hours) + ":" + dummyFormat(minutes) + ":" + dummyFormat(seconds);
-    }
 
 
 }
