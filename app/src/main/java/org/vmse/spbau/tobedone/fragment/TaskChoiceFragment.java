@@ -73,7 +73,7 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
         });
 
 
-        startRefreshing();
+        refresh();
         return view;
     }
 
@@ -82,11 +82,6 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
         super.onResume();
         refresh();
 
-    }
-
-    public void startRefreshing() {
-//        MainApplication.getTaskDataWrapper().updateASync(this);
-        refresh();
     }
 
     public void refresh() {

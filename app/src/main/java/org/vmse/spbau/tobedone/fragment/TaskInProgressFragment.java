@@ -160,7 +160,7 @@ public class TaskInProgressFragment extends Fragment {
         getContext().registerReceiver(broadcastReceiver,
                 new IntentFilter(RestTimerService.BROADCAST_ACTION));
         getContext().startService(serviceIntent.putExtra("elapsed", currentElapsedTime).
-                putExtra(SEC_BREAK_TIME_PARAM, 60));
+                putExtra(SEC_BREAK_TIME_PARAM, 30));
     }
 
     private void pause() {
