@@ -28,7 +28,7 @@ import java.util.List;
  * Created by Egor Gorbunov on 11/4/15.
  * email: egor-mailbox@ya.ru
  */
-public class EditableTaskFragment extends Fragment implements View.OnClickListener {
+public class EditableTaskFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
     private TaskEntity taskEntity;
     private List<String> tags;
     private boolean isForUpdate = true; // or for new task creation
@@ -42,7 +42,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     private boolean[] chosenExistingTags;
     private String[] existingTags;
     private List<String> newTags;
-
+    private long lastTimeEditTagPressed = -1;
     public EditableTaskFragment() {
     }
 
@@ -77,7 +77,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
         editDeadline.setFocusable(true);
         editDeadline.setClickable(true);
         editTags.setFocusableInTouchMode(true);
-        editTags.setFocusable(true);
+        editTags.setFocusable(false);
         editTags.setClickable(true);
         editPriority.setFocusableInTouchMode(true);
         editPriority.setFocusable(true);
@@ -124,6 +124,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
         editPriority = (EditText) view.findViewById(R.id.editPriority);
 
         editTags.setOnClickListener(this);
+        editTags.setOnLongClickListener(this);
         // before it entity and tags must be set
         if (!isForUpdate)
             fillDefault();
@@ -326,6 +327,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.editTags:
+
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Choose existing tag");
 
@@ -338,35 +340,66 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
 
 
                 });
-              /*  builder.setSingleChoiceItems("CREATE", 0, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });*/
                 builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String text = "";
-                        for (int i = 0; i < chosenExistingTags.length; i++) {
-                            if (chosenExistingTags[i]) {
-                                if (text != "")
-                                    text += ", " + existingTags[i];
-                                else
-                                    text += existingTags[i];
-                            }
-                        }
-                        for (String s : newTags) {
-                            if (text != "")
-                                text += ", " + s;
-                            else
-                                text += s;
-                        }
-                        editTags.setText(text);
+   updateTagsTextView();
                     }
                 });
                 builder.show();
                 break;
             }
         }
+    void showCreateNewTagDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Pick a name for new tag");
+        final EditText tv = new EditText(getContext());
+        builder.setView(tv);
+        builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newTag = tv.getText().toString();
+                boolean exists = false;
+                for (String s : existingTags) {
+                    if (s == newTag)
+                        exists = true;
+                }
+                for (String s : newTags) {
+                    if (s == newTag)
+                        exists = true;
+                }
+                if (!exists) {
+                    newTags.add(newTag);
+                    updateTagsTextView();
+                }
+            }
+        });
+        builder.show();
+         }
+
+    void updateTagsTextView() {
+        String text = "";
+        for (int i = 0; i < chosenExistingTags.length; i++) {
+            if (chosenExistingTags[i]) {
+                if (text != "")
+                    text += ", " + existingTags[i];
+                else
+                    text += existingTags[i];
+            }
+        }
+        for (String s : newTags) {
+            if (text != "")
+                text += ", " + s;
+            else
+                text += s;
+        }
+        editTags.setText(text);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        showCreateNewTagDialog();
+        return false;
+    }
 }
