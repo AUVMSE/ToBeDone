@@ -6,6 +6,7 @@
     <color name="mainBackgroundColor">#4d5560</color>
     <color name="mainTaskTileColor">#D7A552</color>
     <color name="posActionColor">#28b354</color>
+    <color name="deepPosActionColor">#1a813b</color>
     <color name="negActionColor">#b33428</color>
     <color name="labelColor">#111111</color>
 </resources>

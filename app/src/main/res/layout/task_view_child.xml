@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/task_card"
+        android:id="@+id/main_task_tile_layout"
         android:padding="5dp">
 
         <TableLayout

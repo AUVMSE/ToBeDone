@@ -30,7 +30,7 @@ import java.util.List;
 public class Util {
 
     public static final String TAG = Util.class.getName();
-    private static final String IP = "192.168.1.19";
+    private static final String IP = "192.168.1.87";
     private static final String SERVER_ADDRESS = "http://" + IP + ":8080/";
     private static final String TAGS_API_ADDRESS = SERVER_ADDRESS + "api/tags";
     private static final String USERS_API_ADDRESS = SERVER_ADDRESS + "api/users";
@@ -200,10 +200,23 @@ public class Util {
         return jsonString;
     }
 
-    public static void addUser(String name) {
+    /**
+     * @return user id
+     */
+    public static Long addUser(String name)  {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new NameValuePair("name", name));
-        sendPOST(USERS_API_ADDRESS, params);
+        String jsonUserId = sendPOST(USERS_API_ADDRESS, params);
+
+        JSONObject jsonObject = null;
+        Long userId = null;
+        try {
+            jsonObject = new JSONObject(jsonUserId);
+            userId = jsonObject.getLong("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return userId;
     }
 
     private static String getQuery(List<NameValuePair> params) throws UnsupportedEncodingException {
