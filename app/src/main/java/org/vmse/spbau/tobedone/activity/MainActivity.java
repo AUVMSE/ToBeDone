@@ -1,7 +1,9 @@
 package org.vmse.spbau.tobedone.activity;
 
 import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -130,7 +132,23 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, StatisticsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_synchronize) {
-            MainApplication.getTaskDataWrapper().updateASync(this);
+
+            try {
+                MainApplication.getTaskDataWrapper().updateASync(this);
+            } catch (TaskDataWrapper.SyncException e) {
+                Log.e(getClass().getCanonicalName(), e.getMessage());
+                new AlertDialog.Builder(this)
+                        .setTitle("Error...")
+                        .setMessage("Can't synchronize with server =(")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+
             progressDialog = ProgressDialog.show(this, "Synchronization with server...", "Please wait", true);
         }
 
