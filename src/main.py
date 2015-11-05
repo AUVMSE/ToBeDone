@@ -31,7 +31,7 @@ class Tasks:
 
         return result_str
 
-    def POST(self, taskname, username, description, priority, deadline, breakTime=0, isSolved=False, elapsedTime=0, lastStop=None, isDeleted=false, tags=[]):
+    def POST(self, taskname, username, description, priority, deadline, breakTime=0, isSolved=False, elapsedTime=0, lastStop=None, isDeleted=False, tags=[]):
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
