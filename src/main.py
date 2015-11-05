@@ -24,14 +24,14 @@ class Tasks:
                 taskname = row[0]
                 cur.execute("SELECT tag FROM TaskTag WHERE username='{0}' and taskname='{1}'".format(username, taskname))
                 tags = [x[0] for x in cur.fetchall()]
-                result.append({"taskname":row[0], "username":row[1], "description":row[2], "priority":row[3], "deadline":str(row[4]), "breakTime":row[5], "isSolved":row[6], "elapsedTime":row[7],"lastStop":str(row[8]), "tags":tags})
+                result.append({"taskname":row[0], "username":row[1], "description":row[2], "priority":row[3], "deadline":str(row[4]), "breakTime":row[5], "isSolved":row[6], "elapsedTime":row[7],"lastStop":str(row[8]),"isDeleted":str(row[9]), "tags":tags})
             result_str = json.dumps(result)
         finally:
             pg_pool.putconn(db)
 
         return result_str
 
-    def POST(self, taskname, username, description, priority, deadline, breakTime=0, isSolved=False, elapsedTime=0, lastStop=None, tags=[]):
+    def POST(self, taskname, username, description, priority, deadline, breakTime=0, isSolved=False, elapsedTime=0, lastStop=None, isDeleted=false, tags=[]):
         db = pg_pool.getconn()
         try:
             cur = db.cursor()
@@ -44,8 +44,8 @@ class Tasks:
 
             for tag in tags:
                 cur.execute("INSERT INTO TaskTag (taskname, username, tag) VALUES ('{0}', '{1}', '{2}')".format(taskname, username, tag))
-            insertQuery = "INSERT INTO Task (taskname, username, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"            
-            cur.execute(insertQuery, (taskname, username, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop))
+            insertQuery = "INSERT INTO Task (taskname, username, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, isDeleted) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"            
+            cur.execute(insertQuery, (taskname, username, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, isDeleted))
             
             db.commit()
         finally:
