@@ -41,10 +41,12 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     private String[] existingTags;
     private List<String> newTags;
     private long lastTimeEditTagPressed = -1;
+    private boolean isEditable;
     public EditableTaskFragment() {
     }
 
     private void setIsEditable(boolean isEditable) {
+        this.isEditable = isEditable;
         editName.setFocusableInTouchMode(isEditable);
         editName.setFocusable(isEditable);
         editName.setClickable(isEditable);
@@ -81,6 +83,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        
         chosenExistingTags = new boolean[4];
         existingTags = new String[4];
         for (int i = 0; i < 4; i++) {
@@ -268,6 +271,8 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+        if (!isEditable)
+            return;
         switch (v.getId()) {
             case R.id.editTags:
                 showChooseExistingTagDIalog();
@@ -284,7 +289,6 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 chosenExistingTags[which] = isChecked;
-
             }
 
 
@@ -347,7 +351,13 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
 
     @Override
     public boolean onLongClick(View v) {
-        showCreateNewTagDialog();
+        if (!isEditable)
+            return false;
+        switch (v.getId()) {
+            case R.id.editTags:
+                showCreateNewTagDialog();
+                break;
+        }
         return false;
     }
 }
