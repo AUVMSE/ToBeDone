@@ -155,7 +155,7 @@ public class TaskInProgressFragment extends Fragment {
 
                 TaskEntity newTaskEntity = taskEntity.copy();
                 newTaskEntity.setIsSolved(true);
-                MainApplication.getTaskDataWrapper().updateTask(newTaskEntity);
+                MainApplication.getTaskDataWrapper().updateTask(newTaskEntity, taskEntity);
                 taskEntity = newTaskEntity;
 
                 new AlertDialog.Builder(getContext())

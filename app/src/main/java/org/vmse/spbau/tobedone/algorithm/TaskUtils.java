@@ -60,7 +60,7 @@ public class TaskUtils {
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
 
         try {
-            MainApplication.getTaskDataWrapper().updateTask(taskEntity);
+            MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +70,7 @@ public class TaskUtils {
         TaskEntity taskEntity = task.copy();
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
         try {
-            MainApplication.getTaskDataWrapper().updateTask(taskEntity);
+            MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
         } catch (Exception e) {
             e.printStackTrace();
         }
