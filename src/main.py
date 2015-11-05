@@ -41,8 +41,10 @@ class Tasks:
 
             cur.execute("DELETE FROM TaskTag WHERE username='{0}' and taskname='{1}'".format(username, taskname))
             cur.execute("DELETE FROM Task WHERE username='{0}' and taskname='{1}'".format(username, taskname))
-
+            if isinstance(tags, basestring):
+                tags = [tags]
             for tag in tags:
+                print tag
                 cur.execute("INSERT INTO TaskTag (taskname, username, tag) VALUES ('{0}', '{1}', '{2}')".format(taskname, username, tag))
             insertQuery = "INSERT INTO Task (taskname, username, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, isDeleted) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"            
             cur.execute(insertQuery, (taskname, username, description, priority, deadline, breakTime, isSolved, elapsedTime, lastStop, isDeleted))
