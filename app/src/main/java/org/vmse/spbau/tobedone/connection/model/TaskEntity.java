@@ -22,7 +22,7 @@ public class TaskEntity {
     private String description;
     private Long priority;
     private String deadline;
-    private Long breakTime = 0L;
+    private Long breakTime = 30L * 60L;
     private Boolean isSolved = false;
     private Long elapsedTime = 0L; //seconds
     private String lastStop = new String();
@@ -43,6 +43,12 @@ public class TaskEntity {
         taskEntity.setIsSolved(jsonObject.getBoolean("isSolved"));
         taskEntity.setElapsedTime(jsonObject.getLong("elapsedTime"));
         taskEntity.setLastStop(jsonObject.getString("lastStop"));
+        JSONArray jsonArray = jsonObject.getJSONArray("tags");
+        List<String> tags = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            tags.add(jsonArray.getString(i));
+        }
+        taskEntity.setTags(tags);
         return taskEntity;
     }
 
