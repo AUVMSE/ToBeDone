@@ -88,7 +88,7 @@ public class TaskUtils {
         });
         long max = 0;
         for (TaskEntity te : list)
-            if (!te.isSolved()) {
+            if (!te.isSolved() && !te.isDeleted()) {
                 ss.add(te);
                 max = max > te.getPriority() ? max : te.getPriority();
             }
@@ -97,7 +97,7 @@ public class TaskUtils {
 
         SortedSet<TaskEntity> sortedTasks = new TreeSet<>(getComparator(ss, max));
         for (TaskEntity te : list) {
-            if (te != null && (te.isSolved() != null && !te.isSolved())) {
+            if (te != null && te.isSolved() != null && !te.isSolved() && !te.isDeleted()) {
                 sortedTasks.add(te);
             }
         }
