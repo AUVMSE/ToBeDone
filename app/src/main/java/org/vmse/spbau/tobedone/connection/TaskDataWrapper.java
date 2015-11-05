@@ -56,14 +56,14 @@ public class TaskDataWrapper {
     }
 
     public void updateTask(TaskEntity taskEntity) {
-        final TaskEntity oldTaskEntity = findTaskByName(taskEntity.getName());
+        final TaskEntity oldTaskEntity = findTaskByName(taskEntity.getTaskname());
         taskEntityData.remove(oldTaskEntity);
         taskEntityData.add(taskEntity);
     }
 
     private TaskEntity findTaskByName(String name) {
         for (TaskEntity t : taskEntityData) {
-            if (t.getName().equals(name)) {
+            if (t.getTaskname().equals(name)) {
                 return t;
             }
         }

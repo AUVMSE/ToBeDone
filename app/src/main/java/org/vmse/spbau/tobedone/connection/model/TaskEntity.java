@@ -16,7 +16,8 @@ public class TaskEntity {
 
     public static final long CREATED_OFFLINE = -1;
 
-    private String name;
+    private String taskname;
+    private String username;
     private String description;
     private Long priority;
     private String deadline;
@@ -32,7 +33,8 @@ public class TaskEntity {
 
     public static TaskEntity taskFromJson(JSONObject jsonObject) throws JSONException {
         final TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setName(jsonObject.getString("name"));
+        taskEntity.setUsername(jsonObject.getString("username"));
+        taskEntity.setTaskname(jsonObject.getString("taskname"));
         taskEntity.setDescription(jsonObject.getString("description"));
         taskEntity.setPriority(jsonObject.getLong("priority"));
         taskEntity.setDeadline(jsonObject.getString("deadline"));
@@ -41,6 +43,22 @@ public class TaskEntity {
         taskEntity.setElapsedTime(jsonObject.getLong("elapsedTime"));
         taskEntity.setLastStop(jsonObject.getString("lastStop"));
         return taskEntity;
+    }
+
+    public String getTaskname() {
+        return taskname;
+    }
+
+    public void setTaskname(String taskname) {
+        this.taskname = taskname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public TaskEntity copy() {
@@ -58,14 +76,6 @@ public class TaskEntity {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
@@ -140,50 +150,10 @@ public class TaskEntity {
         this.lastStop = lastStop;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TaskEntity that = (TaskEntity) o;
-
-        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null)
-            return false;
-        if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null)
-            return false;
-        if (getPriority() != null ? !getPriority().equals(that.getPriority()) : that.getPriority() != null)
-            return false;
-        if (getDeadline() != null ? !getDeadline().equals(that.getDeadline()) : that.getDeadline() != null)
-            return false;
-        if (getBreakTime() != null ? !getBreakTime().equals(that.getBreakTime()) : that.getBreakTime() != null)
-            return false;
-        if (isSolved != null ? !isSolved.equals(that.isSolved) : that.isSolved != null)
-            return false;
-        if (getElapsedTime() != null ? !getElapsedTime().equals(that.getElapsedTime()) : that.getElapsedTime() != null)
-            return false;
-        if (getLastStop() != null ? !getLastStop().equals(that.getLastStop()) : that.getLastStop() != null)
-            return false;
-        return !(getTags() != null ? !getTags().equals(that.getTags()) : that.getTags() != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getName() != null ? getName().hashCode() : 0;
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getPriority() != null ? getPriority().hashCode() : 0);
-        result = 31 * result + (getDeadline() != null ? getDeadline().hashCode() : 0);
-        result = 31 * result + (getBreakTime() != null ? getBreakTime().hashCode() : 0);
-        result = 31 * result + (isSolved != null ? isSolved.hashCode() : 0);
-        result = 31 * result + (getElapsedTime() != null ? getElapsedTime().hashCode() : 0);
-        result = 31 * result + (getLastStop() != null ? getLastStop().hashCode() : 0);
-        result = 31 * result + (getTags() != null ? getTags().hashCode() : 0);
-        return result;
-    }
-
     public JSONObject toJsonObject() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", name);
+        jsonObject.put("taskname", taskname);
+        jsonObject.put("username", username);
         jsonObject.put("description", description);
         jsonObject.put("priority", priority);
         jsonObject.put("deadline", deadline);

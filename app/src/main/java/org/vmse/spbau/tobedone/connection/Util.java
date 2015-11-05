@@ -132,8 +132,8 @@ public class Util {
         return result.toString();
     }
 
-    public static List<TaskEntity> getAllTasksForUser(String name) throws JSONException {
-        final JSONArray jsonArray = new JSONArray(getJSONStringFromUrl(TASKS_API_ADDRESS + "?name=" + name));
+    public static List<TaskEntity> getAllTasksForUser(String username) throws JSONException {
+        final JSONArray jsonArray = new JSONArray(getJSONStringFromUrl(TASKS_API_ADDRESS + "?username=" + username));
         final int n = jsonArray.length();
         final List<TaskEntity> result = new ArrayList<>(n);
         for (int i = 0; i < n; ++i) {
@@ -145,7 +145,8 @@ public class Util {
 
     public static String addTask(TaskEntity taskEntity) {
         List<NameValuePair> params = new ArrayList<>();
-        addParam(params, "name", taskEntity.getName());
+        addParam(params, "taskname", taskEntity.getTaskname());
+        addParam(params, "username", taskEntity.getUsername());
         addParam(params, "description", taskEntity.getDescription());
         addParam(params, "priority", taskEntity.getPriority());
         addParam(params, "deadline", taskEntity.getDeadline());
