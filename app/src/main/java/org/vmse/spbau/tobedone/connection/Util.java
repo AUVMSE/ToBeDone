@@ -30,7 +30,7 @@ import java.util.List;
 public class Util {
 
     public static final String TAG = Util.class.getName();
-    private static final String IP = "192.168.1.35";
+    private static final String IP = "192.168.1.19";
     private static final String SERVER_ADDRESS = "http://" + IP + ":8080/";
     private static final String TAGS_API_ADDRESS = SERVER_ADDRESS + "api/tags";
     private static final String USERS_API_ADDRESS = SERVER_ADDRESS + "api/users";
@@ -171,13 +171,14 @@ public class Util {
 
     private static String sendPUT(String url, List<NameValuePair> params) {
         HttpURLConnection httpURLConnection = null;
-        String jsonString = null;
+        String result = null;
 
         try {
             final URL u = new URL(url);
             httpURLConnection = (HttpURLConnection) u.openConnection();
             httpURLConnection.setRequestMethod("PUT");
             httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
 
             final OutputStream os = httpURLConnection.getOutputStream();
             final BufferedWriter writer = new BufferedWriter(
@@ -187,7 +188,7 @@ public class Util {
             writer.close();
             os.close();
 
-            jsonString = getResponse(httpURLConnection);
+            result = getResponse(httpURLConnection);
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         } finally {
@@ -196,7 +197,7 @@ public class Util {
             }
         }
 
-        return jsonString;
+        return result;
     }
 
     public static void addUser(String name) {
@@ -253,6 +254,7 @@ public class Util {
         addParam(params, "priority", taskEntity.getPriority());
         addParam(params, "deadline", taskEntity.getDeadline());
         addParam(params, "isSolved", taskEntity.isSolved());
+        addParam(params, "breakTime", taskEntity.getBreakTime());
         addParam(params, "elapsedTime", taskEntity.getElapsedTime());
         addParam(params, "lastStop", taskEntity.getLastStop());
         for (String tag : tags) {
@@ -275,6 +277,7 @@ public class Util {
         addParam(params, "description", taskEntity.getDescription());
         addParam(params, "priority", taskEntity.getPriority());
         addParam(params, "deadline", taskEntity.getDeadline());
+        addParam(params, "breakTime", taskEntity.getBreakTime());
         addParam(params, "isSolved", taskEntity.isSolved());
         addParam(params, "elapsedTime", taskEntity.getElapsedTime());
         addParam(params, "lastStop", taskEntity.getLastStop());
