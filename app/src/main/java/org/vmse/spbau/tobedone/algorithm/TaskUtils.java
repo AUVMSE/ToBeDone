@@ -1,4 +1,4 @@
-package org.vmse.spbau.tobedone.task;
+package org.vmse.spbau.tobedone.algorithm;
 
 import android.app.Activity;
 import android.content.Context;

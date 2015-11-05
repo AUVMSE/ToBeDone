@@ -12,9 +12,9 @@ import android.widget.Button;
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.TimerService;
+import org.vmse.spbau.tobedone.algorithm.TaskUtils;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
-import org.vmse.spbau.tobedone.task.TaskUtils;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
 
 import java.util.Iterator;
