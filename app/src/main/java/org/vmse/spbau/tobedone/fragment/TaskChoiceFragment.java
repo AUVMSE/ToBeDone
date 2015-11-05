@@ -85,7 +85,8 @@ public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSy
     }
 
     public void startRefreshing() {
-        MainApplication.getTaskDataWrapper().updateASync(this);
+//        MainApplication.getTaskDataWrapper().updateASync(this);
+        refresh();
     }
 
     public void refresh() {
