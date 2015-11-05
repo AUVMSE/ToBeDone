@@ -22,7 +22,7 @@ public class TaskEntity {
     private String description;
     private Long priority;
     private String deadline;
-    private Long breakTime = 0L;
+    private Long breakTime = 30L * 60L;
     private Boolean isSolved = false;
     private Long elapsedTime = 0L; //seconds
     private String lastStop = new String();
@@ -97,11 +97,11 @@ public class TaskEntity {
         return priority;
     }
 
-    public void setPriority(Long priority) {
+    public void setPriority(long priority) {
         this.priority = priority;
     }
 
-    public void setPriority(long priority) {
+    public void setPriority(Long priority) {
         this.priority = priority;
     }
 
@@ -117,11 +117,11 @@ public class TaskEntity {
         return breakTime;
     }
 
-    public void setBreakTime(Long breakTime) {
+    public void setBreakTime(long breakTime) {
         this.breakTime = breakTime;
     }
 
-    public void setBreakTime(long breakTime) {
+    public void setBreakTime(Long breakTime) {
         this.breakTime = breakTime;
     }
 
@@ -141,11 +141,11 @@ public class TaskEntity {
         return elapsedTime;
     }
 
-    public void setElapsedTime(Long elapsedTime) {
+    public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
-    public void setElapsedTime(long elapsedTime) {
+    public void setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
