@@ -35,7 +35,7 @@ public class TimerService extends Service {
     public void onCreate() {
         // cancel if already existed
 
-        if(mTimer != null) {
+        if (mTimer != null) {
             mTimer.cancel();
         } else {
             // recreate new

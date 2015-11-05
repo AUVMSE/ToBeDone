@@ -24,12 +24,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LastLongestTasksFragment extends ChartFragment implements OnChartValueSelectedListener {
 
-    private BarChart chart;
     public static final int LONGEST_TASKS_NUMBER = 10;
-    private HashMap<Integer, String> entryNames;
+    private BarChart chart;
+    private Map<Integer, String> entryNames;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,7 +57,7 @@ public class LastLongestTasksFragment extends ChartFragment implements OnChartVa
         Comparator<TaskEntity> cmp = new Comparator<TaskEntity>() {
             @Override
             public int compare(TaskEntity lhs, TaskEntity rhs) {
-                return (int)(rhs.getElapsedTime() - lhs.getElapsedTime());
+                return (int) (rhs.getElapsedTime() - lhs.getElapsedTime());
             }
         };
 
@@ -81,7 +82,7 @@ public class LastLongestTasksFragment extends ChartFragment implements OnChartVa
         BarDataSet set1 = new BarDataSet(yVals1, "Longest tasks");
         set1.setBarSpacePercent(35f);
 
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+        List<BarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
 
         BarData data = new BarData(xVals, dataSets);

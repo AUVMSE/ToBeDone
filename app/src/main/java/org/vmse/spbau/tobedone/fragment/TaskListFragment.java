@@ -18,18 +18,15 @@ import android.widget.ListView;
 
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
-import org.vmse.spbau.tobedone.activity.MainActivity;
 import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.view.TaskEntityAdapter;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by Egor Gorbunov on 11/3/15.

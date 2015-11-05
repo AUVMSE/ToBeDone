@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.TimerService;
+import org.vmse.spbau.tobedone.algorithm.TaskUtils;
+import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
-import org.vmse.spbau.tobedone.task.TaskUtils;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
 
 import java.util.Iterator;
@@ -22,24 +24,24 @@ import java.util.SortedSet;
  * Created by egorbunov on 03.11.15.
  * Email: egor-mailbox@ya.ru
  */
-public class TaskChoiceFragment extends Fragment {
-    private boolean isStart = false;
+public class TaskChoiceFragment extends Fragment implements TaskDataWrapper.OnSyncFinishedListener {
     Button btnStart;
     Button btnStop;
     Button btnSkip;
     TaskEntityView taskEntityView;
     TaskEntity taskEntity;
-    SortedSet sortedSet;
+    SortedSet<TaskEntity> sortedSet;
     Iterator<TaskEntity> it;
+    private boolean isStart = false;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.task_choose_fragment, container, false);
-        btnStart = (Button)view.findViewById(R.id.taskChooseFragment_startButton);
-        btnStop = (Button)view.findViewById(R.id.taskChooseFragment_stopButton);
-        btnSkip = (Button)view.findViewById(R.id.taskChooseFragment_skipButton);
-        taskEntityView = (TaskEntityView)view.findViewById(R.id.taskChooseFragment_view);
+        btnStart = (Button) view.findViewById(R.id.taskChooseFragment_startButton);
+        btnStop = (Button) view.findViewById(R.id.taskChooseFragment_stopButton);
+        btnSkip = (Button) view.findViewById(R.id.taskChooseFragment_skipButton);
+        taskEntityView = (TaskEntityView) view.findViewById(R.id.taskChooseFragment_view);
         taskEntity = null;
         sortedSet = null;
         btnStart.setOnClickListener(null);
@@ -60,9 +62,13 @@ public class TaskChoiceFragment extends Fragment {
                     next();
             }
         });
-        refresh();
+        startRefreshing();
 
         return view;
+    }
+
+    public void startRefreshing() {
+        MainApplication.getTaskDataWrapper().syncDataAsync(this);
     }
 
     public void refresh() {
@@ -113,7 +119,7 @@ public class TaskChoiceFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onSyncFinished() {
+        refresh();
     }
 }
