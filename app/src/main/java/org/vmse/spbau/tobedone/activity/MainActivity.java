@@ -25,8 +25,6 @@ import org.vmse.spbau.tobedone.fragment.TaskInProgressFragment;
 import org.vmse.spbau.tobedone.fragment.TaskListFragment;
 import org.vmse.spbau.tobedone.statistics.StatisticsActivity;
 
-import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToBeDoneActivity {
@@ -192,33 +190,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void taskChooseFromList(TaskEntity taskEntity, List<String> tags) {
+    public void taskChooseFromList(TaskEntity taskEntity) {
         final String TASK_FRAGMENT = "TASK_FRAGMENT";
 
         EditableTaskFragment taskFragment = new EditableTaskFragment();
         taskFragment.setTaskEntity(taskEntity, true);
-        taskFragment.setTags(tags);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.contents_fragment_container, taskFragment,
                 TASK_FRAGMENT);
         transaction.addToBackStack(null);
         transaction.commit();
-    }
-
-    @Override
-    public void finishTask(TaskEntity taskEntity) {
-
-    }
-
-    @Override
-    public void removeTask(TaskEntity taskEntity) {
-
-    }
-
-    @Override
-    public void updateTask(TaskEntity taskEntity) {
-
     }
 
 }

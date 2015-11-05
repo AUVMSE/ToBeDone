@@ -1,5 +1,14 @@
 package org.vmse.spbau.tobedone.connection.model;
 
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author antonpp
  * @since 04/11/15
@@ -8,47 +17,66 @@ public class TaskEntity {
 
     public static final long CREATED_OFFLINE = -1;
 
-    private Long id = CREATED_OFFLINE;
-    private Long idUser;
-    private String name;
+    private String taskname;
+    private String username;
     private String description;
     private Long priority;
     private String deadline;
-    private Long breakTime;
-    private Boolean isSolved;
-    private Long elapsedTime; //seconds
-    private String lastStop;
+    private Long breakTime = 0L;
+    private Boolean isSolved = false;
+    private Long elapsedTime = 0L; //seconds
+    private String lastStop = new String();
+    private List<String> tags = new ArrayList<>();
 
     public static long getCreatedOffline() {
         return CREATED_OFFLINE;
     }
 
-    public Long getId() {
-        return id;
+    public static TaskEntity taskFromJson(JSONObject jsonObject) throws JSONException {
+        final TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setUsername(jsonObject.getString("username"));
+        taskEntity.setTaskname(jsonObject.getString("taskname"));
+        taskEntity.setDescription(jsonObject.getString("description"));
+        taskEntity.setPriority(jsonObject.getLong("priority"));
+        taskEntity.setDeadline(jsonObject.getString("deadline"));
+        taskEntity.setBreakTime(jsonObject.getLong("breakTime"));
+        taskEntity.setIsSolved(jsonObject.getBoolean("isSolved"));
+        taskEntity.setElapsedTime(jsonObject.getLong("elapsedTime"));
+        taskEntity.setLastStop(jsonObject.getString("lastStop"));
+        return taskEntity;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getTaskname() {
+        return taskname;
     }
 
-    public Long getIdUser() {
-        return idUser;
+    public void setTaskname(String taskname) {
+        this.taskname = taskname;
     }
 
-    public void setIdUser(Long idUser) {
-        this.idUser = idUser;
+    public String getUsername() {
+        return username;
     }
 
-    public void setIdUser(long idUser) {
-        this.idUser = idUser;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public TaskEntity copy() {
+        try {
+            return taskFromJson(toJsonObject());
+        } catch (JSONException e) {
+            Log.e("WOW", "LAH: " + e.getMessage());
+        }
+        return null;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags == null ? new ArrayList<String>() : new ArrayList<>(tags);
     }
 
     public String getDescription() {
@@ -63,11 +91,11 @@ public class TaskEntity {
         return priority;
     }
 
-    public void setPriority(Long priority) {
+    public void setPriority(long priority) {
         this.priority = priority;
     }
 
-    public void setPriority(long priority) {
+    public void setPriority(Long priority) {
         this.priority = priority;
     }
 
@@ -83,11 +111,11 @@ public class TaskEntity {
         return breakTime;
     }
 
-    public void setBreakTime(Long breakTime) {
+    public void setBreakTime(long breakTime) {
         this.breakTime = breakTime;
     }
 
-    public void setBreakTime(long breakTime) {
+    public void setBreakTime(Long breakTime) {
         this.breakTime = breakTime;
     }
 
@@ -107,11 +135,11 @@ public class TaskEntity {
         return elapsedTime;
     }
 
-    public void setElapsedTime(Long elapsedTime) {
+    public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
-    public void setElapsedTime(long elapsedTime) {
+    public void setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
@@ -123,62 +151,22 @@ public class TaskEntity {
         this.lastStop = lastStop;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TaskEntity that = (TaskEntity) o;
-
-         if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-      if (getIdUser() != null ? !getIdUser().equals(that.getIdUser()) : that.getIdUser() != null)
-           return false;
-   if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null)
-          return false;
-    if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null)
-          return false;
-       if (getPriority() != null ? !getPriority().equals(that.getPriority()) : that.getPriority() != null)
-           return false;
-      if (getDeadline() != null ? !getDeadline().equals(that.getDeadline()) : that.getDeadline() != null)
-           return false;
-      if (getBreakTime() != null ? !getBreakTime().equals(that.getBreakTime()) : that.getBreakTime() != null)
-          return false;
-     if (isSolved != null ? !isSolved.equals(that.isSolved) : that.isSolved != null)
-           return false;
-      if (getElapsedTime() != null ? !getElapsedTime().equals(that.getElapsedTime()) : that.getElapsedTime() != null)
-           return false;
-    return !(getLastStop() != null ? !getLastStop().equals(that.getLastStop()) : that.getLastStop() != null);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getIdUser() != null ? getIdUser().hashCode() : 0);
-        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getPriority() != null ? getPriority().hashCode() : 0);
-        result = 31 * result + (getDeadline() != null ? getDeadline().hashCode() : 0);
-        result = 31 * result + (getBreakTime() != null ? getBreakTime().hashCode() : 0);
-        result = 31 * result + (isSolved != null ? isSolved.hashCode() : 0);
-        result = 31 * result + (getElapsedTime() != null ? getElapsedTime().hashCode() : 0);
-        result = 31 * result + (getLastStop() != null ? getLastStop().hashCode() : 0);
-        return result;
-    }
-
-    public TaskEntity copy() {
-        TaskEntity newTaskEntity = new TaskEntity();
-
-        newTaskEntity.setId(getId());
-        newTaskEntity.setBreakTime(getBreakTime());
-        newTaskEntity.setDeadline(getDeadline());
-        newTaskEntity.setDescription(getDescription());
-        newTaskEntity.setElapsedTime(getElapsedTime());
-        newTaskEntity.setIsSolved(isSolved());
-        newTaskEntity.setLastStop(getLastStop());
-        newTaskEntity.setPriority(getPriority());
-        newTaskEntity.setIdUser(getIdUser());
-        newTaskEntity.setName(getName());
-
-        return newTaskEntity;
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("taskname", taskname);
+        jsonObject.put("username", username);
+        jsonObject.put("description", description);
+        jsonObject.put("priority", priority);
+        jsonObject.put("deadline", deadline);
+        jsonObject.put("breakTime", breakTime);
+        jsonObject.put("isSolved", isSolved());
+        jsonObject.put("elapsedTime", elapsedTime);
+        jsonObject.put("lastStop", lastStop);
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : tags) {
+            jsonArray.put(tag);
+        }
+        jsonObject.put("tags", jsonArray);
+        return jsonObject;
     }
 }

@@ -26,7 +26,7 @@ public class MainApplication extends Application {
         super.onCreate();
         final Account[] accounts = AccountManager.get(getApplicationContext()).
                 getAccountsByType("com.google");
-        taskDataWrapper = TaskDataWrapper.getInstance(this, accounts[0].name);
+        taskDataWrapper = TaskDataWrapper.getInstance(accounts[0].name, this);
         try {
             taskDataWrapper.loadState();
         } catch (JSONException e) {

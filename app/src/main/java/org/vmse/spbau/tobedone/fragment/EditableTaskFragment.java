@@ -16,13 +16,12 @@ import android.widget.Toast;
 
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
-import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
-import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Egor Gorbunov on 11/4/15.
@@ -30,7 +29,6 @@ import java.util.List;
  */
 public class EditableTaskFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
     private TaskEntity taskEntity;
-    private List<String> tags;
     private boolean isForUpdate = true; // or for new task creation
 
     private EditText editName;
@@ -46,54 +44,34 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     public EditableTaskFragment() {
     }
 
-
-    private void setAllUneditable() {
-        editName.setFocusableInTouchMode(false);
-        editName.setFocusable(false);
-        editName.setClickable(false);
-        editName.setFocusableInTouchMode(false);
-        editDescription.setFocusable(false);
-        editDescription.setClickable(false);
-        editName.setFocusableInTouchMode(false);
-        editDeadline.setFocusable(false);
-        editDeadline.setClickable(false);
-        editName.setFocusableInTouchMode(false);
-        editTags.setFocusable(false);
-        editTags.setClickable(false);
-        editPriority.setFocusableInTouchMode(false);
-        editPriority.setFocusable(false);
-        editPriority.setClickable(false);
-
-    }
-
-    private void setAllEditable() {
-        editName.setFocusableInTouchMode(true);
-        editName.setFocusable(true);
-        editName.setClickable(true);
-        editDescription.setFocusableInTouchMode(true);
-        editDescription.setFocusable(true);
-        editDescription.setClickable(true);
-        editDeadline.setFocusableInTouchMode(true);
-        editDeadline.setFocusable(true);
-        editDeadline.setClickable(true);
-        editTags.setFocusableInTouchMode(true);
-        editTags.setFocusable(false);
-        editTags.setClickable(true);
-        editPriority.setFocusableInTouchMode(true);
-        editPriority.setFocusable(true);
-        editPriority.setClickable(true);
+    private void setIsEditable(boolean isEditable) {
+        editName.setFocusableInTouchMode(isEditable);
+        editName.setFocusable(isEditable);
+        editName.setClickable(isEditable);
+        editDescription.setFocusableInTouchMode(isEditable);
+        editDescription.setFocusable(isEditable);
+        editDescription.setClickable(isEditable);
+        editDeadline.setFocusableInTouchMode(isEditable);
+        editDeadline.setFocusable(isEditable);
+        editDeadline.setClickable(isEditable);
+        editTags.setFocusableInTouchMode(isEditable);
+        editTags.setFocusable(isEditable);
+        editTags.setClickable(isEditable);
+        editPriority.setFocusableInTouchMode(isEditable);
+        editPriority.setFocusable(isEditable);
+        editPriority.setClickable(isEditable);
     }
 
     private void fillForm() {
-        editName.setText(taskEntity.getName());
+        editName.setText(taskEntity.getTaskname());
         editDeadline.setText(taskEntity.getDeadline());
         editDescription.setText(taskEntity.getDescription());
         editPriority.setText(Long.toString(taskEntity.getPriority()));
 
         String tagString = "";
-        if (tags != null) {
-            for (String tag : tags) {
-                tagString += "#" + tag + " ";
+        if (taskEntity.getTags() != null) {
+            for (String tag : taskEntity.getTags()) {
+                tagString += tag + " ";
             }
         }
         editTags.setText(tagString);
@@ -135,18 +113,13 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     }
 
     private void fillDefault() {
-        taskEntity.setPriority(0);
-        taskEntity.setIdUser(MainApplication.getTaskDataWrapper().getUserId());
-        taskEntity.setName("");
+        taskEntity.setPriority(1);
+        taskEntity.setTaskname("task" + new Random().nextInt(10000));
+        taskEntity.setUsername(MainApplication.getTaskDataWrapper().getUsername());
         taskEntity.setDeadline("2015-09-05");
         taskEntity.setDescription("");
         taskEntity.setIsSolved(false);
-
-//        tags = new ArrayList<String>() {{
-//            add("university");
-//            add("study");
-//            add("ha");
-//        }};
+        taskEntity.setTags(null);
     }
 
     @Override
@@ -158,10 +131,10 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         this.menu = menu;
         if (isForUpdate) {
-            setAllUneditable();
+            setIsEditable(false);
             getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
         } else {
-            setAllEditable();
+            setIsEditable(true);
             getActivity().getMenuInflater().inflate(R.menu.task_edit_menu, menu);
         }
     }
@@ -176,10 +149,6 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
         this.taskEntity = taskEntity;
     }
 
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
     private String checkFields() {
         if (editName.length() <= 0) {
             return "Task name can't be empty!";
@@ -192,32 +161,21 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
         return null;
     }
 
-    private TaskEntity constructNewTaskEntity() {
-        TaskEntity newTaskEntity = new TaskEntity();
-
-        newTaskEntity.setId(taskEntity.getId());
-        newTaskEntity.setBreakTime(taskEntity.getBreakTime());
-        newTaskEntity.setDeadline(taskEntity.getDeadline());
-        newTaskEntity.setDescription(taskEntity.getDescription());
-        newTaskEntity.setElapsedTime(taskEntity.getElapsedTime());
-        newTaskEntity.setIsSolved(taskEntity.isSolved());
-        newTaskEntity.setLastStop(taskEntity.getLastStop());
-        newTaskEntity.setPriority(taskEntity.getPriority());
-        newTaskEntity.setIdUser(taskEntity.getIdUser());
-        newTaskEntity.setName(taskEntity.getName());
-
-
-        newTaskEntity.setName(editName.getText().toString());
-        newTaskEntity.setDescription(editDescription.getText().toString());
-        newTaskEntity.setDeadline(editDeadline.getText().toString());
-        newTaskEntity.setPriority(Long.valueOf(editPriority.getText().toString()));
-
-        return newTaskEntity;
-    }
-
     private List<String> constructNewTags() {
         String newTags[] = editTags.getText().toString().replace("#", "").split("[,\\s;]");
         return Arrays.asList(newTags);
+    }
+
+    private TaskEntity constructNewTaskEntity() {
+        TaskEntity newTaskEntity = taskEntity.copy();
+
+        newTaskEntity.setTaskname(editName.getText().toString());
+        newTaskEntity.setDescription(editDescription.getText().toString());
+        newTaskEntity.setDeadline(editDeadline.getText().toString());
+        newTaskEntity.setPriority(Long.valueOf(editPriority.getText().toString()));
+        newTaskEntity.setTags(constructNewTags());
+
+        return newTaskEntity;
     }
 
     @Override
@@ -233,22 +191,17 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
                 // change menu
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_edit_menu, menu);
-                setAllEditable();
+                setIsEditable(true);
                 return true;
 
             case R.id.action_remove:
-                ((ToBeDoneActivity) getActivity()).removeTask(taskEntity);
                 return true;
 
             case R.id.action_done:
                 TaskEntity newTaskEntity = constructNewTaskEntity();
                 newTaskEntity.setIsSolved(true);
-                try {
-                    MainApplication.getTaskDataWrapper().updateTask(newTaskEntity, taskEntity);
-                    taskEntity = newTaskEntity;
-                } catch (TaskDataWrapper.SyncException e) {
-                    e.printStackTrace();
-                }
+                MainApplication.getTaskDataWrapper().updateTask(newTaskEntity);
+                taskEntity = newTaskEntity;
 
                 new AlertDialog.Builder(getContext())
                         .setTitle("Task solved!")
@@ -264,13 +217,11 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
                 return true;
 
             case R.id.action_discard:
-                setAllUneditable();
+                setIsEditable(false);
                 // change menu
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
-
                 getActivity().onBackPressed();
-
                 return true;
 
             case R.id.action_save:
@@ -289,20 +240,13 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
                 }
 
                 TaskEntity newEntity = constructNewTaskEntity();
-                List<String> newTags = constructNewTags();
 
-                try {
-                    if (isForUpdate) {
-                        MainApplication.getTaskDataWrapper().updateTask(newEntity, taskEntity);
-                        MainApplication.getTaskDataWrapper().updateTaskTags(taskEntity, newTags);
-                    } else {
-                        MainApplication.getTaskDataWrapper().addTask(newEntity, newTags);
-                    }
-                    taskEntity = newEntity;
-                    tags = newTags;
-                } catch (TaskDataWrapper.SyncException e) {
-                    e.printStackTrace();
+                if (isForUpdate) {
+                    MainApplication.getTaskDataWrapper().updateTask(newEntity);
+                } else {
+                    MainApplication.getTaskDataWrapper().addTask(newEntity);
                 }
+                taskEntity = newEntity;
 
                 if (isForUpdate)
                     Toast.makeText(getContext(), "Task updated!", Toast.LENGTH_SHORT).show();
@@ -310,12 +254,11 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
                     Toast.makeText(getContext(), "Task created!", Toast.LENGTH_SHORT).show();
 
                 isForUpdate = true;
-                setAllUneditable();
+                setIsEditable(false);
+
                 // change menu
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
-
-
                 return true;
 
             default:
@@ -327,29 +270,34 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.editTags:
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Choose existing tag");
-
-                builder.setMultiChoiceItems(existingTags, chosenExistingTags, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                            chosenExistingTags[which] = isChecked;
-
-                    }
-
-
-                });
-                builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-   updateTagsTextView();
-                    }
-                });
-                builder.show();
+                showChooseExistingTagDIalog();
                 break;
             }
         }
+
+    void showChooseExistingTagDIalog() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Choose existing tag");
+
+        builder.setMultiChoiceItems(existingTags, chosenExistingTags, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                chosenExistingTags[which] = isChecked;
+
+            }
+
+
+        });
+        builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                updateTagsTextView();
+            }
+        });
+        builder.show();
+    }
+
     void showCreateNewTagDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Pick a name for new tag");
