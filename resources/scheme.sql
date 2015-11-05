@@ -10,9 +10,9 @@ CREATE TABLE Task (
 	deadline TIMESTAMP,
 	breakTime INT,
 	isSolved BOOLEAN,
-	isDeleted BOOLEAN,
 	elapsedTime INT,
-	lastStop TIMESTAMP);
+	lastStop TIMESTAMP,
+	isDeleted BOOLEAN);
 
 CREATE TABLE TaskTag(
   taskname TEXT,
