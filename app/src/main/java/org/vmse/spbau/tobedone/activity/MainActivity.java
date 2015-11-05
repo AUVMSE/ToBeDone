@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Process click on START button in TaskChoiceFragment
+     *
      * @param view the view
      */
     public void onClick_btnStartTask(View view) {
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Process click on STOP button in TaskInProgressFragment
+     *
      * @param view the view
      */
     public void onClick_btnStopTask(View view) {

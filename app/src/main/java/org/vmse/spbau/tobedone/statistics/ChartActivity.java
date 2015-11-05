@@ -50,7 +50,10 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         String fragmentClassName = intent.getStringExtra(StatisticsActivity.FragmentNameExtra);
         Class<?> fragmentClass = null;
         Log.i("fragName", fragmentClassName);
-        try { fragmentClass = Class.forName(fragmentClassName); } catch (Exception ignored){}
+        try {
+            fragmentClass = Class.forName(fragmentClassName);
+        } catch (Exception ignored) {
+        }
 
         startDate = (TextView) findViewById(R.id.start_date_text);
         endDate = (TextView) findViewById(R.id.end_date_text);
@@ -137,7 +140,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
 
                 if (3 != position) {
                     updateDatesTexts();
-                    ((ChartFragment)fragment).updatePeriod(startDateDate, endDateDate);
+                    ((ChartFragment) fragment).updatePeriod(startDateDate, endDateDate);
                 }
             }
 
@@ -154,7 +157,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
             }
 
             try {
-                fragment = (Fragment)fragmentClass.newInstance();
+                fragment = (Fragment) fragmentClass.newInstance();
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_container, fragment).commit();
                 ((ChartFragment) fragment).updatePeriod(startDateDate, endDateDate);

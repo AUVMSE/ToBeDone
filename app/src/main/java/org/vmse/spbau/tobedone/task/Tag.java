@@ -1,8 +1,6 @@
 package org.vmse.spbau.tobedone.task;
 
-import java.lang.Comparable;
 import org.json.JSONObject;
-import org.json.JSONArray;
 
 public class Tag implements Comparable {
 
@@ -10,9 +8,9 @@ public class Tag implements Comparable {
 
     private String name;
     private int priority;
-    
+
     public Tag(String name) {
-        this.name     = name;
+        this.name = name;
         this.priority = DEFAULT_PRIORITY;
     }
 
@@ -20,17 +18,17 @@ public class Tag implements Comparable {
         return priority;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setPriority(int priority) {
         this.priority = priority;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
-        try {   
+        try {
             json.put("name", name);
             json.put("priority", priority);
         } catch (Exception e) {
@@ -41,7 +39,7 @@ public class Tag implements Comparable {
     }
 
     public int compareTo(Object o) {
-        return name.compareTo(((Tag)o).getName());
+        return name.compareTo(((Tag) o).getName());
     }
 
 

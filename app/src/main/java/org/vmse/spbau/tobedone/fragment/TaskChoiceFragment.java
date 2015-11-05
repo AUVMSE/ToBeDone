@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.util.SortedList;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,30 +17,29 @@ import org.vmse.spbau.tobedone.view.TaskEntityView;
 
 import java.util.Iterator;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Created by egorbunov on 03.11.15.
  * Email: egor-mailbox@ya.ru
  */
 public class TaskChoiceFragment extends Fragment {
-    private boolean isStart = false;
     Button btnStart;
     Button btnStop;
     Button btnSkip;
     TaskEntityView taskEntityView;
     TaskEntity taskEntity;
-    SortedSet sortedSet;
+    SortedSet<TaskEntity> sortedSet;
     Iterator<TaskEntity> it;
+    private boolean isStart = false;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.task_choose_fragment, container, false);
-        btnStart = (Button)view.findViewById(R.id.taskChooseFragment_startButton);
-        btnStop = (Button)view.findViewById(R.id.taskChooseFragment_stopButton);
-        btnSkip = (Button)view.findViewById(R.id.taskChooseFragment_skipButton);
-        taskEntityView = (TaskEntityView)view.findViewById(R.id.taskChooseFragment_view);
+        btnStart = (Button) view.findViewById(R.id.taskChooseFragment_startButton);
+        btnStop = (Button) view.findViewById(R.id.taskChooseFragment_stopButton);
+        btnSkip = (Button) view.findViewById(R.id.taskChooseFragment_skipButton);
+        taskEntityView = (TaskEntityView) view.findViewById(R.id.taskChooseFragment_view);
         taskEntity = null;
         sortedSet = null;
         btnStart.setOnClickListener(null);

@@ -29,8 +29,8 @@ import java.util.List;
 
 public class LastLongestTasksFragment extends ChartFragment implements OnChartValueSelectedListener {
 
-    private BarChart chart;
     public static final int LONGEST_TASKS_NUMBER = 10;
+    private BarChart chart;
     private HashMap<Integer, String> entryNames;
 
     @Override
@@ -58,7 +58,7 @@ public class LastLongestTasksFragment extends ChartFragment implements OnChartVa
         Comparator<TaskEntity> cmp = new Comparator<TaskEntity>() {
             @Override
             public int compare(TaskEntity lhs, TaskEntity rhs) {
-                return (int)(rhs.getElapsedTime() - lhs.getElapsedTime());
+                return (int) (rhs.getElapsedTime() - lhs.getElapsedTime());
             }
         };
 

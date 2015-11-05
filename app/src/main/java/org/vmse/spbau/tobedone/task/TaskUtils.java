@@ -43,7 +43,9 @@ public class TaskUtils {
 //        SharedPreferences.Editor ed = sPref.edit();
         try {
             gc.setTime(df.parse(sPref.getString("START_TIME", "")));
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         long time = ((new GregorianCalendar()).getTimeInMillis() - gc.getTimeInMillis()) / 60 / 1000;
         Log.e("MY_TAG", "" + time);
         return time;
@@ -69,7 +71,9 @@ public class TaskUtils {
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
         try {
             MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void stop(TaskEntity task, Activity activity) {
@@ -86,35 +90,15 @@ public class TaskUtils {
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
         try {
             MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
     public static SortedSet<TaskEntity> getSortedTaskList(Context context) {
-
-
         List<TaskEntity> list = MainApplication.getTaskDataWrapper().getTaskEntityData();
-
-//        list = new LinkedList<TaskEntity>();
-//        if (prevList == null) {
-//            for(int i = 0; i < 10; ++i) {
-//                TaskEntity te = new TaskEntity();
-//                te.setName("" + i + " task");
-//                te.setPriority(2);
-//                te.setDeadline("1995-10-01 11:11:11");
-//                te.setIsSolved(false);
-//                te.setElapsedTime(0);
-////                Log.e("MY_TAG", te.getName());
-//                list.add(te);
-//            }
-//        } else {
-//            for (TaskEntity it : prevList) {
-//                Log.e("MY_TAG", it.getName() + " " + it.isSolved());
-//                list.add(it);
-//            }
-//        }
-
-        SortedSet<TaskEntity> sortedTasks = new TreeSet<TaskEntity>(getComparator());
+        SortedSet<TaskEntity> sortedTasks = new TreeSet<>(getComparator());
         for (TaskEntity te : list) {
             if (te != null && (te.isSolved() != null && !te.isSolved())) {
                 sortedTasks.add(te);
@@ -131,9 +115,9 @@ public class TaskUtils {
 
             @Override
             public int compare(TaskEntity t1, TaskEntity t2) {
-                if(t1.isSolved())
+                if (t1.isSolved())
                     return 1;
-                if(t2.isSolved())
+                if (t2.isSolved())
                     return -1;
 
                 long priority1 = t1.getPriority();
@@ -148,14 +132,16 @@ public class TaskUtils {
                 GregorianCalendar gc = new GregorianCalendar();
                 try {
                     gc.setTime(df.parse(s));
-                } catch (Exception e) {e.printStackTrace();}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 long handicap1 = gc.getTimeInMillis() - currentDate.getTimeInMillis();
                 if (handicap1 < 1 * 24 * 60 * 60 * 1000)
                     priority1 += 3;
-                else if(handicap1 < 2 * 24 * 60 * 60 * 1000)
+                else if (handicap1 < 2 * 24 * 60 * 60 * 1000)
                     priority1 += 2;
-                else if(handicap1 < 3 * 24 * 60 * 60 * 1000)
+                else if (handicap1 < 3 * 24 * 60 * 60 * 1000)
                     priority1 += 1;
 
                 s = t2.getDeadline();
@@ -163,19 +149,21 @@ public class TaskUtils {
                 gc = new GregorianCalendar();
                 try {
                     gc.setTime(df.parse(s));
-                } catch (Exception e) {e.printStackTrace();}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 long handicap2 = gc.getTimeInMillis() - currentDate.getTimeInMillis();
                 if (handicap2 < 1 * 24 * 60 * 60 * 1000)
                     priority2 += 3;
-                else if(handicap2 < 2 * 24 * 60 * 60 * 1000)
+                else if (handicap2 < 2 * 24 * 60 * 60 * 1000)
                     priority2 += 2;
-                else if(handicap2 < 3 * 24 * 60 * 60 * 1000)
+                else if (handicap2 < 3 * 24 * 60 * 60 * 1000)
                     priority2 += 1;
 
                 if (priority1 == priority2)
                     return -1;
-                return (int)(priority2 - priority1);
+                return (int) (priority2 - priority1);
             }
         };
     }

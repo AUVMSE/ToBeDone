@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 public class Task {
 
-    private final static int DEFAULT_PRIORITY   = 2;
+    private final static int DEFAULT_PRIORITY = 2;
     private final static int DEFAULT_BREAK_TIME = 120;
 
     private String name;
@@ -28,16 +28,16 @@ public class Task {
     private GregorianCalendar startTime;
 
     public Task(TaskUtils tl, String name, String description, GregorianCalendar deadline) {
-        this.name        = name;
+        this.name = name;
         this.description = description;
-        this.deadline    = deadline;
-        this.priority    = DEFAULT_PRIORITY;
-        this.breakTime   = DEFAULT_BREAK_TIME;
+        this.deadline = deadline;
+        this.priority = DEFAULT_PRIORITY;
+        this.breakTime = DEFAULT_BREAK_TIME;
         this.elapsedTime = 0;
-        tagList          = new TreeSet<String>();
-        isSolved         = false;
-        taskList         = new WeakReference<TaskUtils>(tl);
-        tagPriority      = 0;
+        tagList = new TreeSet<String>();
+        isSolved = false;
+        taskList = new WeakReference<TaskUtils>(tl);
+        tagPriority = 0;
     }
 
 //    public void start() {
@@ -87,7 +87,7 @@ public class Task {
             json.put("breakTime", breakTime);
             json.put("elapsedTime", elapsedTime);
             JSONArray tagJson = new JSONArray();
-            for(String tag : tagList)
+            for (String tag : tagList)
                 tagJson.put(tag);
             json.put("tags", tagJson);
         } catch (Exception e) {

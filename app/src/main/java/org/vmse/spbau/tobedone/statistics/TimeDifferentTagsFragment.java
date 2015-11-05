@@ -25,6 +25,7 @@ import java.util.List;
 public class TimeDifferentTagsFragment extends ChartFragment {
 
     PieChart chart;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

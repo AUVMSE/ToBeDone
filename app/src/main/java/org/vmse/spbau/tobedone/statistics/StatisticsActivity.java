@@ -19,9 +19,9 @@ public class StatisticsActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
-        statsTimePerTag =  (ImageView)findViewById(R.id.stats_spent_per_tag);
-        statsTimePerWeekDay = (ImageView)findViewById(R.id.stats_utility_per_week_day);
-        statsLastLongestTasks = (ImageView)findViewById(R.id.stats_last_longest_tasks);
+        statsTimePerTag = (ImageView) findViewById(R.id.stats_spent_per_tag);
+        statsTimePerWeekDay = (ImageView) findViewById(R.id.stats_utility_per_week_day);
+        statsLastLongestTasks = (ImageView) findViewById(R.id.stats_last_longest_tasks);
 
         statsTimePerTag.setOnClickListener(this);
         statsTimePerWeekDay.setOnClickListener(this);
@@ -30,7 +30,7 @@ public class StatisticsActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(this, ChartActivity.class);;
+        Intent intent = new Intent(this, ChartActivity.class);
         switch (v.getId()) {
             case R.id.stats_spent_per_tag:
                 intent.putExtra(FragmentNameExtra, TimeDifferentTagsFragment.class.getName());

@@ -54,9 +54,13 @@ public class TaskEntityView extends RelativeLayout {
     }
 
     public static TaskEntityView inflate(ViewGroup parent) {
-        TaskEntityView taskEntityView = (TaskEntityView)LayoutInflater.from(parent.getContext())
+        TaskEntityView taskEntityView = (TaskEntityView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_view, parent, false);
         return taskEntityView;
+    }
+
+    public TaskEntity getTaskEntity() {
+        return taskEntity;
     }
 
     public void setTaskEntity(TaskEntity taskEntity) {
@@ -65,9 +69,5 @@ public class TaskEntityView extends RelativeLayout {
         descriptionTextView.setText(taskEntity.getDescription());
         priorityTextView.setText(Long.toString(taskEntity.getPriority()));
         deadlineTextView.setText(taskEntity.getDeadline());
-    }
-
-    public TaskEntity getTaskEntity() {
-        return taskEntity;
     }
 }

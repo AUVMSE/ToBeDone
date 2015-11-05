@@ -22,6 +22,7 @@ public class TimeDifferentWeekDaysFragment extends ChartFragment {
 
     BarChart chart;
     private String[] dayNames;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
