@@ -20,8 +20,10 @@ import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Egor Gorbunov on 11/4/15.
@@ -113,11 +115,29 @@ public class EditableTaskFragment extends Fragment {
         editPriority = (EditText) view.findViewById(R.id.editPriority);
 
         // before it entity and tags must be set
-        if (isForUpdate)
-            fillForm();
+        if (!isForUpdate)
+            fillDefault();
+
+        fillForm();
+
 
 
         return view;
+    }
+
+    private void fillDefault() {
+        taskEntity.setPriority(5);
+        taskEntity.setIdUser(1);
+        taskEntity.setName("Sample task" + new Random().nextInt());
+        taskEntity.setDeadline("2015-07-07");
+        taskEntity.setDescription("Task description");
+        taskEntity.setIsSolved(false);
+
+        tags = new ArrayList<String>() {{
+            add("university");
+            add("study");
+            add("ha");
+        }};
     }
 
     @Override

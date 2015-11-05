@@ -90,29 +90,6 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
                 transaction.addToBackStack(null);
                 transaction.commit();
 
-
-//                TaskEntity taskEntity = new TaskEntity();
-//                taskEntity.setPriority(5);
-//                taskEntity.setIdUser(1);
-//                taskEntity.setName("Dummy task" + new Random().nextInt());
-//                taskEntity.setDeadline("2015-07-07");
-//                taskEntity.setDescription("Task description");
-//                taskEntity.setIsSolved(false);
-//
-//                List<String> tags = new ArrayList<String>() {{
-//                    add("university");
-//                    add("study");
-//                    add("ha");
-//                }};
-//
-//
-//                try {
-//                    MainApplication.getTaskDataWrapper().addTask(taskEntity, tags);
-//                } catch (Exception ignored) {
-//                }
-//
-//                TaskListFragment.this.getLoaderManager().restartLoader(0, null, TaskListFragment.this);
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
