@@ -26,7 +26,11 @@ public class MainApplication extends Application {
         super.onCreate();
         final Account[] accounts = AccountManager.get(getApplicationContext()).
                 getAccountsByType("com.google");
-        taskDataWrapper = TaskDataWrapper.getInstance(accounts[0].name, this);
+        if (accounts.length != 0) {
+            taskDataWrapper = TaskDataWrapper.getInstance(accounts[0].name, this);
+        } else {
+            taskDataWrapper = TaskDataWrapper.getInstance("emulator", this);
+        }
         try {
             taskDataWrapper.loadState();
         } catch (JSONException e) {
