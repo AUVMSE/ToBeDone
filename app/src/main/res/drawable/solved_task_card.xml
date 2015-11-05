@@ -5,7 +5,7 @@
             android:dither="true"
             android:shape="rectangle">
             <corners android:radius="2dp" />
-            <solid android:color="#ccc" />
+            <solid android:color="@color/colorPrimaryDark" />
 
         </shape>
     </item>
@@ -15,7 +15,7 @@
             android:dither="true"
             android:shape="rectangle">
             <corners android:radius="2dp" />
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/colorPrimary" />
             <padding
                 android:bottom="8dp"
                 android:left="8dp"

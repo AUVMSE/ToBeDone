@@ -48,13 +48,9 @@ public class TaskEntityView extends RelativeLayout {
 
         LayoutInflater.from(context).inflate(R.layout.task_view_child, this, true);
         nameTextView = (TextView) findViewById(R.id.taskView_nameTextView);
-        nameTextView.setText("Task header");
         descriptionTextView = (TextView) findViewById(R.id.taskView_descriptionTextView);
-        descriptionTextView.setText("Task description");
         priorityTextView = (TextView) findViewById(R.id.taskView_priorityTextView);
-        priorityTextView.setText("8");
         deadlineTextView = (TextView) findViewById(R.id.taskView_deadlineTextView);
-        deadlineTextView.setText("10.09.2017");
     }
 
     public static TaskEntityView inflate(ViewGroup parent) {
@@ -73,17 +69,5 @@ public class TaskEntityView extends RelativeLayout {
         descriptionTextView.setText(taskEntity.getDescription());
         priorityTextView.setText(Long.toString(taskEntity.getPriority()));
         deadlineTextView.setText(taskEntity.getDeadline());
-
-        if (taskEntity.isSolved()) {
-            View v = findViewById(R.id.main_task_tile_layout);
-            LayerDrawable bgDrawable = (LayerDrawable) v.getBackground();
-            final GradientDrawable mainTileShape =
-                    (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.main_task_tile_layout);
-            mainTileShape.setColor(ContextCompat.getColor(getContext(), R.color.posActionColor));
-
-            final GradientDrawable shadTileShape =
-                    (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.main_task_tile_layout);
-            mainTileShape.setColor(ContextCompat.getColor(getContext(), R.color.deepPosActionColor));
-        }
     }
 }

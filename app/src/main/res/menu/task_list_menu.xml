@@ -2,6 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/action_show_solved_tasks" android:title="Show solved tasks"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_show_active_tasks" android:title="Show active tasks"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_show_all_tasks" android:title="Show all tasks"
+        android:orderInCategory="100" app:showAsAction="never" />
+
     <item android:id="@+id/action_create_new_task"
         android:icon="@drawable/cplus"
         android:title=""

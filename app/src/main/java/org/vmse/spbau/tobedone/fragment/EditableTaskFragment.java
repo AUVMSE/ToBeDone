@@ -234,7 +234,7 @@ public class EditableTaskFragment extends Fragment {
                 TaskEntity newTaskEntity = constructNewTaskEntity();
                 newTaskEntity.setIsSolved(true);
                 try {
-                    MainApplication.getTaskDataWrapper().updateTask(taskEntity, newTaskEntity);
+                    MainApplication.getTaskDataWrapper().updateTask(newTaskEntity, taskEntity);
                     taskEntity = newTaskEntity;
                 } catch (TaskDataWrapper.SyncException e) {
                     e.printStackTrace();
@@ -255,10 +255,12 @@ public class EditableTaskFragment extends Fragment {
 
             case R.id.action_discard:
                 setAllUneditable();
-
                 // change menu
                 menu.clear();
                 getActivity().getMenuInflater().inflate(R.menu.task_fragment_menu, menu);
+
+                getActivity().onBackPressed();
+
                 return true;
 
             case R.id.action_save:
@@ -281,7 +283,7 @@ public class EditableTaskFragment extends Fragment {
 
                 try {
                     if (isForUpdate) {
-                        MainApplication.getTaskDataWrapper().updateTask(taskEntity, newEntity);
+                        MainApplication.getTaskDataWrapper().updateTask(newEntity, taskEntity);
                         MainApplication.getTaskDataWrapper().updateTaskTags(taskEntity, newTags);
                     } else {
                         MainApplication.getTaskDataWrapper().addTask(newEntity, newTags);

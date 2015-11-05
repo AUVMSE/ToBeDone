@@ -24,6 +24,7 @@ import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.view.TaskEntityAdapter;
 import org.vmse.spbau.tobedone.view.TaskEntityView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,8 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
     private TaskEntityAdapter adapter;
     private Map<Long, List<String>> taskTagsMap = new HashMap<>();
+    private TaskEntityPredicate currentTaskFilterPredicate = NOT_SOLVED_TASK_PREDICATE;
+    private List<TaskEntity> wholeListData = null;
 
 
     @Override
@@ -88,6 +91,15 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
                 transaction.commit();
 
                 return true;
+            case R.id.action_show_active_tasks:
+                changeCurrentTaskFilterPredicate(NOT_SOLVED_TASK_PREDICATE);
+                return true;
+            case R.id.action_show_all_tasks:
+                changeCurrentTaskFilterPredicate(ALL_TASK_PREDICATE);
+                return true;
+            case R.id.action_show_solved_tasks:
+                changeCurrentTaskFilterPredicate(SOLVED_TASK_PREDICATE);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -128,8 +140,8 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
                     }
                 });
             }
-
-            adapter.setData(data);
+            wholeListData = data;
+            adapter.setData(filter(wholeListData, currentTaskFilterPredicate));
         } else {
             setDefaultEmptyText();
         }
@@ -137,6 +149,7 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public void onLoaderReset(Loader<List<TaskEntity>> loader) {
+        wholeListData = null;
         adapter.setData(null);
     }
 
@@ -157,4 +170,45 @@ public class TaskListFragment extends ListFragment implements LoaderManager.Load
             return MainApplication.getTaskDataWrapper().getTaskEntityData();
         }
     }
+
+    /**
+     *  TaskEntityList filter. Use it to filter whole list and pass it to view
+     */
+    private static List<TaskEntity> filter(List<TaskEntity> list, TaskEntityPredicate predicate) {
+        List<TaskEntity> result = new ArrayList<>();
+        for (TaskEntity element : list) {
+            if (predicate.apply(element)) {
+                result.add(element);
+            }
+        }
+        return result;
+    }
+
+    private void changeCurrentTaskFilterPredicate(TaskEntityPredicate predicate) {
+        currentTaskFilterPredicate = predicate;
+        adapter.setData(filter(wholeListData, predicate));
+    }
+
+    private interface TaskEntityPredicate { boolean apply(TaskEntity taskEntity); }
+
+    private final static TaskEntityPredicate ALL_TASK_PREDICATE = new TaskEntityPredicate() {
+        @Override
+        public boolean apply(TaskEntity taskEntity) {
+            return true;
+        }
+    };
+
+    private final static TaskEntityPredicate SOLVED_TASK_PREDICATE = new TaskEntityPredicate() {
+        @Override
+        public boolean apply(TaskEntity taskEntity) {
+            return taskEntity.isSolved();
+        }
+    };
+
+    private final static TaskEntityPredicate NOT_SOLVED_TASK_PREDICATE = new TaskEntityPredicate() {
+        @Override
+        public boolean apply(TaskEntity taskEntity) {
+            return !taskEntity.isSolved();
+        }
+    };
 }

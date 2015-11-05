@@ -95,7 +95,7 @@ public class TaskDataWrapper {
         if (oldTaskEntity == null) {
             oldTaskEntity = findTaskById(taskEntity.getId());
         }
-        taskEntityData.remove(oldTaskEntity);
+        boolean wasModified = taskEntityData.remove(oldTaskEntity);
         taskEntityData.add(taskEntity);
         if (taskEntity.getId() != TaskEntity.CREATED_OFFLINE && Util.isConnected(context)) {
             new UpdateTaskEntityTask(taskEntity).execute();

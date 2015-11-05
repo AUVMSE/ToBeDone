@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
 import java.util.List;
@@ -29,9 +30,18 @@ public class TaskEntityAdapter extends ArrayAdapter<TaskEntity> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TaskEntityView itemView = (TaskEntityView) convertView;
+
         if (null == itemView)
             itemView = TaskEntityView.inflate(parent);
+
         itemView.setTaskEntity(getItem(position));
+
+        View taskLayout = itemView.findViewById(R.id.main_task_tile_layout);
+        if (itemView.getTaskEntity().isSolved())
+            taskLayout.setBackgroundResource(R.drawable.solved_task_card);
+        else
+            taskLayout.setBackgroundResource(R.drawable.task_card);
+
         return itemView;
     }
 }
