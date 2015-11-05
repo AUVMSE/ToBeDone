@@ -18,19 +18,17 @@ import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
 import org.vmse.spbau.tobedone.activity.ToBeDoneActivity;
 import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
-import org.vmse.spbau.tobedone.connection.Util;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Egor Gorbunov on 11/4/15.
  * email: egor-mailbox@ya.ru
  */
-public class EditableTaskFragment extends Fragment {
+public class EditableTaskFragment extends Fragment implements View.OnClickListener {
     private TaskEntity taskEntity;
     private List<String> tags;
     private boolean isForUpdate = true; // or for new task creation
@@ -41,6 +39,9 @@ public class EditableTaskFragment extends Fragment {
     private EditText editTags;
     private EditText editPriority;
     private Menu menu;
+    private boolean[] chosenExistingTags;
+    private String[] existingTags;
+    private List<String> newTags;
 
     public EditableTaskFragment() {
     }
@@ -102,6 +103,13 @@ public class EditableTaskFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        chosenExistingTags = new boolean[4];
+        existingTags = new String[4];
+        for (int i = 0; i < 4; i++) {
+            chosenExistingTags[i] = false;
+            existingTags[i] = new String("Tag" + Integer.toString(i));
+        }
+        newTags = new LinkedList<>();
     }
 
     @Nullable
@@ -115,6 +123,7 @@ public class EditableTaskFragment extends Fragment {
         editTags = (EditText) view.findViewById(R.id.editTags);
         editPriority = (EditText) view.findViewById(R.id.editPriority);
 
+        editTags.setOnClickListener(this);
         // before it entity and tags must be set
         if (!isForUpdate)
             fillDefault();
@@ -312,4 +321,52 @@ public class EditableTaskFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.editTags:
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Choose existing tag");
+
+                builder.setMultiChoiceItems(existingTags, chosenExistingTags, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                            chosenExistingTags[which] = isChecked;
+
+                    }
+
+
+                });
+              /*  builder.setSingleChoiceItems("CREATE", 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });*/
+                builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String text = "";
+                        for (int i = 0; i < chosenExistingTags.length; i++) {
+                            if (chosenExistingTags[i]) {
+                                if (text != "")
+                                    text += ", " + existingTags[i];
+                                else
+                                    text += existingTags[i];
+                            }
+                        }
+                        for (String s : newTags) {
+                            if (text != "")
+                                text += ", " + s;
+                            else
+                                text += s;
+                        }
+                        editTags.setText(text);
+                    }
+                });
+                builder.show();
+                break;
+            }
+        }
 }

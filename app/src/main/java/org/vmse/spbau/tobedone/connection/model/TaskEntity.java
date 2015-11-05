@@ -130,12 +130,39 @@ public class TaskEntity {
 
         TaskEntity that = (TaskEntity) o;
 
-        return (that.getId() == getId());
+         if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+      if (getIdUser() != null ? !getIdUser().equals(that.getIdUser()) : that.getIdUser() != null)
+           return false;
+   if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null)
+          return false;
+    if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null)
+          return false;
+       if (getPriority() != null ? !getPriority().equals(that.getPriority()) : that.getPriority() != null)
+           return false;
+      if (getDeadline() != null ? !getDeadline().equals(that.getDeadline()) : that.getDeadline() != null)
+           return false;
+      if (getBreakTime() != null ? !getBreakTime().equals(that.getBreakTime()) : that.getBreakTime() != null)
+          return false;
+     if (isSolved != null ? !isSolved.equals(that.isSolved) : that.isSolved != null)
+           return false;
+      if (getElapsedTime() != null ? !getElapsedTime().equals(that.getElapsedTime()) : that.getElapsedTime() != null)
+           return false;
+    return !(getLastStop() != null ? !getLastStop().equals(that.getLastStop()) : that.getLastStop() != null);
     }
 
     @Override
     public int hashCode() {
-        return (int)(getId() % 1000000007);
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getIdUser() != null ? getIdUser().hashCode() : 0);
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getPriority() != null ? getPriority().hashCode() : 0);
+        result = 31 * result + (getDeadline() != null ? getDeadline().hashCode() : 0);
+        result = 31 * result + (getBreakTime() != null ? getBreakTime().hashCode() : 0);
+        result = 31 * result + (isSolved != null ? isSolved.hashCode() : 0);
+        result = 31 * result + (getElapsedTime() != null ? getElapsedTime().hashCode() : 0);
+        result = 31 * result + (getLastStop() != null ? getLastStop().hashCode() : 0);
+        return result;
     }
 
     public TaskEntity copy() {

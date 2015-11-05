@@ -30,7 +30,7 @@ import java.util.List;
 public class Util {
 
     public static final String TAG = Util.class.getName();
-    private static final String IP = "192.168.1.87";
+    private static final String IP = "192.168.65.143";
     private static final String SERVER_ADDRESS = "http://" + IP + ":8080/";
     private static final String TAGS_API_ADDRESS = SERVER_ADDRESS + "api/tags";
     private static final String USERS_API_ADDRESS = SERVER_ADDRESS + "api/users";
@@ -276,6 +276,7 @@ public class Util {
         for (String tag : tags) {
             addParam(params, "tags", tag);
         }
+        Log.d("TEST", "UTIL::addTask");
         return sendPOST(TASKS_API_ADDRESS, params);
     }
 

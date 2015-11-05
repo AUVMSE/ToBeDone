@@ -333,10 +333,15 @@ public class TaskDataWrapper {
         protected Void doInBackground(Void... voids) {
             isSyncing = true;
             try {
-                JSONObject jsonObject = new JSONObject(Util.addTask(taskEntity, tags));
+                String res = Util.addTask(taskEntity, tags);
+                Log.d("TEST", "result is " + res);
+                JSONObject jsonObject = new JSONObject(res);
+                Log.d("TEST", "AddTaskEntityTask::doInBackground");
                 taskEntity.setId(jsonObject.getLong("id"));
+                Log.d("TEST", "HERE!");
                 TaskDataWrapper.this.tags.put(taskEntity, Util.getAllTagsForTask(taskEntity.getId()));
             } catch (JSONException e) {
+                Log.d("TEST", "TTHERE!");
                 Log.e(TAG, e.getMessage());
             }
             isSyncing = false;
