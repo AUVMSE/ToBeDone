@@ -1,6 +1,7 @@
 package org.vmse.spbau.tobedone.activity;
 
 import android.accounts.AccountManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -17,6 +18,7 @@ import android.view.View;
 import org.json.JSONException;
 import org.vmse.spbau.tobedone.MainApplication;
 import org.vmse.spbau.tobedone.R;
+import org.vmse.spbau.tobedone.connection.TaskDataWrapper;
 import org.vmse.spbau.tobedone.connection.model.TaskEntity;
 import org.vmse.spbau.tobedone.fragment.EditableTaskFragment;
 import org.vmse.spbau.tobedone.fragment.SettingsFragment;
@@ -27,7 +29,7 @@ import org.vmse.spbau.tobedone.statistics.StatisticsActivity;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ToBeDoneActivity {
+        implements NavigationView.OnNavigationItemSelectedListener, ToBeDoneActivity, TaskDataWrapper.OnSyncFinishedListener {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity
     private TaskInProgressFragment taskInProgressFragment;
 
     private AccountManager accountManager;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +129,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_statistics) {
             Intent intent = new Intent(this, StatisticsActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_synchronize) {
+            MainApplication.getTaskDataWrapper().updateASync(this);
+            progressDialog = ProgressDialog.show(this, "Synchronization with server...", "Please wait", true);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -203,4 +210,8 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
     }
 
+    @Override
+    public void onSyncFinished() {
+        progressDialog.dismiss();
+    }
 }
