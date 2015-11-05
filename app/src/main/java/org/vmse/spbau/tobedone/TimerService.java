@@ -77,6 +77,7 @@ public class TimerService extends Service {
 
                         getApplicationContext().startService(new Intent(getApplication(),
                                 TimerService.class).putExtra("interval", 5));
+
                     }
 
                     // display toast
