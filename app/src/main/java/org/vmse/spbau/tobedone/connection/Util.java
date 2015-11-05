@@ -151,6 +151,7 @@ public class Util {
         addParam(params, "description", taskEntity.getDescription());
         addParam(params, "priority", taskEntity.getPriority());
         addParam(params, "deadline", taskEntity.getDeadline());
+        addParam(params, "isDeleted", taskEntity.isDeleted());
         addParam(params, "isSolved", taskEntity.isSolved());
         addParam(params, "breakTime", taskEntity.getBreakTime());
         addParam(params, "elapsedTime", taskEntity.getElapsedTime());
