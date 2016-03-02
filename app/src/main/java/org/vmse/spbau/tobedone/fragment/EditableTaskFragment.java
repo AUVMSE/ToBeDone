@@ -86,6 +86,16 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        Collection<String> l = MainApplication.getTaskDataWrapper().getAllTags();
+
+        chosenExistingTags = new boolean[l.size()];
+        existingTags = new String[l.size()];
+        int idx = 0;
+        for (String tag : l) {
+            chosenExistingTags[idx] = false;
+            existingTags[idx] = tag;
+            idx++;
+        }
 
         newTags = new LinkedList<>();
     }
@@ -163,7 +173,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     }
 
     private List<String> constructNewTags() {
-        String newTags[] = editTags.getText().toString().replace("#", "").split(" ");
+        String newTags[] = editTags.getText().toString().replace("#", "").split("[,\\s]");
         return Arrays.asList(newTags);
     }
 
@@ -285,16 +295,7 @@ public class EditableTaskFragment extends Fragment implements View.OnClickListen
     void showChooseExistingTagDIalog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Choose existing tag");
-        Collection<String> l = MainApplication.getTaskDataWrapper().getAllTags();
 
-        chosenExistingTags = new boolean[l.size()];
-        existingTags = new String[l.size()];
-        int idx = 0;
-        for (String tag : l) {
-            chosenExistingTags[idx] = false;
-            existingTags[idx] = tag;
-            idx++;
-        }
         builder.setMultiChoiceItems(existingTags, chosenExistingTags, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {

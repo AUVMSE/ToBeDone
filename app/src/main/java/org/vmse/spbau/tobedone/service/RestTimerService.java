@@ -102,9 +102,9 @@ public class RestTimerService extends Service {
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.edit_tile)
-                        .setContentTitle("...")
-                        .setContentText("Do not work so much on one task!")
+                        .setSmallIcon(R.drawable.notif_todo)
+                        .setContentTitle("Take a break!")
+                        .setContentText("Don't work on this task for too long!")
                         .setContentIntent(viewPendingIntent);
 
         // Get an instance of the NotificationManager service
@@ -139,9 +139,7 @@ public class RestTimerService extends Service {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-
                     broadcastSecondsElapsed();
-
                 }
 
             });
@@ -153,9 +151,7 @@ public class RestTimerService extends Service {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-
                     sendNotification();
-
                 }
 
             });

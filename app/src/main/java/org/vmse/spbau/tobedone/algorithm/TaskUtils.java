@@ -59,6 +59,10 @@ public class TaskUtils {
         TaskEntity taskEntity = task.copy();
         taskEntity.setElapsedTime(task.getElapsedTime() + stopTime(activity));
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        taskEntity.setLastStop(dateFormat.format(date));
+
         try {
             MainApplication.getTaskDataWrapper().updateTask(taskEntity, task);
         } catch (Exception e) {

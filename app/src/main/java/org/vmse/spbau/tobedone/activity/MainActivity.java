@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity
      * Use it to setup that navigation bar, which slides from left side
      */
     private void setupDrawer() {
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity
      * Use it to change nav. bar with back button
      */
     private void setupBackButton() {
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         drawer.setDrawerListener(null);
         toggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -232,3 +234,4 @@ public class MainActivity extends AppCompatActivity
         progressDialog.dismiss();
     }
 }
+
